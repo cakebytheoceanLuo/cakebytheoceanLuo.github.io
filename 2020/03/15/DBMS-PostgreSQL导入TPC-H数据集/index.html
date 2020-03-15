@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文关注如何将TPC-H数据集导入至PostgreSQL, 同时简单提一下如何生成TPC-H数据。 TPC-H介绍 TPC-H is a Decision Support Benchmark. The TPC Benchmark™H (TPC-H) is a decision support benchmark. It consists of a suite of business oriente">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[DBMS]PostgreSQL导入TPC-H数据集">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="本文关注如何将TPC-H数据集导入至PostgreSQL, 同时简单提一下如何生成TPC-H数据。 TPC-H介绍 TPC-H is a Decision Support Benchmark. The TPC Benchmark™H (TPC-H) is a decision support benchmark. It consists of a suite of business oriente">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hyper-db.de/tpch.png">
+<meta property="article:published_time" content="2020-03-15T17:51:21.000Z">
+<meta property="article:modified_time" content="2020-03-15T19:36:38.354Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="PostgreSQL">
+<meta property="article:tag" content="TPC-H">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://hyper-db.de/tpch.png">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[DBMS]PostgreSQL导入TPC-H数据集 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [DBMS]PostgreSQL导入TPC-H数据集
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-15 18:51:21 / 修改时间：20:36:38" itemprop="dateCreated datePublished" datetime="2020-03-15T18:51:21+01:00">2020-03-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS]PostgreSQL导入TPC-H数据集" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文关注如何将TPC-H数据集导入至PostgreSQL, 同时简单提一下如何生成TPC-H数据。</p>
+<h1 id="TPC-H介绍"><a href="#TPC-H介绍" class="headerlink" title="TPC-H介绍"></a>TPC-H介绍</h1><blockquote>
+<p>TPC-H is a Decision Support Benchmark. The TPC Benchmark™H (TPC-H) is a decision support benchmark. It consists of a suite of business oriented ad-hoc queries and concurrent data modifications. <sup><a href="#fn1">1</a></sup></p>
+</blockquote>
+<p>TPC-H是TPC协会提供的一个benchmark，用来模拟一个现实中的商业应用，且自带22个SQL Query。这22个Query均关注于OLAP分析型查询。<br>这些Query可以在如下的地方找到:</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tLzJuZFF1YWRyYW50L3BnLXRwY2gvdHJlZS9tYXN0ZXIvcXVlcmllcw==" title="https://github.com/2ndQuadrant/pg-tpch/tree/master/queries">https://github.com/2ndQuadrant/pg-tpch/tree/master/queries<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbnRlcmZhY2UuaHRtbCM=" title="https://hyper-db.de/interface.html#">https://hyper-db.de/interface.html#<i class="fa fa-external-link"></i></span> 点击右下角Insert TPC-H Query</li>
+<li><span class="exturl" data-url="aHR0cHM6Ly91bWJyYS5kYi5pbi50dW0uZGUvaW50ZXJmYWNlLw==" title="https://umbra.db.in.tum.de/interface/">https://umbra.db.in.tum.de/interface/<i class="fa fa-external-link"></i></span>　点击Load Query</li>
+</ul>
+<p>有一篇论文具体讲每一个TPC-H的Query，实际上和本文无关，我链接在这里：　<span class="exturl" data-url="aHR0cHM6Ly9ob21lcGFnZXMuY3dpLm5sL35ib25jei9zbmItY2hhbGxlbmdlL2Nob2tlcG9pbnRzLXRwY3RjLnBkZg==" title="https://homepages.cwi.nl/~boncz/snb-challenge/chokepoints-tpctc.pdf">TPC-H Analyzed: Hidden Messages and Lessons Learned from an Influential Benchmark<i class="fa fa-external-link"></i></span></p>
+<a id="more"></a>
+<h1 id="TPC-H数据集"><a href="#TPC-H数据集" class="headerlink" title="TPC-H数据集"></a>TPC-H数据集</h1><p>我们可以手动生成TPC-H是数据集，常常成为<strong>synthetic dataset</strong>, 人工生成的数据集。</p>
+<p>我们使用这个工具：　<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2VsZWN0cnVtL3RwY2gtZGJnZW4=" title="https://github.com/electrum/tpch-dbgen">https://github.com/electrum/tpch-dbgen<i class="fa fa-external-link"></i></span></p>
+<p>使用方法是：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> git@github.com:electrum/tpch-dbgen.git</span><br><span class="line">Cloning into <span class="string">'tpch-dbgen'</span>...</span><br><span class="line">remote: Enumerating objects: 149, <span class="keyword">done</span>.</span><br><span class="line">remote: Total 149 (delta 0), reused 0 (delta 0), pack-reused 149</span><br><span class="line">Receiving objects: 100% (149/149), 214.31 KiB | 637.00 KiB/s, <span class="keyword">done</span>.</span><br><span class="line">Resolving deltas: 100% (34/34), <span class="keyword">done</span>.</span><br><span class="line">$ <span class="built_in">cd</span> tpch-dbgen/</span><br><span class="line">$ make</span><br><span class="line"><span class="comment">## make 的输出我全部删去了</span></span><br><span class="line">$ ./dbgen</span><br><span class="line">TPC-H Population Generator (Version 2.14.0)</span><br><span class="line">Copyright Transaction Processing Performance Council 1994 - 2010</span><br><span class="line">$ ls | grep <span class="string">'.*.tbl'</span></span><br><span class="line">customer.tbl</span><br><span class="line">lineitem.tbl</span><br><span class="line">nation.tbl</span><br><span class="line">orders.tbl</span><br><span class="line">partsupp.tbl</span><br><span class="line">part.tbl</span><br><span class="line">region.tbl</span><br><span class="line">supplier.tbl</span><br></pre></td></tr></tbody></table></figure>
+<p>我们看到最后生成了8个<code>.tbl</code>文件，它们就是TPC-H的8个表格(a.k.a关系)。另外我这里生成的是TPC-H scale factor=1的数据集，即它的伸缩系数是１，生成的数据大概是1GiB左右。我们还可以在生成数据的时候调整这这scale factor(sf)，比如当它为10的时候，生成的数据大概是10GiB左右。另外我们也可以在生成的时候去特定生成一张表格。这些情况都可以在，　<code>dbgen</code>这个程序中通过参数确定，这里也不再详细说了。</p>
+<h2 id="dbgen的各种参数-可略读浏览"><a href="#dbgen的各种参数-可略读浏览" class="headerlink" title="dbgen的各种参数 (可略读浏览)"></a><code>dbgen</code>的各种参数 (可略读浏览)</h2><p>详见：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">$ ./dbgen --<span class="built_in">help</span></span><br><span class="line">./dbgen: invalid option -- <span class="string">'-'</span></span><br><span class="line">ERROR: option <span class="string">'-'</span> unknown.</span><br><span class="line">TPC-H Population Generator (Version 2.14.0 build 0)</span><br><span class="line">Copyright Transaction Processing Performance Council 1994 - 2010</span><br><span class="line">USAGE:</span><br><span class="line">dbgen [-{vf}][-T {pcsoPSOL}]</span><br><span class="line">	[-s &lt;scale&gt;][-C &lt;procs&gt;][-S &lt;step&gt;]</span><br><span class="line">dbgen [-v] [-O m] [-s &lt;scale&gt;] [-U &lt;updates&gt;]</span><br><span class="line"></span><br><span class="line">Basic Options</span><br><span class="line">===========================</span><br><span class="line">-C &lt;n&gt; -- separate data <span class="built_in">set</span> into &lt;n&gt; chunks (requires -S, default: 1)</span><br><span class="line">-f     -- force. Overwrite existing files</span><br><span class="line">-h     -- display this message</span><br><span class="line">-q     -- <span class="built_in">enable</span> QUIET mode</span><br><span class="line">-s &lt;n&gt; -- <span class="built_in">set</span> Scale Factor (SF) to  &lt;n&gt; (default: 1) </span><br><span class="line">-S &lt;n&gt; -- build the &lt;n&gt;th step of the data/update <span class="built_in">set</span> (used with -C or -U)</span><br><span class="line">-U &lt;n&gt; -- generate &lt;n&gt; update sets</span><br><span class="line">-v     -- <span class="built_in">enable</span> VERBOSE mode</span><br><span class="line"></span><br><span class="line">Advanced Options</span><br><span class="line">===========================</span><br><span class="line">-b &lt;s&gt; -- load distributions <span class="keyword">for</span> &lt;s&gt; (default: dists.dss)</span><br><span class="line">-d &lt;n&gt; -- split deletes between &lt;n&gt; files (requires -U)</span><br><span class="line">-i &lt;n&gt; -- split inserts between &lt;n&gt; files (requires -U)</span><br><span class="line">-T c   -- generate cutomers ONLY</span><br><span class="line">-T l   -- generate nation/region ONLY</span><br><span class="line">-T L   -- generate lineitem ONLY</span><br><span class="line">-T n   -- generate nation ONLY</span><br><span class="line">-T o   -- generate orders/lineitem ONLY</span><br><span class="line">-T O   -- generate orders ONLY</span><br><span class="line">-T p   -- generate parts/partsupp ONLY</span><br><span class="line">-T P   -- generate parts ONLY</span><br><span class="line">-T r   -- generate region ONLY</span><br><span class="line">-T s   -- generate suppliers ONLY</span><br><span class="line">-T S   -- generate partsupp ONLY</span><br><span class="line"></span><br><span class="line">To generate the SF=1 (1GB), validation database population, use:</span><br><span class="line">	dbgen -vf -s 1</span><br><span class="line"></span><br><span class="line">To generate updates <span class="keyword">for</span> a SF=1 (1GB), use:</span><br><span class="line">	dbgen -v -U 1 -s 1</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="另外可替代生成的工具"><a href="#另外可替代生成的工具" class="headerlink" title="另外可替代生成的工具"></a>另外可替代生成的工具</h2><p>当然也有其他工具可以生成这个数据集，　比如: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dyZWdyYWhuL3RwY2gta2l0" title="https://github.com/gregrahn/tpch-kit">https://github.com/gregrahn/tpch-kit<i class="fa fa-external-link"></i></span>　。但是我们不在这篇文章中赘述。</p>
+<p><br><br><br></p>
+<h1 id="PostgreSQL准备"><a href="#PostgreSQL准备" class="headerlink" title="PostgreSQL准备"></a>PostgreSQL准备</h1><h2 id="新建数据库"><a href="#新建数据库" class="headerlink" title="新建数据库"></a>新建数据库</h2><p>PostgreSQL具体操作详见我的另一篇文章: <a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/#%E6%96%B0%E5%BB%BA%E4%B8%80%E4%B8%AA%E7%94%A8%E6%88%B7%E6%95%B0%E6%8D%AE%E5%BA%93">[DBMS] PostgreSQL 安装与配置 - 新建一个用户数据库</a></p>
+<p>这里我就展示我的命令和输出例子，在你的环境也大同小异。</p>
+<h3 id="新建数据库命令"><a href="#新建数据库命令" class="headerlink" title="新建数据库命令"></a>新建数据库命令</h3><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo -u postgres psql</span><br><span class="line">postgres=# CREATE DATABASE tpch;</span><br><span class="line">postgres=# GRANT ALL ON DATABASE tpch to &lt;我们之前创建的用户名 不带尖角括号&gt;;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="输出例子"><a href="#输出例子" class="headerlink" title="输出例子"></a>输出例子</h3><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ sudo -u postgres psql</span><br><span class="line">[sudo] password <span class="keyword">for</span> jigao: </span><br><span class="line">psql (<span class="number">12.2</span> (Ubuntu <span class="number">12.2</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>), server <span class="number">10.12</span> (Ubuntu <span class="number">10.12</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>))</span><br><span class="line">Type <span class="string">"help"</span> <span class="keyword">for</span> help.</span><br><span class="line"></span><br><span class="line">postgres=# CREATE DATABASE tpch_sf1;</span><br><span class="line">CREATE DATABASE</span><br><span class="line">postgres=#  GRANT ALL ON DATABASE tpch_sf1 to jigao;</span><br><span class="line">GRANT</span><br><span class="line">postgres=# \q</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="新建表格"><a href="#新建表格" class="headerlink" title="新建表格"></a>新建表格</h2><p>这里需要用到<code>tpch-dbgen/dss.ddl</code>这个文件，它就在和我们刚刚<code>dbgen</code>程序同一个文件，也可以在repo中找到：　<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2VsZWN0cnVtL3RwY2gtZGJnZW4vYmxvYi9tYXN0ZXIvZHNzLmRkbA==" title="https://github.com/electrum/tpch-dbgen/blob/master/dss.ddl">https://github.com/electrum/tpch-dbgen/blob/master/dss.ddl<i class="fa fa-external-link"></i></span></p>
+<h3 id="新建表格命令"><a href="#新建表格命令" class="headerlink" title="新建表格命令"></a>新建表格命令</h3><p><code>$ psql -d tpch_sf1 &lt; dss.ddl</code></p>
+<h3 id="输出例子-1"><a href="#输出例子-1" class="headerlink" title="输出例子"></a>输出例子</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ file dss.ddl</span><br><span class="line">dss.ddl: ASCII text</span><br><span class="line">$ psql tpch_sf1 &lt; dss.ddl </span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE TABLE</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="检查"><a href="#检查" class="headerlink" title="检查"></a>检查</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ psql -d tpch_sf1 -c <span class="string">'\dt+'</span></span><br><span class="line">                      List of relations</span><br><span class="line"> Schema |   Name   | Type  | Owner |  Size   | Description </span><br><span class="line">--------+----------+-------+-------+---------+-------------</span><br><span class="line"> public | customer | table | jigao | 0 bytes | </span><br><span class="line"> public | lineitem | table | jigao | 0 bytes | </span><br><span class="line"> public | nation   | table | jigao | 0 bytes | </span><br><span class="line"> public | orders   | table | jigao | 0 bytes | </span><br><span class="line"> public | part     | table | jigao | 0 bytes | </span><br><span class="line"> public | partsupp | table | jigao | 0 bytes | </span><br><span class="line"> public | region   | table | jigao | 0 bytes | </span><br><span class="line"> public | supplier | table | jigao | 0 bytes | </span><br><span class="line">(8 rows)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>如果能看到上面的输出，那么这些表格已经被新建了。</li>
+</ul>
+<p><br></p>
+<p><code>$man psql</code>:</p>
+<blockquote>
+<pre><code>   -d dbname
+   -c command
+</code></pre></blockquote>
+<h2 id="TPC-H-Schema"><a href="#TPC-H-Schema" class="headerlink" title="TPC-H Schema"></a>TPC-H Schema</h2><p>ddl即Data Definition Language 数据定义语言, 也是就是TPC-H中表格的架构和相互关系。</p>
+<p><img data-src="https://hyper-db.de/tpch.png" alt="TPC-H Schema, Source: https://hyper-db.de/tpch.png"></p>
+<p><br><br><br></p>
+<h1 id="导入PostgreSQL-2"><a href="#导入PostgreSQL-2" class="headerlink" title="导入PostgreSQL 2"></a>导入PostgreSQL <sup><a href="#fn2">2</a></sup></h1><h2 id="导入命令"><a href="#导入命令" class="headerlink" title="导入命令"></a>导入命令</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ </span><br><span class="line">for i in `ls *.tbl`; do</span><br><span class="line">    echo $i;</span><br><span class="line">    sed -i 's/|$//' *.tbl;</span><br><span class="line">    name=`echo $i| cut -d'.' -f1`;</span><br><span class="line">    psql -d tpch_sf1 -c "COPY $name FROM '`pwd`/$i' DELIMITER '|' ENCODING 'LATIN1';";</span><br><span class="line">done</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>sed -i 's/|$//' *.tbl;</code>: 对于每一个<code>.tbl</code>文件，将每一行最后的<code>|</code>去掉</li>
+<li>因为psql会认为分隔符<code>|</code>后面还依然有数据。</li>
+</ul>
+<h2 id="输出例子-2"><a href="#输出例子-2" class="headerlink" title="输出例子"></a>输出例子</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="keyword">for</span> i <span class="keyword">in</span> `ls *.tbl`; <span class="keyword">do</span></span><br><span class="line">&gt;     <span class="built_in">echo</span> <span class="variable">$i</span>;</span><br><span class="line">&gt;     sed -i <span class="string">'s/|$//'</span> *.tbl;</span><br><span class="line">&gt;     name=`<span class="built_in">echo</span> <span class="variable">$i</span>| cut -d<span class="string">'.'</span> -f1`;</span><br><span class="line">&gt;     psql -d tpch_sf1 -c <span class="string">"COPY <span class="variable">$name</span> FROM '`pwd`/<span class="variable">$i</span>' DELIMITER '|' ENCODING 'LATIN1';"</span>;</span><br><span class="line">&gt; <span class="keyword">done</span></span><br><span class="line">customer.tbl</span><br><span class="line">COPY 150000</span><br><span class="line">lineitem.tbl</span><br><span class="line">COPY 6001215</span><br><span class="line">nation.tbl</span><br><span class="line">COPY 25</span><br><span class="line">orders.tbl</span><br><span class="line">COPY 1500000</span><br><span class="line">partsupp.tbl</span><br><span class="line">COPY 800000</span><br><span class="line">part.tbl</span><br><span class="line">COPY 200000</span><br><span class="line">region.tbl</span><br><span class="line">COPY 5</span><br><span class="line">supplier.tbl</span><br><span class="line">COPY 1000</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="检查-1"><a href="#检查-1" class="headerlink" title="检查"></a>检查</h2><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">$ psql -d tpch_sf1 -c <span class="string">'\dt+'</span></span><br><span class="line">                      List of relations</span><br><span class="line"> Schema |   Name   | Type  | Owner |    Size    | Description </span><br><span class="line">--------+----------+-------+-------+------------+-------------</span><br><span class="line"> public | customer | table | jigao | 28 MB      | </span><br><span class="line"> public | lineitem | table | jigao | 879 MB     | </span><br><span class="line"> public | nation   | table | jigao | 8192 bytes | </span><br><span class="line"> public | orders   | table | jigao | 204 MB     | </span><br><span class="line"> public | part     | table | jigao | 32 MB      | </span><br><span class="line"> public | partsupp | table | jigao | 136 MB     | </span><br><span class="line"> public | region   | table | jigao | 8192 bytes | </span><br><span class="line"> public | supplier | table | jigao | 1800 kB    | </span><br><span class="line">(8 rows)</span><br><span class="line"></span><br><span class="line">$ psql -d tpch_sf1  -c <span class="string">"select count(*) from lineitem"</span>;</span><br><span class="line">  count  </span><br><span class="line">---------</span><br><span class="line"> 6001215</span><br><span class="line">(1 row)r | table | jigao | 1800 kB    | </span><br><span class="line">(8 rows)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>如果能看到上面的输出，那么这些表格已经被载入了。</li>
+</ul>
+<h2 id="替代方式-Bash-Script"><a href="#替代方式-Bash-Script" class="headerlink" title="替代方式: Bash Script"></a>替代方式: Bash Script</h2><p>我将<a href="#导入命令">上面的导入数据命令</a>写成了一个bash script脚本: <a href="https://cakebytheoceanluo.github.io/download/dbms/psql_tpch_import.sh">下载</a></p>
+<p><strong>注意我更改了带psql那行，这个脚本需要一个变量，即数据库的名字，在本文例子中是<code>tpch_sf1</code>，你当然可以在新建数据库的时候自行选择。</strong></p>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x psql_tpch_import.sh </span><br><span class="line">$ ./psql_tpch_import.sh tpch_sf1</span><br></pre></td></tr></tbody></table></figure>
+<p><br><br><br></p>
+<p>引用：</p>
+<p><a name="fn1">1</a>: <span class="exturl" data-url="aHR0cDovL3d3dy50cGMub3JnL3RwY2gv" title="http://www.tpc.org/tpch/">http://www.tpc.org/tpch/<i class="fa fa-external-link"></i></span></p>
+<p><a name="fn2">2</a>: TPCH on PostgreSQL - Xi Liang: <span class="exturl" data-url="aHR0cDovL3h0ci5haS9ibG9nLzIwMTktMDMtMTItdHBjaC8=" title="http://xtr.ai/blog/2019-03-12-tpch/">http://xtr.ai/blog/2019-03-12-tpch/<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2VsZWN0cnVtL3RwY2gtZGJnZW4=" title="https://github.com/electrum/tpch-dbgen">https://github.com/electrum/tpch-dbgen<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/" title="[DBMS]PostgreSQL导入TPC-H数据集">https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL导入TPC-H数据集/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/PostgreSQL/" rel="tag"><i class="fa fa-tag"></i> PostgreSQL</a>
+              <a href="/tags/TPC-H/" rel="tag"><i class="fa fa-tag"></i> TPC-H</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/15/DBMS-PostgreSQL%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" rel="prev" title="[DBMS]PostgreSQL安装与配置">
+      <i class="fa fa-chevron-left"></i> [DBMS]PostgreSQL安装与配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/" rel="next" title="[DBMS]PostgreSQL导入数据集">
+      [DBMS]PostgreSQL导入数据集 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TPC-H介绍"><span class="nav-number">1.</span> <span class="nav-text">TPC-H介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TPC-H数据集"><span class="nav-number">2.</span> <span class="nav-text">TPC-H数据集</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dbgen的各种参数-可略读浏览"><span class="nav-number">2.1.</span> <span class="nav-text">dbgen的各种参数 (可略读浏览)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#另外可替代生成的工具"><span class="nav-number">2.2.</span> <span class="nav-text">另外可替代生成的工具</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PostgreSQL准备"><span class="nav-number">3.</span> <span class="nav-text">PostgreSQL准备</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新建数据库"><span class="nav-number">3.1.</span> <span class="nav-text">新建数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#新建数据库命令"><span class="nav-number">3.1.1.</span> <span class="nav-text">新建数据库命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出例子"><span class="nav-number">3.1.2.</span> <span class="nav-text">输出例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#新建表格"><span class="nav-number">3.2.</span> <span class="nav-text">新建表格</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#新建表格命令"><span class="nav-number">3.2.1.</span> <span class="nav-text">新建表格命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#输出例子-1"><span class="nav-number">3.2.2.</span> <span class="nav-text">输出例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检查"><span class="nav-number">3.2.3.</span> <span class="nav-text">检查</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TPC-H-Schema"><span class="nav-number">3.3.</span> <span class="nav-text">TPC-H Schema</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#导入PostgreSQL-2"><span class="nav-number">4.</span> <span class="nav-text">导入PostgreSQL 2</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#导入命令"><span class="nav-number">4.1.</span> <span class="nav-text">导入命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出例子-2"><span class="nav-number">4.2.</span> <span class="nav-text">输出例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#检查-1"><span class="nav-number">4.3.</span> <span class="nav-text">检查</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#替代方式-Bash-Script"><span class="nav-number">4.4.</span> <span class="nav-text">替代方式: Bash Script</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用"><span class="nav-number">4.4.1.</span> <span class="nav-text">使用</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="公开密钥密码学(Public-key cryptography)或非对称式密码学(Asymmetric cryptography)是一种非常流行的加密算法，它应用于去中心化的信任网络以及操作系统中。这个算法在现实中对信息加密和解密，可以用到GnuPG软件(简称GPG)，它是目前最流行的加密工具之一。本文主要介绍gpg软件的使用和生产密钥对。本文的使用环境为Linux Ubuntu命令行。另外在这篇">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Security]GPG介绍与密钥生成">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/02/Security-GPG-intro/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="公开密钥密码学(Public-key cryptography)或非对称式密码学(Asymmetric cryptography)是一种非常流行的加密算法，它应用于去中心化的信任网络以及操作系统中。这个算法在现实中对信息加密和解密，可以用到GnuPG软件(简称GPG)，它是目前最流行的加密工具之一。本文主要介绍gpg软件的使用和生产密钥对。本文的使用环境为Linux Ubuntu命令行。另外在这篇">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gnupg.org/share/logo-gnupg-light-purple-bg.png">
+<meta property="article:published_time" content="2020-03-02T15:14:54.000Z">
+<meta property="article:modified_time" content="2020-03-03T17:01:30.028Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Security">
+<meta property="article:tag" content="GPG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gnupg.org/share/logo-gnupg-light-purple-bg.png">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/02/Security-GPG-intro/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[Security]GPG介绍与密钥生成 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/02/Security-GPG-intro/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [Security]GPG介绍与密钥生成
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-02 16:14:54" itemprop="dateCreated datePublished" datetime="2020-03-02T16:14:54+01:00">2020-03-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-03 18:01:30" itemprop="dateModified" datetime="2020-03-03T18:01:30+01:00">2020-03-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Operating-System/" itemprop="url" rel="index"><span itemprop="name">Operating System</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/02/Security-GPG-intro/" class="post-meta-item leancloud_visitors" data-flag-title="[Security]GPG介绍与密钥生成" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>公开密钥密码学(Public-key cryptography)或非对称式密码学(Asymmetric cryptography)是一种非常流行的加密算法，它应用于去中心化的信任网络以及操作系统中。这个算法在现实中对信息加密和解密，可以用到GnuPG软件(简称GPG)，它是目前最流行的加密工具之一。本文主要介绍gpg软件的使用和生产密钥对。本文的使用环境为Linux Ubuntu命令行。另外在这篇文章中我使用的是<code>gpg (GnuPG) 2.2.4. libgcrypt 1.8.1.　Copyright (C) 2017 Free Software Foundation, Inc.</code>的英文版本。</p>
+<p><img data-src="https://gnupg.org/share/logo-gnupg-light-purple-bg.png" alt="GnuPG"></p>
+<a id="more"></a>
+<p><br></p>
+<h1 id="GPG介绍"><a href="#GPG介绍" class="headerlink" title="GPG介绍"></a>GPG介绍</h1><p>要了解什么是GPG，就要先了解<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvUHJldHR5X0dvb2RfUHJpdmFjeQ==" title="https://en.wikipedia.org/wiki/Pretty_Good_Privacy">PGP<i class="fa fa-external-link"></i></span>(Pretty Good Privacy)。</p>
+<p>1991年，程序员Phil Zimmermann为了避开政府监视，开发了加密软件PGP。这个软件非常好用，迅速流传开来，成了许多程序员的必备工具。但是，它是商业软件，不能自由使用。所以，自由软件基金会决定，开发一个PGP的替代品，取名为GnuPG。这就是GPG的由来。<sup><a href="#myfootnote1">1</a></sup></p>
+<p><br></p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>有多种途径：</p>
+<ul>
+<li>从<span class="exturl" data-url="aHR0cHM6Ly93d3cuZ251cGcub3JnL2Rvd25sb2FkLw==" title="https://www.gnupg.org/download/">GPG网站下载<i class="fa fa-external-link"></i></span>，然后自己编译安装。  <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></tbody></table></figure></li>
+<li>从软件源安装编译好的二进制包：<code>sudo apt-get install gnupg</code></li>
+</ul>
+<p><br></p>
+<p>然后我们来用<code>gpg --help</code>检验一下软件是否成功安装:<br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ gpg --<span class="built_in">help</span></span><br><span class="line">gpg (GnuPG) 2.2.4</span><br><span class="line">libgcrypt 1.8.1</span><br><span class="line">Copyright (C) 2017 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;https://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line"><span class="comment">## ........................</span></span><br><span class="line"><span class="comment">## ........太长　略去........</span></span><br><span class="line"><span class="comment">## ........................</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><br></p>
+<h1 id="生成密钥对key-pair"><a href="#生成密钥对key-pair" class="headerlink" title="生成密钥对key pair"></a>生成密钥对key pair</h1><p>在这一步我提一下，这篇文章所引用的其他中文教程使用的<code>gpg</code>都是2.1.17之前的版本。这些老版本的命令行有些不一样。不再建议参考这些老的中文教程。也不再建议使用老版本的<code>gpg</code>。本文不再关注老版本的<code>gpg</code>，针对老版本的操作可以参考　<span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmdpdGh1Yi5jb20vZW4vZ2l0aHViL2F1dGhlbnRpY2F0aW5nLXRvLWdpdGh1Yi9nZW5lcmF0aW5nLWEtbmV3LWdwZy1rZXk=" title="https://help.github.com/en/github/authenticating-to-github/generating-a-new-gpg-key">https://help.github.com/en/github/authenticating-to-github/generating-a-new-gpg-key<i class="fa fa-external-link"></i></span>　。</p>
+<p>如果我们<code>gpg</code>的版本是2.1.17或它之后的新版本，我们用如下的命令去生成GPG key pair：<br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">$ gpg --full-generate-key</span><br><span class="line">gpg (GnuPG) 2.2.4; Copyright (C) 2017 Free Software Foundation, Inc.</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line"></span><br><span class="line">Please select what kind of key you want:</span><br><span class="line">   (1) RSA and RSA (default)</span><br><span class="line">   (2) DSA and Elgamal</span><br><span class="line">   (3) DSA (sign only)</span><br><span class="line">   (4) RSA (sign only)</span><br><span class="line">Your selection?</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>这个问题是让用户自己选择加密算法。可以直接按<code>Enter回车键</code>选择默认第一个选项，表示加密和签名都使用RSA算法。</p>
+<p><br></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RSA keys may be between 1024 and 4096 bits long.</span><br><span class="line">What keysize <span class="keyword">do</span> you want? (3072)</span><br></pre></td></tr></tbody></table></figure>
+<p>然后出现一个问题，问用户密钥的长度。最好我们输入最长的<code>4096</code>，然后按<code>Enter回车键</code>。</p>
+<p><br></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Please specify how long the key should be valid.</span><br><span class="line">         0 = key does not expire</span><br><span class="line">      &lt;n&gt;  = key expires <span class="keyword">in</span> n days</span><br><span class="line">      &lt;n&gt;w = key expires <span class="keyword">in</span> n weeks</span><br><span class="line">      &lt;n&gt;m = key expires <span class="keyword">in</span> n months</span><br><span class="line">      &lt;n&gt;y = key expires <span class="keyword">in</span> n years</span><br><span class="line">Key is valid <span class="keyword">for</span>? (0)</span><br></pre></td></tr></tbody></table></figure>
+<p>接着我出现一个问题，要求设置密钥的有效期(valid time length)。如果密钥只是个人使用，并且确认可以有效保管私钥，建议选择第一个选项，即永不过期(expire)。输入<code>0</code>，然后按<code>Enter回车键</code>。</p>
+<p><br></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Is this correct? (y/N)</span><br></pre></td></tr></tbody></table></figure>
+<p>回答完上面三个问题以后，需要确认。在确认以后，输入<code>y</code>，然后按<code>Enter回车键</code>。</p>
+<p><br></p>
+<p>然后我们需要输入自己的名字和邮箱。如果我们需要密钥给GitHub使用的话，这里需要注意邮箱需要和GitHub对应的邮箱相同。</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmdpdGh1Yi5jb20vZW4vZ2l0aHViL2dldHRpbmctc3RhcnRlZC13aXRoLWdpdGh1Yi92ZXJpZnlpbmcteW91ci1lbWFpbC1hZGRyZXNz" title="https://help.github.com/en/github/getting-started-with-github/verifying-your-email-address">https://help.github.com/en/github/getting-started-with-github/verifying-your-email-address<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmdpdGh1Yi5jb20vZW4vZ2l0aHViL3NldHRpbmctdXAtYW5kLW1hbmFnaW5nLXlvdXItZ2l0aHViLXVzZXItYWNjb3VudC9zZXR0aW5nLXlvdXItY29tbWl0LWVtYWlsLWFkZHJlc3M=" title="https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address">https://help.github.com/en/github/setting-up-and-managing-your-github-user-account/setting-your-commit-email-address<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p>输入完之后的输出类似如下：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">GnuPG needs to construct a user ID to identify your key.</span><br><span class="line"></span><br><span class="line">Real name: Jigao Luo</span><br><span class="line">Email address: luojigao@outlook.com</span><br><span class="line">Comment: </span><br><span class="line">You selected this USER-ID:</span><br><span class="line">    <span class="string">"Jigao Luo &lt;luojigao@outlook.com&gt;"</span></span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit?</span><br></pre></td></tr></tbody></table></figure>
+<p>如果我们都确认的话，输入<code>o</code>，然后按<code>Enter回车键</code>。</p>
+<p>这之后系统会要求我们设定一个给密钥的密码。这是为了防止误操作，或者系统被侵入时有人擅自动用私钥。</p>
+<p>最后<code>gpg</code>开始生产密钥对。</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">We need to generate a lot of random bytes. It is a good idea to perform</span><br><span class="line">some other action (<span class="built_in">type</span> on the keyboard, move the mouse, utilize the</span><br><span class="line">disks) during the prime generation; this gives the random number</span><br><span class="line">generator a better chance to gain enough entropy.</span><br></pre></td></tr></tbody></table></figure>
+<p>生成完以后我们可以看到：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gpg: key F98069D551217BFD marked as ultimately trusted</span><br><span class="line">gpg: revocation certificate stored as <span class="string">'&lt;存储路径已删去&gt;'</span></span><br><span class="line">public and secret key created and signed.</span><br><span class="line"></span><br><span class="line">pub   rsa4096 2020-03-02 [SC]</span><br><span class="line">      704A75374771234881B10559F98069D551217BFD</span><br><span class="line">uid                      Jigao Luo &lt;luojigao@outlook.com&gt;</span><br><span class="line">sub   rsa4096 2020-03-02 [E]</span><br></pre></td></tr></tbody></table></figure>
+<p><code>F98069D551217BFD</code>这个字符串很重要，这个是我们这个密钥对的Hash字符串，它对应我们输入的邮箱。</p>
+<p><br></p>
+<h1 id="生成密钥对的撤销证书"><a href="#生成密钥对的撤销证书" class="headerlink" title="生成密钥对的撤销证书"></a>生成密钥对的撤销证书</h1><p>到这里为止，我们的pgp密钥对已经生成完成。但是最好我们现在再生产一张撤销证书(revocation certificate)，以备以后密钥作废时，可以请求外部的公钥服务器撤销你的公钥。<sup><a href="#myfootnote1">1</a></sup></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gpg --gen-revoke [Key ID]</span><br></pre></td></tr></tbody></table></figure>
+<p>上面的”Key ID”部分，可以填入你的邮件地址或者Hash字符串。之后我们会看到如下输出：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-----BEGIN PGP PUBLIC KEY BLOCK-----</span><br><span class="line">Comment: This is a revocation certificate</span><br><span class="line"></span><br><span class="line">&lt;............................................&gt;</span><br><span class="line">&lt;............................................&gt;</span><br><span class="line">-----END PGP PUBLIC KEY BLOCK-----</span><br></pre></td></tr></tbody></table></figure>
+<p>然后把这块stanard output输出保存！</p>
+<p>或者:<br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gpg --output revoke.asc --gen-revoke</span><br></pre></td></tr></tbody></table></figure><br>这样对应的撤销证书被保存在<code>revoke.asc</code>文件中。<p></p>
+<p><br></p>
+<p>最重要的一点:　这个撤销证书不能给别人！</p>
+<blockquote>
+<p>Please move it to a medium which you can hide away; if Mallory gets<br>access to this certificate he can use it to make your key unusable.<br>It is smart to print this certificate and store it away, just in case<br>your media become unreadable.  But have some caution:  The print system of<br>your machine might store the data and make it available to others!</p>
+</blockquote>
+<p><br></p>
+<h1 id="列出密钥"><a href="#列出密钥" class="headerlink" title="列出密钥"></a>列出密钥</h1><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ gpg --list-keys</span><br><span class="line"></span><br><span class="line">/home/jigao/.gnupg/pubring.kbx</span><br><span class="line">------------------------------</span><br><span class="line">pub   rsa4096 2020-03-02 [SC]</span><br><span class="line">      704A75374771234881B10559F98069D551217BFD</span><br><span class="line">uid           [ultimate] Jigao Luo &lt;luojigao@outlook.com&gt;</span><br><span class="line">sub   rsa4096 2020-03-02 [E]</span><br></pre></td></tr></tbody></table></figure>
+<p>第一行显示公钥文件名(pubring.gpg)，第二行显示公钥特征(4096位，Hash字符串和生成时间)，第三行显示”用户ID uid”，第四行显示私钥特征。。<sup><a href="#myfootnote1">1</a></sup></p>
+<p>或者可以使用如下命令，去列出密钥：<br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ gpg --list-secret-keys --keyid-format LONG</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><br></p>
+<p>引用和推荐的阅读：</p>
+<p><a name="myfootnote1">1</a>:　GPG入门教程 阮一峰 <span class="exturl" data-url="aHR0cDovL3d3dy5ydWFueWlmZW5nLmNvbS9ibG9nLzIwMTMvMDcvZ3BnLmh0bWw=" title="http://www.ruanyifeng.com/blog/2013/07/gpg.html">http://www.ruanyifeng.com/blog/2013/07/gpg.html<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9oZWxwLmdpdGh1Yi5jb20vZW4vZ2l0aHViL2F1dGhlbnRpY2F0aW5nLXRvLWdpdGh1Yi9nZW5lcmF0aW5nLWEtbmV3LWdwZy1rZXk=" title="https://help.github.com/en/github/authenticating-to-github/generating-a-new-gpg-key">https://help.github.com/en/github/authenticating-to-github/generating-a-new-gpg-key<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly93d3cuZ251cGcub3JnL2dwaC9lbi9tYW51YWwvYzE0Lmh0bWw=" title="https://www.gnupg.org/gph/en/manual/c14.html">https://www.gnupg.org/gph/en/manual/c14.html<i class="fa fa-external-link"></i></span></p>
+<p><br></p>
+<p>Paul Heinlein, GPG Quick Start <span class="exturl" data-url="aHR0cHM6Ly93d3cubWFkYm9hLmNvbS9nZWVrL2dwZy1xdWlja3N0YXJ0Lw==" title="https://www.madboa.com/geek/gpg-quickstart/">https://www.madboa.com/geek/gpg-quickstart/<i class="fa fa-external-link"></i></span></p>
+<p>Ubuntu help，GnuPrivacyGuardHowto <span class="exturl" data-url="aHR0cHM6Ly9oZWxwLnVidW50dS5jb20vY29tbXVuaXR5L0dudVByaXZhY3lHdWFyZEhvd3Rv" title="https://help.ubuntu.com/community/GnuPrivacyGuardHowto">https://help.ubuntu.com/community/GnuPrivacyGuardHowto<i class="fa fa-external-link"></i></span></p>
+<p>Alan Eliasen. GPG Tutorial <span class="exturl" data-url="aHR0cHM6Ly9mdXR1cmVib3kudXMvcGdwLmh0bWw=" title="https://futureboy.us/pgp.html">https://futureboy.us/pgp.html<i class="fa fa-external-link"></i></span></p>
+<p>GnuPG 袖珍 HOWTO (中文版) <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ251cGcub3JnL2hvd3Rvcy96aC9pbmRleC5odG1s" title="https://www.gnupg.org/howtos/zh/index.html">https://www.gnupg.org/howtos/zh/index.html<i class="fa fa-external-link"></i></span></p>
+<p>The GNU Privacy Handbook <span class="exturl" data-url="aHR0cHM6Ly93d3cuZ251cGcub3JnL2dwaC9lbi9tYW51YWwuaHRtbA==" title="https://www.gnupg.org/gph/en/manual.html">https://www.gnupg.org/gph/en/manual.html<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/02/Security-GPG-intro/" title="[Security]GPG介绍与密钥生成">https://cakebytheoceanluo.github.io/2020/03/02/Security-GPG-intro/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Security/" rel="tag"><i class="fa fa-tag"></i> Security</a>
+              <a href="/tags/GPG/" rel="tag"><i class="fa fa-tag"></i> GPG</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/25/Shell-RegEx/" rel="prev" title="[Shell]RegEx 正则表达式">
+      <i class="fa fa-chevron-left"></i> [Shell]RegEx 正则表达式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/02/Security-GPG-github/" rel="next" title="[Security]GPG在github的应用">
+      [Security]GPG在github的应用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GPG介绍"><span class="nav-number">1.</span> <span class="nav-text">GPG介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">2.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生成密钥对key-pair"><span class="nav-number">3.</span> <span class="nav-text">生成密钥对key pair</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#生成密钥对的撤销证书"><span class="nav-number">4.</span> <span class="nav-text">生成密钥对的撤销证书</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#列出密钥"><span class="nav-number">5.</span> <span class="nav-text">列出密钥</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/02/Security-GPG-intro/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

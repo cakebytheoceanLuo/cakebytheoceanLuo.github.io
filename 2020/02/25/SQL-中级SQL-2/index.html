@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在这篇文章中级SQL中我们会遇到subquery，它可以出现在select子句中或者where子句或者from子句中。这篇文章我们会练习稍微复杂的subquery。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[SQL]中级SQL(2)">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-2/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="在这篇文章中级SQL中我们会遇到subquery，它可以出现在select子句中或者where子句或者from子句中。这篇文章我们会练习稍微复杂的subquery。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://db.in.tum.de/teaching/ws1920/grundlagen/uni.png?lang=de">
+<meta property="og:image" content="https://hyper-db.de/uniEngl.png">
+<meta property="article:published_time" content="2020-02-25T13:54:03.000Z">
+<meta property="article:modified_time" content="2020-03-10T22:52:40.622Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://db.in.tum.de/teaching/ws1920/grundlagen/uni.png?lang=de">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[SQL]中级SQL(2) | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [SQL]中级SQL(2)
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-25 14:54:03" itemprop="dateCreated datePublished" datetime="2020-02-25T14:54:03+01:00">2020-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-10 23:52:40" itemprop="dateModified" datetime="2020-03-10T23:52:40+01:00">2020-03-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-2/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]中级SQL(2)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在这篇文章<strong>中级SQL</strong>中我们会遇到subquery，它可以出现在<code>select子句</code>中或者<code>where子句</code>或者<code>from子句</code>中。这篇文章我们会练习稍微复杂的subquery。</p>
+<a id="more"></a>
+<h1 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h1><p>我们这一篇文章采用PostgreSQL的SQL语法。重点我们关注<code>select...from...where</code>这种读操作，分析query　(analytical query)。<br>数据集在　<span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbnRlcmZhY2UuaHRtbA==" title="https://hyper-db.de/interface.html">https://hyper-db.de/interface.html<i class="fa fa-external-link"></i></span>　可以直接使用。另外在这个网页不允许进行写操作:<code>insert</code>, <code>update</code>, <code>delete</code>之类的transactional query。当然<code>create table</code>和<code>drop table</code>也不被允许。</p>
+<p>架构 Schema:<br><img data-src="https://db.in.tum.de/teaching/ws1920/grundlagen/uni.png?lang=de" alt="schema_de"></p>
+<p><img data-src="https://hyper-db.de/uniEngl.png" alt="schema_en"></p>
+<p>下载:<br><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vdW5pX215c3FsLnNxbD9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/uni_mysql.sql?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/uni_mysql.sql?lang=de<i class="fa fa-external-link"></i></span></p>
+<p>Schma和大部分SQL语句来自<span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvcGVvcGxlL3NpdGVzL2tlbXBlci8/bGFuZz1kZQ==" title="https://db.in.tum.de/people/sites/kemper/?lang=de">Prof. Alfons Kemper, Ph.D.<i class="fa fa-external-link"></i></span>的课件和书。</p>
+<p>课件：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi8/bGFuZz1kZQ==" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi9wZGYvS2FwaXRlbDQucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p>书：　<span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mLz9sYW5nPWRl" title="https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de<i class="fa fa-external-link"></i></span></p>
+<h1 id="中级SQL"><a href="#中级SQL" class="headerlink" title="中级SQL"></a>中级SQL</h1><ul>
+<li>比较听课并考试的同学的成绩和不听课只考试的同学成绩：</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> no_lec <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(note) <span class="keyword">as</span> avg_note</span><br><span class="line">    <span class="keyword">from</span> pruefen p</span><br><span class="line">    <span class="keyword">where</span> <span class="keyword">not</span> <span class="keyword">exists</span> (</span><br><span class="line">        <span class="keyword">select</span> *</span><br><span class="line">        <span class="keyword">from</span> hoeren h</span><br><span class="line">        <span class="keyword">where</span> h.matrnr = p.matrnr</span><br><span class="line">        )),</span><br><span class="line">     with_lec <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(note) <span class="keyword">as</span> avg_note</span><br><span class="line">    <span class="keyword">from</span> pruefen p</span><br><span class="line">    <span class="keyword">where</span> <span class="keyword">exists</span> (</span><br><span class="line">        <span class="keyword">select</span> *</span><br><span class="line">        <span class="keyword">from</span> hoeren h</span><br><span class="line">        <span class="keyword">where</span> h.matrnr = p.matrnr</span><br><span class="line">        ))</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> no_lec, with_lec;</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<ul>
+<li>计算权重的成绩(<code>sws</code>就是我们的权重)：<br>我们采用一个更大的表格：</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> pruefenxl (matrnr, vorlnr, persnr, note) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> * <span class="keyword">from</span> pruefen</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (<span class="number">25403</span> , <span class="number">5049</span> , <span class="number">2126</span> , <span class="number">1</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">5001</span> , <span class="number">2137</span> , <span class="number">1</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">5043</span> , <span class="number">2126</span> , <span class="number">3</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">5052</span> , <span class="number">2126</span> , <span class="number">4</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">4630</span> , <span class="number">2137</span> , <span class="number">1</span>)</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> pruefenxl (matrnr, vorlnr, persnr, note) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> * <span class="keyword">from</span> pruefen</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (<span class="number">25403</span>, <span class="number">5049</span>, <span class="number">2126</span>, <span class="number">1</span>),</span><br><span class="line">        (<span class="number">26120</span>, <span class="number">5001</span>, <span class="number">2137</span>, <span class="number">1</span>),</span><br><span class="line">        (<span class="number">26120</span>, <span class="number">5043</span>, <span class="number">2126</span>, <span class="number">3</span>),</span><br><span class="line">        (<span class="number">26120</span>, <span class="number">5052</span>, <span class="number">2126</span>, <span class="number">4</span>),</span><br><span class="line">        (<span class="number">26120</span>, <span class="number">4630</span>, <span class="number">2137</span>, <span class="number">1</span>)</span><br><span class="line">), factorGrade <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> s.name, s.matrnr, v.titel, p.note, v.sws <span class="keyword">as</span> factor, (p.note * v.sws) <span class="keyword">as</span> finalGrade</span><br><span class="line">    <span class="keyword">from</span> studenten s, pruefenxl p, vorlesungen v</span><br><span class="line">    <span class="keyword">where</span> p.vorlnr = v.vorlnr <span class="keyword">and</span> s.matrnr = p.matrnr</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> matrnr, <span class="keyword">name</span>, <span class="keyword">sum</span>(finalGrade) / <span class="keyword">sum</span>(factor) <span class="keyword">as</span> finalAVG</span><br><span class="line"><span class="keyword">from</span> factorGrade</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> matrnr, <span class="keyword">name</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> matrnr</span><br></pre></td></tr></tbody></table></figure>
+<p>或者</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> pruefenxl (matrnr, vorlnr, persnr, note) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> * <span class="keyword">from</span> pruefen</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">values</span></span><br><span class="line">        (<span class="number">25403</span> , <span class="number">5049</span> , <span class="number">2126</span> , <span class="number">1</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">5001</span> , <span class="number">2137</span> , <span class="number">1</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">5043</span> , <span class="number">2126</span> , <span class="number">3</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">5052</span> , <span class="number">2126</span> , <span class="number">4</span>),</span><br><span class="line">        (<span class="number">26120</span> , <span class="number">4630</span> , <span class="number">2137</span> , <span class="number">1</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> s.matrnr, s.name, <span class="keyword">sum</span>(p.note * v.sws) / <span class="keyword">sum</span>(v.sws) <span class="keyword">as</span> <span class="keyword">avg</span></span><br><span class="line"><span class="keyword">from</span> studenten s, pruefenxl p, vorlesungen v</span><br><span class="line"><span class="keyword">where</span> s.matrnr = p.matrnr <span class="keyword">and</span> p.vorlnr = v.vorlnr</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> s.matrnr , s.name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> s.matrnr</span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<p><br></p>
+<p>1.搜索学生通过上课能认识的其他学生名字：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> s1.name, s2.name</span><br><span class="line"><span class="keyword">from</span> studenten s1, hoeren h1, hoeren h2, studenten s2</span><br><span class="line"><span class="keyword">where</span> h1.vorlnr = h2.vorlnr <span class="keyword">and</span> h1.matrnr = s1.matrnr  <span class="keyword">and</span> h2.matrnr = s2.matrnr <span class="keyword">and</span> s1.matrnr != s2.matrnr</span><br></pre></td></tr></tbody></table></figure>
+<p>2.对每一个同学认识的人进行计数：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> friend <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> s1.matrnr <span class="keyword">as</span> student, s2.matrnr <span class="keyword">as</span> his_friend</span><br><span class="line">    <span class="keyword">from</span> studenten s1,</span><br><span class="line">        hoeren h1,</span><br><span class="line">        hoeren h2,</span><br><span class="line">        studenten s2</span><br><span class="line">    <span class="keyword">where</span> h1.vorlnr = h2.vorlnr</span><br><span class="line">    <span class="keyword">and</span> h1.matrnr = s1.matrnr</span><br><span class="line">    <span class="keyword">and</span> h2.matrnr = s2.matrnr</span><br><span class="line">    <span class="keyword">and</span> s1.matrnr != s2.matrnr</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> s.matrnr, s.name, <span class="keyword">count</span>(b.his_friend) <span class="keyword">as</span> num_friends</span><br><span class="line"><span class="keyword">from</span> studenten s, friend b</span><br><span class="line"><span class="keyword">where</span> s.matrnr = b.student</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> s.matrnr, s.name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_friends <span class="keyword">desc</span></span><br></pre></td></tr></tbody></table></figure>
+<p>3.在2.的基础上再考虑：不上课(也就不认识同学)的人 </p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> friend <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> s1.matrnr <span class="keyword">as</span> student, s2.matrnr <span class="keyword">as</span> his_friend</span><br><span class="line">    <span class="keyword">from</span> studenten s1,</span><br><span class="line">        hoeren h1,</span><br><span class="line">        hoeren h2,</span><br><span class="line">        studenten s2</span><br><span class="line">    <span class="keyword">where</span> h1.vorlnr = h2.vorlnr</span><br><span class="line">    <span class="keyword">and</span> h1.matrnr = s1.matrnr</span><br><span class="line">    <span class="keyword">and</span> h2.matrnr = s2.matrnr</span><br><span class="line">    <span class="keyword">and</span> s1.matrnr != s2.matrnr</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> s.matrnr, s.name, <span class="keyword">count</span>(b.his_friend) <span class="keyword">as</span> num_friends</span><br><span class="line"><span class="keyword">from</span> studenten s <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> friend b</span><br><span class="line"><span class="keyword">on</span> s.matrnr = b.student</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> s.matrnr, s.name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_friends <span class="keyword">desc</span></span><br></pre></td></tr></tbody></table></figure>
+<p>这里用了一个<code>left outer join</code>。右边的表格<code>friend b</code>只含有上课的同学(即出现在<code>hoeren</code>表格中的同学)，但是左边的表格<code>studenten s</code>含有所有学生。</p>
+<hr>
+<p><br></p>
+<p>1.求每个学生的选课数量的平均数，需要考虑不上课的学生：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(h.vorlnr), <span class="keyword">count</span>(<span class="keyword">distinct</span> s.matrnr) <span class="comment">-- 听课和不听课的学生都在</span></span><br><span class="line"><span class="keyword">from</span> studenten s <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> hoeren h <span class="keyword">on</span> s.matrnr = h.matrnr</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> hcount / (scount * <span class="number">1.00</span>)</span><br><span class="line"><span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">as</span> hcount <span class="keyword">from</span> hoeren) h,</span><br><span class="line">    (<span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">as</span> scount <span class="keyword">from</span> studenten) s <span class="comment">-- 听课和不听课的学生都在</span></span><br></pre></td></tr></tbody></table></figure>
+<p>2.搜索选课超过学生选课sws平均数的学生，需要考虑不上课的学生：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> num_stu <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">as</span> count_stu</span><br><span class="line">    <span class="keyword">from</span> studenten),</span><br><span class="line">    num_sws <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">sum</span>(vor.sws) <span class="keyword">as</span> count_sws</span><br><span class="line">    <span class="keyword">from</span> hoeren h, vorlesungen vor</span><br><span class="line">    <span class="keyword">where</span> h.vorlnr = vor.vorlnr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> s.*</span><br><span class="line"><span class="keyword">from</span> studenten s</span><br><span class="line"><span class="keyword">where</span> s.matrnr <span class="keyword">in</span> (</span><br><span class="line">    <span class="keyword">select</span> h.matrnr</span><br><span class="line">    <span class="keyword">from</span> hoeren h, vorlesungen v</span><br><span class="line">    <span class="keyword">where</span> h.vorlnr = v.vorlnr</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> h.matrnr</span><br><span class="line">    <span class="keyword">having</span> <span class="keyword">sum</span>(sws) &gt; (<span class="keyword">select</span> <span class="keyword">cast</span>(num_sws.count_sws <span class="keyword">as</span> <span class="built_in">decimal</span> (<span class="number">5</span>, <span class="number">2</span>)) / num_stu.count_stu <span class="keyword">from</span> num_sws, num_stu)</span><br><span class="line">    )</span><br></pre></td></tr></tbody></table></figure>
+<p>或者</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> num_stu <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">as</span> count_stu</span><br><span class="line">    <span class="keyword">from</span> studenten),</span><br><span class="line">    num_sws <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">sum</span>(vor.sws) <span class="keyword">as</span> count_sws</span><br><span class="line">    <span class="keyword">from</span> hoeren h, vorlesungen vor</span><br><span class="line">    <span class="keyword">where</span> h.vorlnr = vor.vorlnr),</span><br><span class="line">    avg_sws <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">cast</span>(num_sws.count_sws <span class="keyword">as</span> <span class="built_in">decimal</span>(<span class="number">5</span>, <span class="number">2</span>)) / num_stu.count_stu <span class="keyword">as</span> sws</span><br><span class="line">    <span class="keyword">from</span> num_stu, num_sws),</span><br><span class="line">    stu_sws <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> s.matrnr, s.name, s.semester, <span class="keyword">sum</span>(v.sws) <span class="keyword">as</span> sum_sws</span><br><span class="line">    <span class="keyword">from</span> studenten s, hoeren h, vorlesungen v</span><br><span class="line">    <span class="keyword">where</span> s.matrnr = h.matrnr <span class="keyword">and</span> h.vorlnr = v.vorlnr</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> s.matrnr, s.name, s.semester)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> s.*</span><br><span class="line"><span class="keyword">from</span> stu_sws s, avg_sws</span><br><span class="line"><span class="keyword">where</span> s.sum_sws &gt; avg_sws.sws</span><br></pre></td></tr></tbody></table></figure>
+<p>或者</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> swsProStudent <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> s.matrnr, s.name,</span><br><span class="line">        <span class="keyword">cast</span>((<span class="keyword">case</span> <span class="keyword">when</span> <span class="keyword">sum</span>(v.sws) <span class="keyword">is</span> <span class="literal">null</span> <span class="keyword">then</span> <span class="number">0</span></span><br><span class="line">                                <span class="keyword">else</span> <span class="keyword">sum</span>(v.sws) <span class="keyword">end</span>) <span class="keyword">as</span> <span class="built_in">real</span>) <span class="keyword">as</span> anzSWS</span><br><span class="line">    <span class="keyword">from</span> studenten s</span><br><span class="line">    <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> hoeren h <span class="keyword">on</span> s.matrnr = h.matrnr</span><br><span class="line">    <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> vorlesungen v <span class="keyword">on</span> h.vorlnr = v.vorlnr</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> s.matrnr, s.name</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> s.*</span><br><span class="line"><span class="keyword">from</span> studenten s</span><br><span class="line"><span class="keyword">where</span> s.matrnr <span class="keyword">in</span> (</span><br><span class="line">    <span class="keyword">select</span> sws.matrnr</span><br><span class="line">    <span class="keyword">from</span> swsProStudent sws</span><br><span class="line">    <span class="keyword">where</span> sws.anzSWS &gt; (</span><br><span class="line">        <span class="keyword">select</span> <span class="keyword">avg</span>(anzSWS)</span><br><span class="line">        <span class="keyword">from</span> swsProStudent</span><br><span class="line">        )</span><br><span class="line">    )</span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<p>1.确定一门的<code>semester</code>属性：</p>
+<ul>
+<li>这个根据听这门课中人数最多的一个学生<code>semester</code>组决定。</li>
+<li>如果有很多组人数相同，取这些组们中<code>semester</code>最小的数值。</li>
+<li>比如一门课被100第一学期的同学和100个第三学期的同学上，我们当这门课是属于第一学期的课(那100第三学期的被我们当做前一年挂科重修的人)。</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> vorl_semester_anz <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> h.vorlnr, s.semester, <span class="keyword">count</span>(*) <span class="keyword">as</span> <span class="keyword">num</span></span><br><span class="line">    <span class="keyword">from</span> hoeren h, studenten s</span><br><span class="line">    <span class="keyword">where</span> h.matrnr = s.matrnr</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> h.vorlnr, s.semester</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> v.vorlnr, <span class="keyword">min</span>(v.semester) <span class="keyword">as</span> semester</span><br><span class="line"><span class="keyword">from</span> vorl_semester_anz v</span><br><span class="line"><span class="keyword">where</span> v.num = (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">max</span>(vhelp.num)</span><br><span class="line">    <span class="keyword">from</span> vorl_semester_anz vhelp</span><br><span class="line">    <span class="keyword">where</span> v.vorlnr = vhelp.vorlnr</span><br><span class="line">    )</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> v.vorlnr</span><br></pre></td></tr></tbody></table></figure>
+<p>这个结构其实很难用<code>join</code>完成，但是也是可行的。另外一种间接的方式：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> vorl_semester_anz <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> h.vorlnr, s.semester, <span class="keyword">count</span>(*) <span class="keyword">as</span> <span class="keyword">num</span></span><br><span class="line">    <span class="keyword">from</span> hoeren h, studenten s</span><br><span class="line">    <span class="keyword">where</span> h.matrnr = s.matrnr</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> h.vorlnr, s.semester</span><br><span class="line">), vorl_semester_maxanz <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> v.vorlnr, <span class="keyword">max</span>(<span class="keyword">num</span>) <span class="keyword">as</span> <span class="keyword">max</span> <span class="comment">-- 每一门课最多的人数是一个确定的数字，用这个数字可以找回semester</span></span><br><span class="line">    <span class="keyword">from</span> vorl_semester_anz v</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> v.vorlnr</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> v1.vorlnr, <span class="keyword">min</span>(v1.semester) <span class="keyword">as</span> semester</span><br><span class="line"><span class="keyword">from</span> vorl_semester_anz v1, vorl_semester_maxanz v2</span><br><span class="line"><span class="keyword">where</span> v1.vorlnr = v2.vorlnr <span class="keyword">and</span> v1.num = v2.max</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> v1.vorlnr</span><br></pre></td></tr></tbody></table></figure>
+<p>2.搜索提前上课的同学(同学的<code>semester</code>比课程的<code>semester</code>要小)：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> vorl_semester_anz <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> h.vorlnr, s.semester, <span class="keyword">count</span>(*) <span class="keyword">as</span> <span class="keyword">num</span></span><br><span class="line">    <span class="keyword">from</span> hoeren h, studenten s</span><br><span class="line">    <span class="keyword">where</span> h.matrnr = s.matrnr</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> h.vorlnr, s.semester</span><br><span class="line">), vorl_semester <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> v.vorlnr, <span class="keyword">min</span>(v.semester) <span class="keyword">as</span> semester</span><br><span class="line">    <span class="keyword">from</span> vorl_semester_anz v</span><br><span class="line">    <span class="keyword">where</span> v.num = (</span><br><span class="line">        <span class="keyword">select</span> <span class="keyword">max</span>(vhelp.num)</span><br><span class="line">        <span class="keyword">from</span> vorl_semester_anz vhelp</span><br><span class="line">        <span class="keyword">where</span> v.vorlnr = vhelp.vorlnr</span><br><span class="line">        )</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> v.vorlnr)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> v.vorlnr, v.titel, <span class="keyword">count</span>(s.matrnr) <span class="keyword">as</span> num_advanced_stu</span><br><span class="line"><span class="keyword">from</span> vorlesungen v <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> vorl_semester vs <span class="keyword">on</span> v.vorlnr = vs.vorlnr</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> hoeren h <span class="keyword">on</span> v.vorlnr = h.vorlnr</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> studenten s <span class="keyword">on</span> h.matrnr = s.matrnr <span class="keyword">and</span> s.semester &lt; vs.semester</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> v.vorlnr, v.titel</span><br></pre></td></tr></tbody></table></figure>
+<p>当然还有另一种：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> vorl_semester_anz <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> h.vorlnr, s.semester, <span class="keyword">count</span>(*) <span class="keyword">as</span> <span class="keyword">num</span></span><br><span class="line">    <span class="keyword">from</span> hoeren h, studenten s</span><br><span class="line">    <span class="keyword">where</span> h.matrnr = s.matrnr</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> h.vorlnr, s.semester</span><br><span class="line">), vorl_semester_maxanz <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> v.vorlnr, <span class="keyword">max</span>(<span class="keyword">num</span>) <span class="keyword">as</span> <span class="keyword">max</span> <span class="comment">-- 每一门课最多的人数是一个确定的数字，用这个数字可以找回semester</span></span><br><span class="line">    <span class="keyword">from</span> vorl_semester_anz v</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> v.vorlnr</span><br><span class="line">), vorl_semester <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> v1.vorlnr, <span class="keyword">min</span>(v1.semester) <span class="keyword">as</span> semester</span><br><span class="line">    <span class="keyword">from</span> vorl_semester_anz v1, vorl_semester_maxanz v2</span><br><span class="line">    <span class="keyword">where</span> v1.vorlnr = v2.vorlnr <span class="keyword">and</span> v1.num = v2.max</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> v1.vorlnr</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> v.vorlnr, v.titel, <span class="keyword">count</span>(s.matrnr) <span class="keyword">as</span> num_advanced_stu</span><br><span class="line"><span class="keyword">from</span> vorlesungen v <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> vorl_semester vs <span class="keyword">on</span> v.vorlnr = vs.vorlnr</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> hoeren h <span class="keyword">on</span> v.vorlnr = h.vorlnr</span><br><span class="line"><span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> studenten s <span class="keyword">on</span> h.matrnr = s.matrnr <span class="keyword">and</span> s.semester &lt; vs.semester</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> v.vorlnr, v.titel</span><br></pre></td></tr></tbody></table></figure>
+<p>这里必须要提到一下:</p>
+<ul>
+<li><code>count(s.matrnr) as num_advanced_stu</code>不能写成<code>count(*)</code></li>
+<li>原因是：<code>left outer join</code>会生成很多<code>null</code>，因为很多课没有人听，因此这些课也没有<code>semester</code>。<br>但是<code>count(*)</code>会将这些课计数，而<code>count(s.matrnr)</code>计的数字是<strong>真正</strong>上这个课学生人数，而不是<code>null</code>。</li>
+</ul>
+<p>引用：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi8/bGFuZz1kZQ==" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi9wZGYvS2FwaXRlbDQucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mLz9sYW5nPWRl" title="https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de<i class="fa fa-external-link"></i></span></p>
+<!-- 该文章遵循[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh)，要求署名、非商业 、保持一致。在满足[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh) 的基础上可以转载，但请以超链接形式注明出处。文章仅代表作者的知识和看法，如有不同观点，可以回复并讨论。 --><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-2/" title="[SQL]中级SQL(2)">https://cakebytheoceanluo.github.io/2020/02/25/SQL-中级SQL-2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/22/SQL-%E4%B8%AD%E7%BA%A7SQL-1/" rel="prev" title="[SQL]中级SQL(1)">
+      <i class="fa fa-chevron-left"></i> [SQL]中级SQL(1)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-3/" rel="next" title="[SQL]中级SQL(3)">
+      [SQL]中级SQL(3) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数据集"><span class="nav-number">1.</span> <span class="nav-text">数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#中级SQL"><span class="nav-number">2.</span> <span class="nav-text">中级SQL</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-2/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

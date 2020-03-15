@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="- 论文： Unnesting Arbitrary Queries   - 作者： Thomas Neumann and Alfons Kemper   - 年份： 2015   - 会议： Datenbanksysteme für Business, Technologie und Web (BTW 2015)   - https:&#x2F;&#x2F;dl.gi.de&#x2F;handle&#x2F;20.500.12116">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Paper]BTW 2015 | Unnesting Arbitrary Queries">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="- 论文： Unnesting Arbitrary Queries   - 作者： Thomas Neumann and Alfons Kemper   - 年份： 2015   - 会议： Datenbanksysteme für Business, Technologie und Web (BTW 2015)   - https:&#x2F;&#x2F;dl.gi.de&#x2F;handle&#x2F;20.500.12116">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/dep_join.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/group_by.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/map.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/comparison.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q21_1.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q21_2.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/euivalence_dependent_join.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/aim.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/selection.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/join.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/outer_join.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/SemiJoin_AntiJoin.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Group_By.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Projection.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Set_Operation.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1_relation_algebra.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1_Step1.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1_Step2.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1_Step3.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1_Step4.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1_Step5.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q1_Step6.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/Q2.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/substitution.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/anti_join.png">
+<meta property="article:published_time" content="2020-02-25T15:18:58.000Z">
+<meta property="article:modified_time" content="2020-02-28T17:57:50.352Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Paper">
+<meta property="article:tag" content="Query Optimizer">
+<meta property="article:tag" content="Subquery Optimization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/Paper/Unnesting/dep_join.png">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[Paper]BTW 2015 | Unnesting Arbitrary Queries | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [Paper]BTW 2015 | Unnesting Arbitrary Queries
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-25 16:18:58" itemprop="dateCreated datePublished" datetime="2020-02-25T16:18:58+01:00">2020-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-02-28 18:57:50" itemprop="dateModified" datetime="2020-02-28T18:57:50+01:00">2020-02-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Paper/" itemprop="url" rel="index"><span itemprop="name">Paper</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Query-Optimizer/" itemprop="url" rel="index"><span itemprop="name">Query Optimizer</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/" class="post-meta-item leancloud_visitors" data-flag-title="[Paper]BTW 2015 | Unnesting Arbitrary Queries" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <pre><code>  - 论文： Unnesting Arbitrary Queries
+  - 作者： Thomas Neumann and Alfons Kemper
+  - 年份： 2015
+  - 会议： Datenbanksysteme für Business, Technologie und Web (BTW 2015)
+  - https://dl.gi.de/handle/20.500.12116/2418;jsessionid=6988827FF07E4B508A0C50DC4367E1FA
+  - http://www.btw-2015.de/res/proceedings/Hauptband/Wiss/Neumann-Unnesting_Arbitrary_Querie.pdf
+</code></pre><!-- TODO:看对应的课件slide pdf -->
+<p>SQL-99标准中运行子查询(subquery)几乎可以出现在query的任何地方。<br>这个特性可以让我们完成很多复杂的查询，但是往往这样的query的运行时间(runtime)需要很长。<br>原因是大部分数据库查询优化器(query optimizer)只能用nested subquery的方式去进行求职，这样的时间复杂度(time complexity)往往是暴力的<code>O(n^2)</code>。<br>这篇论文的目的就像它名字所说，对任意的SQL query进行解除关联(de-corrleation), 来获得一个更好的run time。<br>这篇论文的前提要求是：关系代数(relation algebra)和逻辑计划(logical plan)。  </p>
+<p>这一篇论文提到的内容，已经在HyPer数据库中实现：<span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbnRlcmZhY2UuaHRtbCM=" title="https://hyper-db.de/interface.html#">https://hyper-db.de/interface.html#<i class="fa fa-external-link"></i></span><br>同时这个网页接口提供了对Query Plan的查看。</p>
+<a id="more"></a>
+<hr>
+<h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我们用一个大学schema，包括了<em>学生student</em>和<em>考试exams</em>这两个表格：</p>
+<ul>
+<li>$students: \{[id, name, major, year, \dots]\}$</li>
+<li>$exams: \{[sid, course, curriculum, date, \dots]\}$</li>
+</ul>
+<p><strong>这里需要提到，(德国大学成绩)grade数值越小，成绩越好。</strong></p>
+<h2 id="Q1-对每个同学搜索Ta的最好成绩"><a href="#Q1-对每个同学搜索Ta的最好成绩" class="headerlink" title="Q1: 对每个同学搜索Ta的最好成绩"></a>Q1: 对每个同学搜索Ta的最好成绩</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Q1</span></span><br><span class="line"><span class="keyword">select</span> s.name,e.course</span><br><span class="line"><span class="keyword">from</span> students s,exams e</span><br><span class="line"><span class="keyword">where</span> s.id=e.sid <span class="keyword">and</span></span><br><span class="line">      e.grade=(<span class="keyword">select</span> <span class="keyword">min</span>(e2.grade)</span><br><span class="line">      <span class="keyword">from</span> exams e2</span><br><span class="line">      <span class="keyword">where</span> s.id=e2.sid)</span><br></pre></td></tr></tbody></table></figure>
+<p>我们可以发现对于subquery，它需要依赖一个外部元组(tupel)<code>students s</code>的<code>id</code>字段。<br>这个SQL为了得到一个最终结果中的tupel，都需要对subquery根据对应的<code>students s</code>进行求值。<br>这样的subquery，我们称为corelated subquery(关联子查询)。<br>这样的join我们称之为<em>dependent join</em>，指一个nested loop join中，一侧的求值依赖于另外一侧。</p>
+<blockquote>
+<p>A dependent join, i.e., a nested loop join where the evaluation of the right hand side depends on the current value of the left-hand side.</p>
+</blockquote>
+<p>这样的dependent join往往是非常低效的，时间复杂度在平方阶等级。</p>
+<p><br></p>
+<p>对于这个<code>Q1</code>，我们可以很快思考出一个uncorelated subquery(无关联子查询):</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Q1'</span></span><br><span class="line"><span class="keyword">select</span> s.name,e.course</span><br><span class="line"><span class="keyword">from</span> students s,exams e,</span><br><span class="line">     (<span class="keyword">select</span> e2.sid <span class="keyword">as</span> <span class="keyword">id</span>, <span class="keyword">min</span>(e2.grade) <span class="keyword">as</span> best</span><br><span class="line">     <span class="keyword">from</span> exams e2</span><br><span class="line">     <span class="keyword">group</span> <span class="keyword">by</span> e2.sid) m</span><br><span class="line"><span class="keyword">where</span> s.id=e.sid <span class="keyword">and</span> m.id=s.id <span class="keyword">and</span> e.grade=m.best</span><br></pre></td></tr></tbody></table></figure>
+<p>这个改善过的<code>Q1'</code>中，我们增加了一个暂时的表格<code>m</code>，对它的求值不依赖于外界的tupel。<br>我们用一个完全内部变量<strong>取代(substitue)</strong> 了原来来自outer query的<code>students s</code>的<code>id</code>字段。<br>因此这里的join不再是depedent join，而是一个regular join。这样我们就完成了一次unnesting或者de-correlation(去关联)。  </p>
+<h2 id="Q2-搜索CS或Games-Engineering专业的学生和Ta的科目，成绩比自己考试或者学长学姐成绩的平均值差-大"><a href="#Q2-搜索CS或Games-Engineering专业的学生和Ta的科目，成绩比自己考试或者学长学姐成绩的平均值差-大" class="headerlink" title="Q2: 搜索CS或Games Engineering专业的学生和Ta的科目，成绩比自己考试或者学长学姐成绩的平均值差(大)"></a>Q2: 搜索CS或Games Engineering专业的学生和Ta的科目，成绩比自己考试或者学长学姐成绩的平均值差(大)</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> s.name, e.course</span><br><span class="line"><span class="keyword">from</span> students s, exams e</span><br><span class="line"><span class="keyword">where</span> s.id=e.sid <span class="keyword">and</span> (s.major = ’CS’ <span class="keyword">or</span> s.major = ’Games Eng’) <span class="keyword">and</span></span><br><span class="line">      e.grade&gt;=(<span class="keyword">select</span> <span class="keyword">avg</span>(e2.grade)+<span class="number">1</span> <span class="comment">--one grade worse</span></span><br><span class="line">                <span class="keyword">from</span> exams e2 <span class="comment">--than the average grade</span></span><br><span class="line">                <span class="keyword">where</span> s.id=e2.sid <span class="keyword">or</span> <span class="comment">--of exams taken by</span></span><br><span class="line">                (e2.curriculum=s.major <span class="keyword">and</span> <span class="comment">--him/her or taken</span></span><br><span class="line">                s.year&gt;e2.date)) <span class="comment">--by elder peers</span></span><br></pre></td></tr></tbody></table></figure>
+<p>这个复杂的例子让我们很难直接<strong>很快思考出</strong>一个对应的unnested版本。<br>我们很难去进行一次<strong>取代(substitution)</strong>，来替换<code>s.year</code>和<code>s.major</code>。</p>
+<hr>
+<h1 id="关系代数"><a href="#关系代数" class="headerlink" title="关系代数"></a>关系代数</h1><h2 id="The-Dependent-Join"><a href="#The-Dependent-Join" class="headerlink" title="The Dependent Join"></a>The Dependent Join</h2><p><img data-src="/images/Paper/Unnesting/dep_join.png" alt="dep_join"></p>
+<p>这里对$T_1$的每一个tupel，都需要对所有$T_2$的tupel进行求值(evaluated)。</p>
+<ul>
+<li>$\mathcal{A}(T)$: 指表达式T(expression)所产生的字段(attributes)</li>
+<li>$\mathcal{F}(T)$: 指出现在表达式T(expression)自由变量(free variables)</li>
+</ul>
+<p>对于The Dependent Join，如下一定成立：$\mathcal{F}(T_2) \subseteq \mathcal{A}(T_1)$</p>
+<ul>
+<li>即：$T_2$所需要的字段必须先被$T_1$所产生，这里体现了<strong>关联性</strong>。</li>
+</ul>
+<h2 id="Group-By"><a href="#Group-By" class="headerlink" title="Group By"></a>Group By</h2><p><img data-src="/images/Paper/Unnesting/group_by.png" alt="group_by"></p>
+<ul>
+<li>$e$: 输入的关系(表格)，它的部分字段被聚合，剩下的字段被留下来</li>
+<li>$A$: 被聚合的字段，即 <code>group by A</code></li>
+<li>$x$: 被聚合的字段($A$)对应的表格内容，自然是$e$的一部分</li>
+<li>$y$: 是一个集合，元素是所有不被聚合的字段(即不出现在<code>group by</code>后面的字段)，它们在$A$中的字段中拥有相同的值，所以被分到一组(group)。</li>
+<li>$f$: 聚合函数，它的输入是一个集合(常常是多个元素)。<code>sum, avg, median, min, max</code>都是常见的聚合函数。</li>
+<li>$a$: 即一个(或一些)新的字段，提供给$f(y)$的输出。</li>
+</ul>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p><img data-src="/images/Paper/Unnesting/map.png" alt="map"></p>
+<ul>
+<li>$f$: 映射函数，它的输入是$x$，即$e$表格中的tupel</li>
+<li>$a$: 即一个新的字段，提供给$f(x)$的输出。</li>
+<li><code>map</code>很类似SQL中的<code>case ... when ... else ... end</code>。</li>
+</ul>
+<h2 id="Sets-of-attributes-comparison"><a href="#Sets-of-attributes-comparison" class="headerlink" title="Sets of attributes comparison"></a>Sets of attributes comparison</h2><p><img data-src="/images/Paper/Unnesting/comparison.png" alt="comparison"></p>
+<ul>
+<li>$A$: 是一个字段的集合</li>
+</ul>
+<hr>
+<h1 id="去关联-Unnesting-Decorrelation"><a href="#去关联-Unnesting-Decorrelation" class="headerlink" title="去关联(Unnesting, Decorrelation)"></a>去关联(Unnesting, Decorrelation)</h1><h2 id="Simple-Unnesting"><a href="#Simple-Unnesting" class="headerlink" title="Simple Unnesting"></a>Simple Unnesting</h2><p>有一些Subquery的依赖只是出于句法(syntactic)原因，这样的subquery我们往往可以直接看出去关联的版本。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- a fragment from TPC-H Query 21</span></span><br><span class="line"><span class="keyword">select</span> ...</span><br><span class="line"><span class="keyword">from</span> lineitem l1 ...</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">exists</span> (<span class="keyword">select</span> *</span><br><span class="line">              <span class="keyword">from</span> lineitem l2</span><br><span class="line">              <span class="keyword">where</span> l2.l_orderkey = l1.l_orderkey)</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
+<p>对应的关系代数：</p>
+<p><img data-src="/images/Paper/Unnesting/Q21_1.png" alt="Q21_1"></p>
+<p>我们可以说这个<code>exists</code>其实是多余的，因为两侧的表格是一致的，另外也是比较同一个字段的相等。这个<code>exists</code>肯定成立。我们可以<strong>把selection向上提</strong>，使这个dependent join转化成一个带条件的left semi join:</p>
+<p><img data-src="/images/Paper/Unnesting/Q21_2.png" alt="Q21_2"></p>
+<p>Simple Unnesting:</p>
+<ul>
+<li>将所有有依赖的判断谓词(dependent predicates)尽可能提高(pull up in the algebra tree)，比如高于join, selection, group by等等运算符，只到提高至依赖消失。</li>
+<li>按照上面的做法，可以使一个dependent join变成regular join。</li>
+<li>这里要说明：这个predicate pull-up的目的是为了去关联。我们得到结果之后，可以再使用logical plan的优化方式，比如selection push down。这是优化的前后步骤，并不相互冲突。</li>
+</ul>
+<h2 id="General-Unnesting"><a href="#General-Unnesting" class="headerlink" title="General Unnesting"></a>General Unnesting</h2><p>如果上面的Simple Unnesting行不通，我们可以尝试General Unnesting，它总体上分为两步：</p>
+<ul>
+<li>现将dependent join改写成一个<strong>适合转化的dependent join</strong>，</li>
+<li>再将上一步生成的dependent join向下推(push down)，为了获得一个regular join。</li>
+</ul>
+<h3 id="适合转化的dependent-join"><a href="#适合转化的dependent-join" class="headerlink" title="适合转化的dependent join"></a>适合转化的dependent join</h3><p><img data-src="/images/Paper/Unnesting/euivalence_dependent_join.png" alt="euivalence_dependent_join"></p>
+<ul>
+<li>左侧是我们一直提到的dependent join: 对每一个$T_1$的tupel，我们都需要对所有$T_2$的tupel进行求值。</li>
+<li>右侧是一个等价表达：  <ul>
+<li>$D$: 指所有的变量(variable bindings)的域(Domain)，它是一个集合，不含重复的指。  </li>
+<li>$T_1 =_{\mathcal{A}(D)} D$: $T_1$和$D$在$\mathcal{A}(D)$字段中，都相等。  </li>
+<li>现在<strong>只需要</strong>对$T_2$针对D中的每一个不同变量(distinct variable binding)进行求值。  </li>
+<li>最后用一个regular join和左侧的$T_1$连接。  </li>
+<li>如果$T_1$有很多重复值，那么集合中$D$元素个数就不多，$T_2$的求值次数会大大降低。  </li>
+</ul>
+</li>
+</ul>
+<h3 id="最终目标"><a href="#最终目标" class="headerlink" title="最终目标"></a>最终目标</h3><p><img data-src="/images/Paper/Unnesting/aim.png" alt="aim"></p>
+<p>我们目标是两个：</p>
+<ul>
+<li>获得一个regular join，$T$不再依赖于$D$。</li>
+<li>甚至用已存在的字段取代regular join。这一步我们会在<a href="#优化">优化</a>部分中讨论。</li>
+</ul>
+<h3 id="Push-Down-下推"><a href="#Push-Down-下推" class="headerlink" title="Push Down(下推)"></a>Push Down(下推)</h3><p>这部分我们讨论关系代数运算符的下推dependent join规则。这里需要注意我们讲的一直是：<strong>下推dependent join</strong>。</p>
+<h4 id="Selection"><a href="#Selection" class="headerlink" title="Selection"></a>Selection</h4><p><img data-src="/images/Paper/Unnesting/selection.png" alt="selection"></p>
+<h4 id="Join"><a href="#Join" class="headerlink" title="Join"></a>Join</h4><p><img data-src="/images/Paper/Unnesting/join.png" alt="join"></p>
+<ul>
+<li>首先这里右侧$T_1\bowtie_p T_2$作为以整体，依赖$D$中的tupel。</li>
+<li>我们在这些需要进行一些情况判断：<ul>
+<li>如果对$T_2$的join不依赖于$D$，即$\mathcal{F}(T_2) \cap \mathcal{A}(D) = \emptyset$，我们使用regular join去连接$T_2$  </li>
+<li>如果对$T_1$的join不依赖于$D$: 类似上面这种情况  </li>
+<li>如果对$T_1$，$T_2$的join都依赖于$D$: 只能应用类似乘法分配律(FOIL method)的原则，注意从$D$开始的dependent join会出现两次(replication)。  这并不会变得低效。在转化前情况和转化后，这两种情况均需要对$T_1$和$T_2$进行$|D|$次求值。  </li>
+</ul>
+</li>
+<li>这里的转化是悲观的(perssimistic)，更好的方式我们会在<a href="#优化">优化</a>部分中讨论。</li>
+</ul>
+<h4 id="Outer-Join"><a href="#Outer-Join" class="headerlink" title="Outer Join"></a>Outer Join</h4><p><img data-src="/images/Paper/Unnesting/outer_join.png" alt="outer_join"></p>
+<p>对于left outer join：</p>
+<ul>
+<li>如果对$T_2$的join不依赖于$D$，我们使用left outer join去连接$T_2$</li>
+<li>如果对$T_2$的join依赖于$D$，我们只能replication，使用两次从$D$开始的dependent join。</li>
+</ul>
+<h4 id="Semi-Join-amp-Anti-Join"><a href="#Semi-Join-amp-Anti-Join" class="headerlink" title="Semi Join &amp; Anti Join"></a>Semi Join &amp; Anti Join</h4><p><img data-src="/images/Paper/Unnesting/SemiJoin_AntiJoin.png" alt="SemiJoin_AntiJoin"></p>
+<h4 id="Group-By-1"><a href="#Group-By-1" class="headerlink" title="Group By"></a>Group By</h4><p><img data-src="/images/Paper/Unnesting/Group_By.png" alt="Group_By"></p>
+<p>我们可以观察这个等式左右两侧：</p>
+<ul>
+<li>左侧肯定是带有$D$中的字段$\mathcal{A}(D)$</li>
+<li>右侧需要对于$D$中的字段，所以需要将$\mathcal{A}(D)$加入对应的<code>group by</code>的位置，确保这些字段在group by之后还会出现。</li>
+</ul>
+<h4 id="Projection"><a href="#Projection" class="headerlink" title="Projection"></a>Projection</h4><p><img data-src="/images/Paper/Unnesting/Projection.png" alt="Projection"></p>
+<p>我们使用同上的观察方法。</p>
+<h4 id="Set-Operation"><a href="#Set-Operation" class="headerlink" title="Set Operation"></a>Set Operation</h4><p><img data-src="/images/Paper/Unnesting/Set_Operation.png" alt="Set_Operation"></p>
+<h2 id="实现相关"><a href="#实现相关" class="headerlink" title="实现相关"></a>实现相关</h2><p>集合$D$的元素个数会很大吗？<br>这个问题当然取决实际情况(实际表格和实际SQL查询)。</p>
+<p>首先: $|D| \leq |T_1|$这个等式一直成立。<br>然后我们假设最高处的是一个hash join，这个哈希表中保存了$T_1$的tupel。</p>
+<ul>
+<li><strong>worst case</strong>: 我们需要额外存储$D$，而它的大小和$T_1$一样。比如我们需要另外一个哈希集合(hashset)去构建$D$这个集合。这个所需要的哈希集合大小应该和之前的哈希表处于同一量级，它们合在一起的空间复杂度是$O(2n)$</li>
+<li><strong>best case</strong>: 如果我们能预先知道$T_1$是一个不带重复的集合，比如我们可以从schema看出它是key。那么我们就不必实体化(materialization)$D$，只需要遍历(iterate, probe)一遍我们的哈希表。这时候我们没有额外存储的花销，只用了一个哈希表给hash join，空间复杂度是$O(n)$。</li>
+</ul>
+<p>最后，即使是上述的worst case也是值得去实现这个<strong>去关联</strong>功能，因为它能将时间复杂度$O(n^2)$降至$O(n)$。即使有内存花销(memory overhead)，线性的时间复杂度能很大改善运行时间。</p>
+<h2 id="例子：Q1"><a href="#例子：Q1" class="headerlink" title="例子：Q1"></a>例子：Q1</h2><p>直接对应的关系代数：<br><img data-src="/images/Paper/Unnesting/Q1_relation_algebra.png" alt="Q1_relation_algebra"></p>
+<p>对应适合转化的dependent join：</p>
+<p><img data-src="/images/Paper/Unnesting/Q1'_relation_algebra.png" alt="Q1'_relation_algebra"></p>
+<ul>
+<li>从<em>直接对应的关系代数</em>中可以看出来，dependent join右侧只需要<code>s.id</code>这个字段。</li>
+<li>因此<em>适合转化的dependent join</em>中，dependent join只提供了必须的<code>s.id</code>这个字段。我们增加了一个投影Projection去除了其他没有必要的字段。</li>
+</ul>
+<p>对应的关系代数树：</p>
+<p><img data-src="/images/Paper/Unnesting/Q1_Step1.png" alt="Q1_Step1"></p>
+<p>1.我们消去了重复(eliminate redundancy)，同时也把join右侧(right or inner)需要的字段从join左侧(left or outer)传递了过去。<br>更重要的是，我们把一个最高的通用(generic)dependent join转化成了一个regular join和一个<strong>通过集合</strong>$D$的dependent join，强调一下集合$D$中自然没有任何重复的元素。 <a href="#link">对应的假设</a></p>
+<p><img data-src="/images/Paper/Unnesting/Q1_Step2.png" alt="Q1_Step2"></p>
+<p>2.我们将dependent join推到group by下面。注意需要将$D$中的字段$\mathcal{A}(D)$加入group by。</p>
+<p><img data-src="/images/Paper/Unnesting/Q1_Step3.png" alt="Q1_Step3"></p>
+<p>3.我们将dependent join推到selection下面。</p>
+<p><img data-src="/images/Paper/Unnesting/Q1_Step4.png" alt="Q1_Step4"></p>
+<p>4.这时候我们可以用regular join代替dependent join。Unnesting结束。</p>
+<p><img data-src="/images/Paper/Unnesting/Q1_Step5.png" alt="Q1_Step5"></p>
+<p>5.selection push down</p>
+<p><img data-src="/images/Paper/Unnesting/Q1_Step6.png" alt="Q1_Step6"></p>
+<p>6.去除嵌套(decoupling)，并且去除没有必要的部分。上一步右侧的对$D$的join被消除。因为我们观察join之后，$d.id=e2.sid$成立。这个目标可以很快用一个<code>map</code>然后<code>selection</code>完成。<a href="#link2">对应的假设</a>， <a href="#优化">更多的解释</a></p>
+<h2 id="例子：Q2"><a href="#例子：Q2" class="headerlink" title="例子：Q2"></a>例子：Q2</h2><p><img data-src="/images/Paper/Unnesting/Q2.png" alt="Q2"></p>
+<p>对于$Q2$，$D$不能被消去，因为这里是一个对$D$的non-euqi join，这种情况不能使用消去或代替(substitution)。去除嵌套(decoupling)也是不允许的，因为$s.year$不是和$e2.date$进行equi join。</p>
+<p>这里必须要提到一下原论文的错误：最上面的join的条件应该为<code>e.grade &gt; m + 1 and d.id = s.id  and d.year = e.date and e.curriculum = d.major</code>。这个在我和一个博士生的讨论中被确认。</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><ul>
+<li>Simple Unnesting可以将查询中的关联去除很干净。  </li>
+<li>General Unnesting必须一个投影去获得集合$D$，再和它join。对应的花销比Simple Unnesting大。当然集合$D$是值得的，因为我们只需要进行<strong>一次</strong>对$D$的求值和<strong>一次</strong>和$D$的join，这比关联query中的$O(n^2)$时间复杂度要优化的多。另外在一些情况，我们可以完全消去集合$D$，例子是<a href="#q1">Q1</a>的最后一步。</li>
+</ul>
+<p>现在我们来讨论一下，如何在一般情况下，用一个已经存在在字段来代替(substitute)集合$D$。</p>
+<ul>
+<li>首先这个代替的情况只能发生在equi-join的情况，即比较两个字段是否相等。 比如 $D\bowtie_{D.a=R.b} R$。我们可以让$D$对应字段是数据成为join的结果。当然这部分数据可能包含了$R.b$中没有的元素，但是这样的元素自然也不会出现在join的结果中。所以这样会导致中间步骤结果偏多，包含了一些本不应该出现的元素。</li>
+<li><p>另外我们还需要找到被join的判断谓词和filter的判断谓词造成的等价类(equivalence classes)。比如 $\sigma_{a=b}$意味 $a$ 和 $b$属于同一个等价类，它们有同样的数值，所以我们可以用 $b$ 来代替 $a$。<a href="#link3">一点补充</a></p>
+</li>
+<li><p>找到等价类$C$后，下面的等式成立(前提是$D$是一个集合)：<br><img data-src="/images/Paper/Unnesting/substitution.png" alt="substitution"></p>
+<ul>
+<li>$B$: $T$表格中的一些字段。($T$表格的所有字段$\mathcal{A}(T)$的一个子集)</li>
+<li>$\mathcal{A}(D)$: 指集合$D$对应的字段，也是在$T$表格中$B$映射对应(map)的新字段。</li>
+<li>$\mathcal{A}(D)$和$B$共属于同一个等价类$C$。</li>
+</ul>
+</li>
+<li>上面的等式意味：我们不必对$D$的join求值，而是可以用<code>map</code>运算符，扩展$T$表格，然后通过等价字段(equivalent attributes)再计算$D$对应的字段值(attribute value)。我们的生成的中间步骤的值可能偏多，因为我们没有真正的对join的条件进行判断和过滤，导致一些<strong>不应该被join</strong>出现在我们中间步骤的结果中。对于这些多生成的tupel，我们需要在这个<code>map</code>运算符之上，比如使用一个<code>selection</code>运算符去过滤掉这些多余并错误的tupel，或者使用一个带筛选条件的join。</li>
+<li>基于上面的所有点，代替(substitute)在与$D$集合join筛选度很低(unselective，因此$D$有很多元素)的情况下是值得的，比如Q1的情况。但是一般情况下，是否值得用代替的方式，这个决定需要查询优化器在比较各种情况下的code model以后，才能真正下结论。</li>
+</ul>
+<hr>
+<h1 id="另外的话"><a href="#另外的话" class="headerlink" title="另外的话"></a>另外的话</h1><ul>
+<li><h7 id="link"> 我们假设$D$是一个集合，即不包含任何重复元素。这篇文章已经对应论文中，dependent join的左侧是一个集合，被提供给右侧。这个优化仅仅在$D$没有保留SQL的包语义(bag semantics)，在query的其余地方以及是保留包语义的。当然如果query应用了`distinct`的话，我们自然可以下推(push down)对应字段。</h7>
+</li>
+<li><h7 id="link2"> 我们假设$e2.sid$可以是NULL值，这时候我们需要保留这个`selection`。如果我们看schema，发现$e2.sid$不可能是NULL值(not nullable)，那么在这个情况中的确可以去掉这个selection。</h7>
+</li>
+<li><h7 id="link3"> 有一个例外是outer join，如果没有对应的值，outer join会生成一个NULL。比如 $D\bowtie_{left outer\;D.a=R.b} R$: 如果$D.a$没有对应的值，它会和NULL连接。那自然$D.a$和NULL不相等。如果最上面的join如果拒绝NULL，那这个问题就被解决。</h7>
+</li>
+<li><p>Unnesting的重要步骤是dependent join push down。当我们完成unnesting之后，对结果的logical plan，当然可以继续进行优化，比如使用selection push down和join reordering。这些是对查询优化中两个存在先后顺序的步骤，并不冲突。</p>
+</li>
+<li><p>有一些非常小的情况中dependent join的nested evaluation有更好的runtime表现。比如outer query的表格非常小，而inner query(subquery)涉及的表格特别大，或者可以使用index look up。当然在应该会被查询优化器(cost-based optimizer)的cost model计算中意识到，如果unnesting的花费(cost)很高，对这样的查询就不进行unnesting转化。</p>
+</li>
+<li><p>Dependent Anti Join例子: $R: \{[A, \dots, X, \dots]\}$ 和 $S: \{[B, \dots, Y, \dots]\}$</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Q3</span></span><br><span class="line"><span class="keyword">select</span> R.*</span><br><span class="line"><span class="keyword">from</span> R</span><br><span class="line"><span class="keyword">where</span> R.X = <span class="keyword">all</span> (<span class="keyword">select</span> S.Y</span><br><span class="line">                 <span class="keyword">from</span> S</span><br><span class="line">                 <span class="keyword">where</span> S.B = R.A)</span><br></pre></td></tr></tbody></table></figure>
+<p>首先这个SQL查询不可能去unnesting。但是我们可以否定这个判断谓词，再用一个dependent anti join去表达这个SQL。然后再进行转化，见下图：<br><img data-src="/images/Paper/Unnesting/anti_join.png" alt="anti_join"></p>
+<ul>
+<li>Evaluation部分参见原论文。这一篇论文没有性能比较图表，仅仅列出了不同的runtime。</li>
+</ul>
+<hr>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>我们可以对任意query，应用push down的方法转化其中的dependent join。我们可以获得一个regular join或者直接用存在字段去代替join。<br>时间复杂度从$O(n^2)$被优化至$O(n)$。<br>对于大部分大数据query，这个查询优化器中进行的logical plan转化是完全值得的，在query的runtime我们可以把这转化所花的时间完全赢回来。<br>因为dependent join几乎只能用nested loop join(关系代数中的集合笛卡尔积)实现，时间复杂度在<code>O(n^2)</code>。<br>而转化后的版本的最好情况(best case)的时间复杂度是<code>O(n)</code>,在数据量大情况下，可以有多数量级的runtime加速。<br>另外从工程的角度，不相关的子查询完全可以使用有效的实现方式，比如无锁多线程或高效的join算法。<br>这大大提高了系统的可缩放性(Scalability)和对主流CPU的适应性。  </p>
+<hr>
+<h1 id="References"><a href="#References" class="headerlink" title="References"></a>References</h1><ol>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kbC5naS5kZS9iaXRzdHJlYW0vaGFuZGxlLzIwLjUwMC4xMjExNi8yNDE4LzM4My5wZGY/c2VxdWVuY2U9MQ==" title="https://dl.gi.de/bitstream/handle/20.500.12116/2418/383.pdf?sequence=1">Unnesting Arbitrary Queries - Thomas Neumann and Alfons Kemper - (BTW 2015)<i class="fa fa-external-link"></i></span></li>
+</ol>
+<!-- 该文章遵循[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh)，要求署名、非商业 、保持一致。在满足[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh) 的基础上可以转载，但请以超链接形式注明出处。文章仅代表作者的知识和看法，如有不同观点，可以回复并讨论。 --><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/" title="[Paper]BTW 2015 | Unnesting Arbitrary Queries">https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Paper/" rel="tag"><i class="fa fa-tag"></i> Paper</a>
+              <a href="/tags/Query-Optimizer/" rel="tag"><i class="fa fa-tag"></i> Query Optimizer</a>
+              <a href="/tags/Subquery-Optimization/" rel="tag"><i class="fa fa-tag"></i> Subquery Optimization</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-2/" rel="prev" title="[SQL]高级SQL-递归(2)">
+      <i class="fa fa-chevron-left"></i> [SQL]高级SQL-递归(2)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/25/Shell-RegEx/" rel="next" title="[Shell]RegEx 正则表达式">
+      [Shell]RegEx 正则表达式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引入"><span class="nav-number">1.</span> <span class="nav-text">引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Q1-对每个同学搜索Ta的最好成绩"><span class="nav-number">1.1.</span> <span class="nav-text">Q1: 对每个同学搜索Ta的最好成绩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Q2-搜索CS或Games-Engineering专业的学生和Ta的科目，成绩比自己考试或者学长学姐成绩的平均值差-大"><span class="nav-number">1.2.</span> <span class="nav-text">Q2: 搜索CS或Games Engineering专业的学生和Ta的科目，成绩比自己考试或者学长学姐成绩的平均值差(大)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#关系代数"><span class="nav-number">2.</span> <span class="nav-text">关系代数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Dependent-Join"><span class="nav-number">2.1.</span> <span class="nav-text">The Dependent Join</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Group-By"><span class="nav-number">2.2.</span> <span class="nav-text">Group By</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">2.3.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sets-of-attributes-comparison"><span class="nav-number">2.4.</span> <span class="nav-text">Sets of attributes comparison</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#去关联-Unnesting-Decorrelation"><span class="nav-number">3.</span> <span class="nav-text">去关联(Unnesting, Decorrelation)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Simple-Unnesting"><span class="nav-number">3.1.</span> <span class="nav-text">Simple Unnesting</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#General-Unnesting"><span class="nav-number">3.2.</span> <span class="nav-text">General Unnesting</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#适合转化的dependent-join"><span class="nav-number">3.2.1.</span> <span class="nav-text">适合转化的dependent join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最终目标"><span class="nav-number">3.2.2.</span> <span class="nav-text">最终目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Push-Down-下推"><span class="nav-number">3.2.3.</span> <span class="nav-text">Push Down(下推)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Selection"><span class="nav-number">3.2.3.1.</span> <span class="nav-text">Selection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Join"><span class="nav-number">3.2.3.2.</span> <span class="nav-text">Join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Outer-Join"><span class="nav-number">3.2.3.3.</span> <span class="nav-text">Outer Join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Semi-Join-amp-Anti-Join"><span class="nav-number">3.2.3.4.</span> <span class="nav-text">Semi Join &amp; Anti Join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Group-By-1"><span class="nav-number">3.2.3.5.</span> <span class="nav-text">Group By</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Projection"><span class="nav-number">3.2.3.6.</span> <span class="nav-text">Projection</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Set-Operation"><span class="nav-number">3.2.3.7.</span> <span class="nav-text">Set Operation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现相关"><span class="nav-number">3.3.</span> <span class="nav-text">实现相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子：Q1"><span class="nav-number">3.4.</span> <span class="nav-text">例子：Q1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子：Q2"><span class="nav-number">3.5.</span> <span class="nav-text">例子：Q2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#优化"><span class="nav-number">3.6.</span> <span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#另外的话"><span class="nav-number">4.</span> <span class="nav-text">另外的话</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">5.</span> <span class="nav-text">结论</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#References"><span class="nav-number">6.</span> <span class="nav-text">References</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

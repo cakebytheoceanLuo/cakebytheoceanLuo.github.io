@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="2017 Fall: HOMEWORK #1 - SQL Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2017&#x2F;homework1&#x2F;Solution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2017&#x2F;files&#x2F;hw1-sols.tar.gz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]HomeWork1_17Fall">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-17Fall/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="2017 Fall: HOMEWORK #1 - SQL Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2017&#x2F;homework1&#x2F;Solution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2017&#x2F;files&#x2F;hw1-sols.tar.gz">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-08T20:41:11.000Z">
+<meta property="article:modified_time" content="2020-03-08T20:42:04.781Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="SQLite">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-17Fall/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]HomeWork1_17Fall | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-17Fall/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]HomeWork1_17Fall
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-08 21:41:11 / 修改时间：21:42:04" itemprop="dateCreated datePublished" datetime="2020-03-08T21:41:11+01:00">2020-03-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/08/CMU-15445-HomeWork1-17Fall/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]HomeWork1_17Fall" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2017 Fall: HOMEWORK #1 - SQL</p>
+<p>Homework: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTcvaG9tZXdvcmsxLw==" title="https://15445.courses.cs.cmu.edu/fall2017/homework1/">https://15445.courses.cs.cmu.edu/fall2017/homework1/<i class="fa fa-external-link"></i></span><br>Solution: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTcvZmlsZXMvaHcxLXNvbHMudGFyLmd6" title="https://15445.courses.cs.cmu.edu/fall2017/files/hw1-sols.tar.gz">https://15445.courses.cs.cmu.edu/fall2017/files/hw1-sols.tar.gz<i class="fa fa-external-link"></i></span></p>
+<a id="more"></a>
+<p>CMU推荐使用 SQLite: <span class="exturl" data-url="aHR0cHM6Ly93d3cuc3FsaXRlLm9yZy9pbmRleC5odG1s" title="https://www.sqlite.org/index.html">https://www.sqlite.org/index.html<i class="fa fa-external-link"></i></span></p>
+<p>已检查过我的解法和答案生成的结果一样。</p>
+<!-- TODO: link 文章 SQLITE 安装 和SQLITE数据集 -->
+<h1 id="熟悉数据集"><a href="#熟悉数据集" class="headerlink" title="熟悉数据集"></a>熟悉数据集</h1><p><span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTcvaG9tZXdvcmsxLw==" title="https://15445.courses.cs.cmu.edu/fall2017/homework1/">https://15445.courses.cs.cmu.edu/fall2017/homework1/<i class="fa fa-external-link"></i></span>  -&gt; CHECK THE SCHEMA</p>
+<h1 id="Q0"><a href="#Q0" class="headerlink" title="Q0"></a>Q0</h1><p>Count the number of cases in the Maryland Judiciary Court System. The output should look like this (only a single number):</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sqlite&gt; select ...;</span><br><span class="line">12345</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Make use of the <code>count</code> function.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">from</span> cases;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h1><p>Count the number of attorneys in the system. The output should look like this (only a single number):</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sqlite&gt; select ...;</span><br><span class="line">12345</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Ensure that there are no duplicates.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Count the number of attorneys</span></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> <span class="keyword">name</span>)</span><br><span class="line"><span class="keyword">from</span> attorneys;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h1><p>Repeated phone calls can sometimes land you in jail. Count the number of charges related to phone calls by examining their description. The output should look like this:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">12345</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: The search string for the appropriate column is <code>%PHONE%</code>.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Count the number of cases related to repeated phone calls.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(case_id)</span><br><span class="line"><span class="keyword">from</span> charges</span><br><span class="line"><span class="keyword">where</span> description <span class="keyword">like</span> <span class="string">'%PHONE%'</span> ;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q3"><a href="#Q3" class="headerlink" title="Q3"></a>Q3</h1><p>Reckless endangerment is another reason why one can end up in a courthouse. Count the number of cases related to reckless endangerment in each county. The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">County A|500</span><br><span class="line">County B|400</span><br><span class="line">County C|300</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the county name and number of cases in that particular county. Sort the counties by the number of cases in descending order, and break ties by ordering them in ascending order with respect to the county name. Report only the top <code>3</code> counties with the maximum number of cases. The search string for the appropriate column is <code>%RECKLESS%</code>. Ensure that you only fetch the cases whose county name is not empty.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> ca.violation_county, <span class="keyword">count</span>(ca.case_id) <span class="keyword">as</span> num_cases</span><br><span class="line"><span class="keyword">from</span> cases ca, charges ch</span><br><span class="line"><span class="keyword">where</span> ca.case_id = ch.case_id <span class="keyword">and</span></span><br><span class="line">      ch.description <span class="keyword">like</span> <span class="string">'%RECKLESS%'</span> <span class="keyword">and</span></span><br><span class="line">      ca.violation_county != <span class="string">''</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> ca.violation_county</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_cases <span class="keyword">desc</span>, cases.violation_county <span class="keyword">asc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Count the number of cases related to reckless endangerment in each county: </span></span><br><span class="line"><span class="comment">--- Print county name and number of cases</span></span><br><span class="line"><span class="comment">--- Sort by number of cases (descending),</span></span><br><span class="line"><span class="comment">--- and break ties by county name (ascending),</span></span><br><span class="line"><span class="comment">--- and report only the top 3 counties.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> cases.violation_county, <span class="keyword">count</span>(cases.case_id) <span class="keyword">as</span> cnt </span><br><span class="line"><span class="keyword">from</span> cases, charges</span><br><span class="line"><span class="keyword">where</span> cases.case_id = charges.case_id</span><br><span class="line">      <span class="keyword">and</span> cases.violation_county &lt;&gt; <span class="string">''</span></span><br><span class="line">      <span class="keyword">and</span> charges.description <span class="keyword">like</span> <span class="string">'%RECKLESS%'</span> </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> cases.violation_county</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> cnt <span class="keyword">desc</span>, cases.violation_county <span class="keyword">asc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q4"><a href="#Q4" class="headerlink" title="Q4"></a>Q4</h1><p>Let’s now go back in time and look at the cases filed in the 1950s. The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CASE1|1950-03-12</span><br><span class="line">CASE2|1951-01-01</span><br><span class="line">CASE3|1952-01-01</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the case id and filing date for the cases filed in the 1950s. List the oldest cases first, and report only the earliest <code>3</code> cases.</p>
+<p>有用的链接：　<span class="exturl" data-url="aHR0cHM6Ly93d3cuc3FsaXRlLm9yZy9sYW5nX2RhdGVmdW5jLmh0bWw=" title="https://www.sqlite.org/lang_datefunc.html">https://www.sqlite.org/lang_datefunc.html<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> case_id, filing_date</span><br><span class="line"><span class="keyword">from</span> cases</span><br><span class="line"><span class="keyword">where</span> strftime(<span class="string">'%Y'</span>, filing_date) <span class="keyword">between</span> strftime(<span class="string">'%Y'</span>, <span class="built_in">date</span>(<span class="string">'1950-01-01'</span>)) <span class="keyword">and</span> strftime(<span class="string">'%Y'</span>, <span class="built_in">date</span>(<span class="string">'1959-01-01'</span>))</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> filing_date <span class="keyword">asc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Cases filed in the 1950s</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> case_id, filing_date</span><br><span class="line"><span class="keyword">from</span> cases</span><br><span class="line"><span class="keyword">where</span> filing_date &gt;= <span class="string">'1950-01-01'</span> <span class="keyword">and</span> filing_date &lt; <span class="string">'1960-01-01'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> filing_date</span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q5"><a href="#Q5" class="headerlink" title="Q5"></a>Q5</h1><p>It looks like a lot of cases got filed in the 1950s. In which decades did the most number of cases get filed? The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">10000|1970s</span><br><span class="line">5000|2000s</span><br><span class="line">1000|1980s</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the number of cases and the relevant decade. We will print the relevant decade in a fancier format by constructing a string that looks like this <code>1970s</code>. Sort the decades in decreasing order with respect to the number of cases. Report only the top <code>3</code> decades wherein the most number of cases got filed. Ensure that you only fetch the cases whose filing date is not empty.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(case_decade.case_id) <span class="keyword">as</span> num_cases, <span class="keyword">cast</span> (case_decade.decade <span class="keyword">as</span> <span class="built_in">char</span>(<span class="number">3</span>)) || <span class="string">'0s'</span></span><br><span class="line"><span class="keyword">from</span> (</span><br><span class="line">    <span class="keyword">select</span> case_id, <span class="keyword">cast</span>(strftime(<span class="string">'%Y'</span>, filing_date) <span class="keyword">as</span> <span class="built_in">integer</span>) / <span class="number">10</span> <span class="keyword">as</span> decade</span><br><span class="line">    <span class="keyword">from</span> cases</span><br><span class="line">    <span class="keyword">where</span> filing_date != <span class="string">''</span>) <span class="keyword">as</span> case_decade</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> case_decade.decade</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_cases <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- In which 3 decades did the most number of cases get filed?</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">as</span> case_count,</span><br><span class="line"><span class="keyword">substr</span>(filing_date, <span class="number">1</span>, <span class="number">3</span>) || <span class="string">'0s'</span> <span class="keyword">as</span> decade <span class="keyword">from</span> cases</span><br><span class="line"><span class="keyword">where</span> filing_date &lt;&gt; <span class="string">''</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> decade</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> case_count <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>思路类似这一题　<a href="https://cakebytheoceanluo.github.io/2020/03/07/CMU-15445-HomeWork1-19Fall/#Q4">Fall19 Homework1 Q4</a></p>
+<ul>
+<li>我的解法: cast into integer</li>
+<li>答案: cast into string</li>
+<li>这两个解法看起来性能差距不大</li>
+</ul>
+<h1 id="Q6"><a href="#Q6" class="headerlink" title="Q6"></a>Q6</h1><p>Cases can often be closed for bizzare reasons. One such reason is statistics. Determine the percentage of cases that were statistically closed. The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">5.123456789</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the percentage of cases. To compute the percentage, you will need to multiply the numerator of the fraction by <code>100.0</code>. While searching the case’s status, use the following string: <code>Case Closed Statistically</code>. To keep things simple, there is no need to truncate or round numbers. To compute the percentage, simply multiply the numerator by <code>100.0</code> and divide by the appropriate denominator.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="number">100.0</span> * <span class="keyword">count</span>(*) / (<span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> cases)</span><br><span class="line"><span class="keyword">from</span> cases</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">status</span> = <span class="string">'Case Closed Statistically'</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Fraction of cases closed statistically</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> statistically_closed_cases.cnt * <span class="number">100.0</span> / all_cases.cnt <span class="keyword">as</span> percentage </span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">    (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">as</span> cnt</span><br><span class="line">    <span class="keyword">from</span> cases</span><br><span class="line">    <span class="keyword">where</span> <span class="keyword">status</span> = <span class="string">'Case Closed Statistically'</span> ) <span class="keyword">as</span> statistically_closed_cases,</span><br><span class="line">    (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">as</span> cnt</span><br><span class="line">    <span class="keyword">from</span> cases</span><br><span class="line">    ) <span class="keyword">as</span> all_cases;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q7"><a href="#Q7" class="headerlink" title="Q7"></a>Q7</h1><p>Let’s look at some prolific defendants. List the top 3 parties who have been charged in the most number of distinct counties. The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A|100</span><br><span class="line">B|50</span><br><span class="line">C|10</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the name of the party along with the number of distinct counties. Sort the parties by the number of distinct counties in descending order, and report only the top <code>3</code> parties. Ensure that you only fetch the parties who are defendants (<code>Defendant</code>) and whose name is not empty.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> p.name, <span class="keyword">count</span>(<span class="keyword">distinct</span> c.violation_county) <span class="keyword">as</span> num_vc</span><br><span class="line"><span class="keyword">from</span> parties p, cases c</span><br><span class="line"><span class="keyword">where</span> p.case_id = c.case_id <span class="keyword">and</span></span><br><span class="line">      p.name != <span class="string">''</span> <span class="keyword">and</span></span><br><span class="line">      p.type = <span class="string">'Defendant'</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> p.name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_vc <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- List the top 3 parties who have been</span></span><br><span class="line"><span class="comment">--- charged in the most number of distinct counties.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> parties.name, <span class="keyword">count</span>(<span class="keyword">distinct</span>(cases.violation_county)) <span class="keyword">as</span> cnt</span><br><span class="line"><span class="keyword">from</span> cases, parties</span><br><span class="line"><span class="keyword">where</span> cases.case_id = parties.case_id</span><br><span class="line"><span class="keyword">and</span> parties.type = <span class="string">'Defendant'</span></span><br><span class="line"><span class="keyword">and</span> parties.name &lt;&gt; <span class="string">''</span> </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> parties.name </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> cnt <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q8"><a href="#Q8" class="headerlink" title="Q8"></a>Q8</h1><p>How does the average age of guilty criminals vary over time? The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2017|50.123456789</span><br><span class="line">2016|55.123456789</span><br><span class="line">2015|60.123456789</span><br><span class="line">2014|55.123456789</span><br><span class="line">2013|50.123456789</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the filing year and the average age of the criminals that were found guilty in cases filed in that particular year. To compute the average age, first determine the age of the criminal by using the case’s filing date and the party’s date of birth. Use the <code>strftime('%Y.%m%d',...)</code> function for this purpose. To determine the filing year from the filing date, again make use of the <code>strftime('%Y',...)</code> function. Look at the disposition to pick only <code>Guilty</code> parties (<code>charges.disposition = 'Guilty'</code>). Ensure that you only fetch the cases whose filing date is not empty. Also, ensure that you only fetch the parties who are defendants (<code>parties.type = Defendant</code>), whose name is not empty, whose date of birth is not empty, and whose computed age is greater than <code>0</code> and less than <code>100</code> years. List the tuples in descending order with respect to the filing year and only display <code>5</code> tuples. You might want to leverage common table expressions (CTEs) in this query. Here’s more information on <span class="exturl" data-url="aHR0cHM6Ly9zcWxpdGUub3JnL2xhbmdfd2l0aC5odG1s" title="https://sqlite.org/lang_with.html">using CTEs in SQLite<i class="fa fa-external-link"></i></span>.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> strftime(<span class="string">'%Y'</span>, ca.filing_date) <span class="keyword">as</span> filing_year,</span><br><span class="line">       <span class="keyword">avg</span>(strftime(<span class="string">'%Y.%m%d'</span>, ca.filing_date) - strftime(<span class="string">'%Y.%m%d'</span>, p.dob)) <span class="keyword">as</span> avg_age</span><br><span class="line"><span class="keyword">from</span> parties p, charges ch, cases ca</span><br><span class="line"><span class="keyword">where</span> p.case_id = ca.case_id <span class="keyword">and</span></span><br><span class="line">      ch.case_id = ca.case_id <span class="keyword">and</span></span><br><span class="line">      ch.disposition = <span class="string">'Guilty'</span> <span class="keyword">and</span></span><br><span class="line">      ca.filing_date != <span class="string">''</span> <span class="keyword">and</span></span><br><span class="line">      p.name != <span class="string">''</span> <span class="keyword">and</span></span><br><span class="line">      p.type = <span class="string">'Defendant'</span> <span class="keyword">and</span></span><br><span class="line">      p.dob <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">null</span> <span class="keyword">and</span></span><br><span class="line">      (strftime(<span class="string">'%Y.%m%d'</span>, ca.filing_date) - strftime(<span class="string">'%Y.%m%d'</span>, p.dob)) &gt; <span class="number">0</span> <span class="keyword">and</span></span><br><span class="line">      (strftime(<span class="string">'%Y.%m%d'</span>, ca.filing_date) - strftime(<span class="string">'%Y.%m%d'</span>, p.dob)) &lt; <span class="number">100</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> filing_year</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> filing_year <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">5</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Average age of guilty criminals over time</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> filing_year_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> cases.case_id, strftime(<span class="string">'%Y'</span>, filing_date) <span class="keyword">as</span> filing_year</span><br><span class="line">    <span class="keyword">from</span> cases, charges</span><br><span class="line">    <span class="keyword">where</span> cases.case_id = charges.case_id</span><br><span class="line">    <span class="keyword">and</span> charges.disposition = <span class="string">'Guilty'</span></span><br><span class="line">    <span class="keyword">and</span> cases.filing_date &lt;&gt; <span class="string">''</span></span><br><span class="line">), age_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> cases.case_id,</span><br><span class="line">    strftime(<span class="string">'%Y.%m%d'</span>, cases.filing_date) - strftime(<span class="string">'%Y.%m%d'</span>, parties.dob) <span class="keyword">as</span> age </span><br><span class="line">    <span class="keyword">from</span> cases, parties</span><br><span class="line">    <span class="keyword">where</span> cases.case_id = parties.case_id</span><br><span class="line">    <span class="keyword">and</span> parties.type = <span class="string">'Defendant'</span></span><br><span class="line">    <span class="keyword">and</span> parties.name &lt;&gt; <span class="string">''</span></span><br><span class="line">    <span class="keyword">and</span> parties.dob <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">    <span class="keyword">and</span> age &gt; <span class="number">0</span></span><br><span class="line">    <span class="keyword">and</span> age &lt; <span class="number">100</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> filing_year_table.filing_year, <span class="keyword">avg</span>(age_table.age) <span class="keyword">as</span> average_age</span><br><span class="line"><span class="keyword">from</span> cases, filing_year_table, age_table</span><br><span class="line"><span class="keyword">where</span> cases.case_id = filing_year_table.case_id</span><br><span class="line">      <span class="keyword">and</span> cases.case_id = age_table.case_id</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> filing_year_table.filing_year</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> filing_year <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">5</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q9"><a href="#Q9" class="headerlink" title="Q9"></a>Q9</h1><p>Let’s next look at case disposition by race to see if there is any inherent bias in the system. The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">African American|Guilty|60.000</span><br><span class="line">African American|Not Guilty|40.000</span><br><span class="line">Caucasian|Guilty|50.000</span><br><span class="line">Caucasian|Not Guilty|50.000</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the race, the case disposition, and the percentage of cases disposed with that verdict. Let’s restrict our focus to <code>2</code> races (<code>African American</code>, <code>Caucasian</code>), and 2 types of case disposition (<code>Guilty</code>, <code>Not Guilty</code>). To compute the percentage, you will need to multiply the numerator of the fraction by <code>100.0</code>. Ensure that the race of the party is not empty. You might want to leverage common table expressions (CTEs) in this query. <span class="exturl" data-url="aHR0cHM6Ly9zcWxpdGUub3JnL2xhbmdfd2l0aC5odG1s" title="https://sqlite.org/lang_with.html">using CTEs in SQLite<i class="fa fa-external-link"></i></span>.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> temp <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> p.race, c.disposition</span><br><span class="line">    <span class="keyword">from</span> parties p, charges c</span><br><span class="line">    <span class="keyword">where</span> p.case_id = c.case_id <span class="keyword">and</span></span><br><span class="line">          p.race &lt;&gt; <span class="string">''</span> <span class="keyword">and</span></span><br><span class="line">          p.race <span class="keyword">in</span> (<span class="string">'African American'</span>, <span class="string">'Caucasian'</span>) <span class="keyword">and</span></span><br><span class="line">          c.disposition <span class="keyword">in</span> (<span class="string">'Guilty'</span>, <span class="string">'Not Guilty'</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="string">'African American'</span>, t.disposition, <span class="number">100.0</span> * <span class="keyword">count</span>(*) / (<span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> temp t_ <span class="keyword">where</span> t_.disposition = t.disposition)</span><br><span class="line"><span class="keyword">from</span> temp t</span><br><span class="line"><span class="keyword">where</span> t.race = <span class="string">'African American'</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> t.disposition</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> <span class="string">'Caucasian'</span>, t.disposition, <span class="number">100.0</span> * <span class="keyword">count</span>(*) / (<span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> temp t_ <span class="keyword">where</span> t_.disposition = t.disposition)</span><br><span class="line"><span class="keyword">from</span> temp t</span><br><span class="line"><span class="keyword">where</span> t.race = <span class="string">'Caucasian'</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> t.disposition;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Disposition by race</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> disposition_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> race, charges.disposition, parties.case_id <span class="keyword">as</span> case_id</span><br><span class="line">    <span class="keyword">from</span> charges, parties</span><br><span class="line">    <span class="keyword">where</span> charges.case_id = parties.case_id</span><br><span class="line">    <span class="keyword">and</span> race &lt;&gt; <span class="string">''</span></span><br><span class="line">    <span class="keyword">and</span> disposition <span class="keyword">in</span> (<span class="string">'Guilty'</span>, <span class="string">'Not Guilty'</span>)</span><br><span class="line">    <span class="keyword">and</span> race <span class="keyword">in</span> (<span class="string">'African American'</span>, <span class="string">'Caucasian'</span>)</span><br><span class="line">),</span><br><span class="line">disposition_aggregate_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> disposition, <span class="keyword">count</span>(case_id) <span class="keyword">as</span> case_count</span><br><span class="line">    <span class="keyword">from</span> disposition_table</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> disposition</span><br><span class="line">),</span><br><span class="line">race_aggregate_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> race, disposition, <span class="keyword">count</span>(case_id) <span class="keyword">as</span> case_count</span><br><span class="line">    <span class="keyword">from</span> disposition_table</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> race, disposition</span><br><span class="line">)</span><br><span class="line"><span class="keyword">select</span> race,</span><br><span class="line">       race_aggregate_table.disposition,</span><br><span class="line">       (race_aggregate_table.case_count * <span class="number">100.0</span>) / disposition_aggregate_table.case_count</span><br><span class="line"><span class="keyword">from</span> race_aggregate_table, disposition_aggregate_table</span><br><span class="line"><span class="keyword">where</span> race_aggregate_table.disposition = disposition_aggregate_table.disposition;</span><br></pre></td></tr></tbody></table></figure>
+<p>这题的结果还是挺难看懂</p>
+<ul>
+<li>我的解法　由两个小表格组成，　execution time较短，fetching time较长</li>
+<li>答案就是相对直接的思路，直接生产对应的分子分母相除。</li>
+</ul>
+<h1 id="Q10"><a href="#Q10" class="headerlink" title="Q10"></a>Q10</h1><p>Certain zip codes might have — ahem — more interesting citizens than Squirrel Hill. Retrieve the top 3 zip codes in Maryland where the most number of cases were filed. The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">21000|500</span><br><span class="line">21001|400</span><br><span class="line">21002|300</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the zip code along with the number of cases filed in that particular zip code. List them in decreasing order with respect to the number of cases. Display only the top <code>3</code> zip codes. Ensure that the zip code is not empty.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> p.zip, <span class="keyword">count</span>(c.case_id) <span class="keyword">as</span> num_cases</span><br><span class="line"><span class="keyword">from</span> parties p, charges c</span><br><span class="line"><span class="keyword">where</span> p.case_id = c.case_id <span class="keyword">and</span> p.zip != <span class="string">''</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> p.zip</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_cases <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Top zip codes with most criminals</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> parties.zip, <span class="keyword">count</span>(parties.case_id) <span class="keyword">as</span> case_count</span><br><span class="line"><span class="keyword">from</span> parties, charges</span><br><span class="line"><span class="keyword">where</span> parties.case_id = charges.case_id</span><br><span class="line"><span class="keyword">and</span> parties.zip &lt;&gt; <span class="string">''</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> parties.zip</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> case_count <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">3</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q11"><a href="#Q11" class="headerlink" title="Q11"></a>Q11</h1><p>Some attorneys are awesome at their job. List the top 5 attorneys in Maryland by examining the number of cases that an attorney handles and the percentage of cases wherein they were successful. The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A|100|60.123</span><br><span class="line">B|200|45.123</span><br><span class="line">C|100|30.123</span><br><span class="line">D|500|20.123</span><br><span class="line">E|100|10.123</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the attorney’s name, number of cases handled, and the percentage of cases won (i.e. the disposition was <code>Not Guilty</code>). Examine only attorneys who have handled more than <code>100</code> cases. List the attorneys in decreasing order with respect to their success percentage and number of cases handled, respectively. Display only the top <code>5</code> attorneys. Ensure that the attorney’s name is not empty. You might want to leverage common table expressions (CTEs) in this query. <span class="exturl" data-url="aHR0cHM6Ly9zcWxpdGUub3JnL2xhbmdfd2l0aC5odG1s" title="https://sqlite.org/lang_with.html">using CTEs in SQLite<i class="fa fa-external-link"></i></span>.</p>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Attorney performance</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> attorney_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> charges.case_id <span class="keyword">as</span> case_id, disposition, <span class="keyword">name</span> <span class="keyword">from</span> charges, attorneys</span><br><span class="line">    <span class="keyword">where</span> charges.case_id = attorneys.case_id</span><br><span class="line">    <span class="keyword">and</span> <span class="keyword">name</span> &lt;&gt; <span class="string">''</span></span><br><span class="line">), aggregate_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">as</span> total_count, <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">from</span> attorney_table</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span></span><br><span class="line">), success_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">as</span> success_count, <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">from</span> attorney_table</span><br><span class="line">    <span class="keyword">where</span> disposition = <span class="string">'Not Guilty'</span></span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> aggregate_table.name, total_count, (success_count * <span class="number">100.0</span>/total_count) <span class="keyword">as</span> success_percent</span><br><span class="line"><span class="keyword">from</span> aggregate_table, success_table</span><br><span class="line"><span class="keyword">where</span> aggregate_table.name = success_table.name <span class="keyword">and</span> total_count &gt; <span class="number">100</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> success_percent <span class="keyword">desc</span>, total_count <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">5</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q12"><a href="#Q12" class="headerlink" title="Q12"></a>Q12</h1><p>Find the attorney with the seventh highest success percentage (by extending the previous query). The output should look like this:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">G|50|5.123</span><br></pre></td></tr></tbody></table></figure>
+<p>Details: Print the attorney’s name, number of cases handled, and the percentage of cases won (i.e. the disposition was Not Guilty). Examine only attorneys who have handled more than 100 cases. Ensure that the attorney’s name is not empty.</p>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--- Attorney with seventh highest success percentage</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> attorney_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> charges.case_id <span class="keyword">as</span> case_id, disposition, <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">from</span> charges, attorneys</span><br><span class="line">    <span class="keyword">where</span> charges.case_id = attorneys.case_id</span><br><span class="line">          <span class="keyword">and</span> <span class="keyword">name</span> &lt;&gt; <span class="string">''</span></span><br><span class="line">), aggregate_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">as</span> total_count, <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">from</span> attorney_table</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">having</span> total_count &gt; <span class="number">100</span></span><br><span class="line">), success_table <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(case_id) <span class="keyword">as</span> success_count, <span class="keyword">name</span></span><br><span class="line">    <span class="keyword">from</span> attorney_table</span><br><span class="line">    <span class="keyword">where</span> disposition = <span class="string">'Not Guilty'</span></span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> aggregate_table.name, total_count, (success_count * <span class="number">100.0</span>/total_count) <span class="keyword">as</span> success_percent</span><br><span class="line"><span class="keyword">from</span> aggregate_table, success_table</span><br><span class="line"><span class="keyword">where</span> aggregate_table.name = success_table.name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> success_percent <span class="keyword">desc</span>, total_count <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">offset</span> <span class="number">6</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>Q11和Q12只有最后的<code>LIMIT</code>, <code>OFFSET</code>有区别。</p>
+<p><code>LIMIT</code>, <code>OFFSET</code>: 见 <a href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/#LIMIT-OFFSET">https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/#LIMIT-OFFSET</a></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-17Fall/" title="[CMU-15445]HomeWork1_17Fall">https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-17Fall/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/SQLite/" rel="tag"><i class="fa fa-tag"></i> SQLite</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/08/CMU-15445-HomeWork1-18Fall/" rel="prev" title="[CMU-15445]HomeWork1_18Fall">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]HomeWork1_18Fall
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/09/SQL-Leetcode-175-combine-two-tables/" rel="next" title="[Leetcode-SQL] 175.combine.two.tables">
+      [Leetcode-SQL] 175.combine.two.tables <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#熟悉数据集"><span class="nav-number">1.</span> <span class="nav-text">熟悉数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q0"><span class="nav-number">2.</span> <span class="nav-text">Q0</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q1"><span class="nav-number">3.</span> <span class="nav-text">Q1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q2"><span class="nav-number">4.</span> <span class="nav-text">Q2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q3"><span class="nav-number">5.</span> <span class="nav-text">Q3</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q4"><span class="nav-number">6.</span> <span class="nav-text">Q4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q5"><span class="nav-number">7.</span> <span class="nav-text">Q5</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q6"><span class="nav-number">8.</span> <span class="nav-text">Q6</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q7"><span class="nav-number">9.</span> <span class="nav-text">Q7</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q8"><span class="nav-number">10.</span> <span class="nav-text">Q8</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q9"><span class="nav-number">11.</span> <span class="nav-text">Q9</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q10"><span class="nav-number">12.</span> <span class="nav-text">Q10</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q11"><span class="nav-number">13.</span> <span class="nav-text">Q11</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q12"><span class="nav-number">14.</span> <span class="nav-text">Q12</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-17Fall/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

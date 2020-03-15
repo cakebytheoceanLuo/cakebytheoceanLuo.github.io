@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="2018 Fall: HOMEWORK #1 - SQL Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;homework1&#x2F;Solution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;files&#x2F;hw1-sols.tar.gz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]HomeWork1_18Fall">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-18Fall/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="2018 Fall: HOMEWORK #1 - SQL Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;homework1&#x2F;Solution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;files&#x2F;hw1-sols.tar.gz">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://15445.courses.cs.cmu.edu/fall2018/files/schema.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/num_range.jpg">
+<meta property="article:published_time" content="2020-03-08T11:51:49.000Z">
+<meta property="article:modified_time" content="2020-03-08T11:52:34.889Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="SQLite">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://15445.courses.cs.cmu.edu/fall2018/files/schema.png">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-18Fall/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]HomeWork1_18Fall | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-18Fall/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]HomeWork1_18Fall
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-08 12:51:49 / 修改时间：12:52:34" itemprop="dateCreated datePublished" datetime="2020-03-08T12:51:49+01:00">2020-03-08</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/08/CMU-15445-HomeWork1-18Fall/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]HomeWork1_18Fall" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2018 Fall: HOMEWORK #1 - SQL</p>
+<p>Homework: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgvaG9tZXdvcmsxLw==" title="https://15445.courses.cs.cmu.edu/fall2018/homework1/">https://15445.courses.cs.cmu.edu/fall2018/homework1/<i class="fa fa-external-link"></i></span><br>Solution: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgvZmlsZXMvaHcxLXNvbHMudGFyLmd6" title="https://15445.courses.cs.cmu.edu/fall2018/files/hw1-sols.tar.gz">https://15445.courses.cs.cmu.edu/fall2018/files/hw1-sols.tar.gz<i class="fa fa-external-link"></i></span></p>
+<a id="more"></a>
+<p>CMU推荐使用 SQLite: <span class="exturl" data-url="aHR0cHM6Ly93d3cuc3FsaXRlLm9yZy9pbmRleC5odG1s" title="https://www.sqlite.org/index.html">https://www.sqlite.org/index.html<i class="fa fa-external-link"></i></span></p>
+<p>已检查过我的解法和答案生成的结果一样。</p>
+<!-- TODO: link 文章 SQLITE 安装 和SQLITE数据集 -->
+<h1 id="熟悉数据集"><a href="#熟悉数据集" class="headerlink" title="熟悉数据集"></a>熟悉数据集</h1><p><span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgvaG9tZXdvcmsxLw==" title="https://15445.courses.cs.cmu.edu/fall2018/homework1/">https://15445.courses.cs.cmu.edu/fall2018/homework1/<i class="fa fa-external-link"></i></span>  -&gt; CHECK THE SCHEMA</p>
+<p><img data-src="https://15445.courses.cs.cmu.edu/fall2018/files/schema.png" alt="schema"></p>
+<blockquote>
+<p>When calculating the duration of a bike trip, please use <code>trip.start_time</code> and <code>trip.end_time</code>. Please do NOT use <code>trip.duration</code>, there is inconsistency in <code>trip.duration</code> in the data we have.</p>
+</blockquote>
+<h1 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h1><p>Count the number of cities. The purpose of this query is to make sure that the formatting of your output matches exactly the formatting of our auto- grading script.</p>
+<p>Details: Print the number of cities (eliminating duplicates).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span>(city)) <span class="keyword">from</span> station;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h1><p>Count the number of stations in each city.</p>
+<p>Details: Print city name and number of stations. Sort by number of stations (increasing), and break ties by city name (increasing).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> city, <span class="keyword">count</span>(station_id) <span class="keyword">as</span> num_station</span><br><span class="line"><span class="keyword">from</span> station</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> city</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_station <span class="keyword">asc</span>, city <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> city, <span class="keyword">count</span>(station_id) <span class="keyword">as</span> cnt <span class="keyword">from</span> station <span class="keyword">group</span> <span class="keyword">by</span> city <span class="keyword">order</span> <span class="keyword">by</span> cnt <span class="keyword">asc</span>, city <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q3"><a href="#Q3" class="headerlink" title="Q3"></a>Q3</h1><p>Find the percentage of trips in each city. A trip belongs to a city as long as its start station or end station is in the city. For example, if a trip started from station A in city P and ended in station B in city Q, then the trip belongs to both city P and city Q. If P equals to Q, the trip is only counted once.</p>
+<p>Details: Print city name and ratio between the number of trips that belong to that city against the total number of trips (a decimal between 0-1, round to <code>four</code> decimal places using <code>ROUND()</code>). Sort by ratio (decreasing), and break ties by city name (increasing).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> count_once <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> start_station_id</span><br><span class="line">    <span class="keyword">from</span> trip t, station s1, station s2</span><br><span class="line">    <span class="keyword">where</span> t.start_station_id = s1.station_id <span class="keyword">and</span> t.end_station_id = s2.station_id <span class="keyword">and</span> s1.city = s2.city</span><br><span class="line">    ),</span><br><span class="line">     count_twice <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> start_station_id, end_station_id</span><br><span class="line">    <span class="keyword">from</span> trip t, station s1, station s2</span><br><span class="line">    <span class="keyword">where</span> t.start_station_id = s1.station_id <span class="keyword">and</span> t.end_station_id = s2.station_id <span class="keyword">and</span> s1.city != s2.city</span><br><span class="line">     ),</span><br><span class="line">     occurrence (station_id) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> * <span class="keyword">from</span> count_once</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> start_station_id <span class="keyword">from</span> count_twice</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> end_station_id <span class="keyword">from</span> count_twice</span><br><span class="line">      ),</span><br><span class="line">     num_occurrence (val) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> trip</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> s.city, <span class="keyword">ROUND</span>(<span class="number">1.0</span> * <span class="keyword">count</span>(o.station_id) / no.val, <span class="number">4</span>) <span class="keyword">as</span> precentage</span><br><span class="line"><span class="keyword">from</span> occurrence o, station s, num_occurrence <span class="keyword">no</span></span><br><span class="line"><span class="keyword">where</span> o.station_id = s.station_id</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> s.city</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> precentage <span class="keyword">desc</span>, s.city <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> city_trip_cnt.city, <span class="keyword">round</span>(city_trip_cnt.cnt * <span class="number">1.0</span> / trip_cnt.cnt, <span class="number">4</span>) <span class="keyword">as</span> ratio</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">     (<span class="keyword">select</span> city, <span class="keyword">count</span>(<span class="keyword">distinct</span>(<span class="keyword">id</span>)) <span class="keyword">as</span> cnt</span><br><span class="line">      <span class="keyword">from</span> trip, station</span><br><span class="line">      <span class="keyword">where</span> station_id = start_station_id <span class="keyword">or</span> station_id = end_station_id <span class="keyword">group</span> <span class="keyword">by</span> city) <span class="keyword">as</span> city_trip_cnt,</span><br><span class="line">     (<span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">as</span> cnt <span class="keyword">from</span> trip) <span class="keyword">as</span> trip_cnt</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> ratio <span class="keyword">desc</span>, city <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>注意：</p>
+<ul>
+<li><strong>the total number of trips</strong>指 <code>select count(*) from trip</code></li>
+<li>答案这样分子分母其实不对应</li>
+<li>我个人觉得<strong>the total number of trips</strong>应该对应 <code>select count(*) from occurrence</code>, 这样所有分子相加才等于分母，所有的百分比相加正好是1</li>
+<li>我觉得答案不恰当，毕竟答案中所有的百分比相加是 <code>1.0016</code>, 已经大于1了。 <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8">😄</span></li>
+</ul>
+<h1 id="Q4"><a href="#Q4" class="headerlink" title="Q4"></a>Q4</h1><p>For each city, find the most popular station in that city. “Popular” means that the station has the highest count of visits. As above, either starting a trip or finishing a trip at a station, the trip is counted as one “visit” to that station. The trip is only counted once if the start station and the end station are the same.</p>
+<p>Details: For each station, print city name, most popular station name and its visit count. Sort by city name, ascending.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> count_once <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> start_station_id</span><br><span class="line">    <span class="keyword">from</span> trip</span><br><span class="line">    <span class="keyword">where</span> start_station_id = end_station_id</span><br><span class="line">    ),</span><br><span class="line">     count_twice <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> start_station_id, end_station_id</span><br><span class="line">    <span class="keyword">from</span> trip</span><br><span class="line">    <span class="keyword">where</span> start_station_id != end_station_id</span><br><span class="line">     ),</span><br><span class="line">     occurrence (station_id) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> * <span class="keyword">from</span> count_once</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> start_station_id <span class="keyword">from</span> count_twice</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> end_station_id <span class="keyword">from</span> count_twice</span><br><span class="line">      ),</span><br><span class="line">     popular_station <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> station_id, <span class="keyword">count</span>(*) <span class="keyword">as</span> num_visit</span><br><span class="line">    <span class="keyword">from</span> occurrence</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> station_id</span><br><span class="line">     ), popular_city_station <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> s.city, s.station_name, ps.num_visit</span><br><span class="line">    <span class="keyword">from</span> popular_station ps, station s</span><br><span class="line">    <span class="keyword">where</span> ps.station_id = s.station_id <span class="keyword">and</span> ps.num_visit =</span><br><span class="line">        (<span class="keyword">select</span> <span class="keyword">max</span>(ps_.num_visit) <span class="keyword">from</span> popular_station ps_, station s_ <span class="keyword">where</span> ps_.station_id = s_.station_id <span class="keyword">and</span> s.city = s_.city)</span><br><span class="line">     )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> popular_city_station</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> city;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> visit(station_id, station_name, city, cnt) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> station_id, station_name, city, <span class="keyword">count</span>(<span class="keyword">id</span>) <span class="keyword">as</span> cnt</span><br><span class="line">    <span class="keyword">from</span> trip, station</span><br><span class="line">    <span class="keyword">where</span> station_id = start_station_id <span class="keyword">or</span> station_id = end_station_id</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> station_id</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> visit.city, visit.station_name, visit.cnt</span><br><span class="line"><span class="keyword">from</span> visit</span><br><span class="line"><span class="keyword">where</span> visit.cnt =</span><br><span class="line">      (<span class="keyword">select</span> <span class="keyword">max</span>(cnt)</span><br><span class="line">      <span class="keyword">from</span> visit <span class="keyword">as</span> max_visit</span><br><span class="line">      <span class="keyword">where</span> max_visit.city = visit.city)</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> city;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q5"><a href="#Q5" class="headerlink" title="Q5"></a>Q5</h1><p>Find the top 10 days that have the highest average bike utilization. For simplicity, we only consider trips that use bikes with <code>id &lt;= 100</code>. The average bike utilization on date D is calculated as the sum of the durations of all the trips that happened on date D divided by the total number of bikes with <code>id &lt;= 100</code>, which is a <code>constant</code>. If a trip overlaps with date D, but starts before date D or ends after date D, then only the interval that overlaps with date D (from 0:00 to 24:00) will be counted when calculating the average bike utilization of date D. And we only calculate the average bike utilization for the date that has been either a start or an end date of a trip. You can assume that no trip has negative time (i.e., for all trips, start time &lt;= end time).</p>
+<p>Details: For the dates with the top 10 average duration, print the date and the average bike duration on that date (in seconds, round to four decimal places using the <code>ROUND()</code> function). Sort by the average duration, decreasing. <code>Please refer to the updated note before Q1 when calculating the duration of a trip.</code></p>
+<p>Hint: All timestamps are stored as text after loaded from csv in sqlite. You can use <code>datetime(timestamp string)</code> to get the timestamp out of the string and <code>date(timestamp string)</code> to get the date out of the string. You may also find the funtion <code>strftime()</code> helpful in computing the duration between two timestamps.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> dates <span class="keyword">as</span> ( <span class="comment">-- list all possible date</span></span><br><span class="line">    <span class="keyword">select</span> <span class="built_in">date</span>(start_time) <span class="keyword">as</span> tdate</span><br><span class="line">    <span class="keyword">from</span> trip</span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">    <span class="keyword">select</span> <span class="built_in">date</span>(end_time) <span class="keyword">as</span> tdate</span><br><span class="line">    <span class="keyword">from</span> trip)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> tdate,</span><br><span class="line">       <span class="keyword">round</span>(</span><br><span class="line">           <span class="keyword">sum</span>(strftime(<span class="string">'%s'</span>, <span class="keyword">min</span>(datetime(end_time), datetime(tdate, <span class="string">'+1 day'</span>)))</span><br><span class="line">               - strftime(<span class="string">'%s'</span>, <span class="keyword">max</span>(datetime(start_time), datetime(tdate))))</span><br><span class="line">           * <span class="number">1.0</span> / (<span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span>(bike_id)) <span class="keyword">from</span> trip <span class="keyword">where</span> bike_id &lt;= <span class="number">100</span>),</span><br><span class="line">        <span class="number">4</span>) <span class="keyword">as</span> avg_duration</span><br><span class="line"><span class="keyword">from</span> trip, dates</span><br><span class="line"><span class="keyword">where</span> bike_id &lt;= <span class="number">100</span> <span class="keyword">and</span></span><br><span class="line">      <span class="comment">-- overlap with this date</span></span><br><span class="line">      datetime(start_time, <span class="string">'-1 day'</span>) &lt; datetime(tdate) <span class="keyword">and</span></span><br><span class="line">      datetime(end_time) &gt; datetime(tdate)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> tdate</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> avg_duration <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> dates <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="built_in">date</span>(start_time) <span class="keyword">as</span> tdate</span><br><span class="line">    <span class="keyword">from</span> trip</span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">    <span class="keyword">select</span> <span class="built_in">date</span>(end_time) <span class="keyword">as</span> tdate</span><br><span class="line">    <span class="keyword">from</span> trip)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> tdate,</span><br><span class="line">       <span class="keyword">round</span>(</span><br><span class="line">           <span class="keyword">sum</span>(strftime(<span class="string">'%s'</span>, <span class="keyword">min</span>(datetime(end_time), datetime(tdate, <span class="string">'+1 day'</span>)))</span><br><span class="line">               - strftime(<span class="string">'%s'</span>, <span class="keyword">max</span>(datetime(start_time), datetime(tdate))))</span><br><span class="line">           * <span class="number">1.0</span> / (<span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span>(bike_id)) <span class="keyword">from</span> trip <span class="keyword">where</span> bike_id &lt;= <span class="number">100</span>),</span><br><span class="line">        <span class="number">4</span>) <span class="keyword">as</span> avg_duration</span><br><span class="line"><span class="keyword">from</span> trip, dates</span><br><span class="line"><span class="keyword">where</span> bike_id &lt;= <span class="number">100</span> <span class="keyword">and</span></span><br><span class="line">      datetime(start_time) &lt; datetime(tdate, <span class="string">'+1 day'</span>) <span class="keyword">and</span></span><br><span class="line">      datetime(end_time) &gt; datetime(tdate)</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> tdate</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> avg_duration <span class="keyword">desc</span> <span class="keyword">limit</span> <span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>首先，数据集保证了一个 invariant不变量 ： $\forall \mathrm{trip t}: \mathrm{t.start_time} &lt; \mathrm{t.end_time}$</li>
+<li>另外一个常识的 不变量 也很重要： $\forall \mathrm{tdate}: \mathrm{tdate} &lt; \mathrm{tdate + 1 day}$</li>
+</ul>
+<p><br></p>
+<p><code>strftime('%s', min(datetime(end_time), datetime(tdate, '+1 day'))) - strftime('%s', max(datetime(start_time), datetime(tdate)))</code> ： 计算的是这个trip的<strong>在特定tdate这一天中的</strong>持续时间</p>
+<ul>
+<li>我们为了讲解，简化这个表达式：<code>min(end_time, tdate + 1 day) - max(start_time, tdate)</code></li>
+<li>我们从<strong>减数，　被减数</strong>角度分析<code>start_time</code>, <code>end_time</code>的两种情况：<ul>
+<li>被减数：<ul>
+<li>这个trip <code>start_time</code>在<code>tdate</code>之前：$\mathrm{start_time} &lt; \mathrm{tdate}$:　被减数取<code>tdate</code></li>
+<li>或　</li>
+<li>这个trip <code>start_time</code>在<code>tdate</code>之后: $\mathrm{tdate} &lt; \mathrm{start_time}$:　被减数取<code>start_time</code></li>
+<li>所以被减数总是<code>max(start_time, tdate)</code></li>
+</ul>
+</li>
+<li>减数同理(我再啰嗦一会儿)：<ul>
+<li>这个trip <code>end_time</code>在<code>tdate + 1 day</code>之前：$\mathrm{end_time} &lt; \mathrm{tdate + 1 day}$:　减数取<code>end_time</code></li>
+<li>或　</li>
+<li>这个trip <code>end_time</code>在<code>tdate + 1 day</code>之后: $\mathrm{tdate + 1 day} &lt; \mathrm{end_time}$:　减数取<code>tdate + 1 day</code></li>
+<li>所以减数总是<code>min(end_time, tdate + 1 day)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<p>接下来我们看两个可以替换的表达(这题的核心)：</p>
+<ul>
+<li><code>datetime(start_time, '-1 day') &lt; datetime(tdate) and datetime(end_time) &gt; datetime(tdate)</code> — 来自我的解法</li>
+<li><code>datetime(start_time) &lt; datetime(tdate, '+1 day') and datetime(end_time) &gt; datetime(tdate)</code> — 来自答案</li>
+</ul>
+<p>然后我用下图来解释<strong>来自答案</strong>的表达，即我们观察四个时间点：</p>
+<ul>
+<li><code>tdate</code></li>
+<li><code>tdate + 1 day</code></li>
+<li><code>start_time</code></li>
+<li><code>end_time</code></li>
+</ul>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/num_range.jpg" alt="num_range"></p>
+<ul>
+<li>$\forall \mathrm{tdate}: \mathrm{tdate} &lt; \mathrm{tdate + 1 day}$</li>
+<li>但是　<code>end_time</code> 和　<code>start_time</code> 的差值不固定　</li>
+<li>长数轴上方的四个小数值区间，是时间域和<code>tdate</code>重叠(ovelap)的所有可能性</li>
+<li>在这所有的可能性中，均满足 $\mathrm{start_time} &lt; \mathrm{tdate + 1 day} \wedge \mathrm{end_time} &gt; \mathrm{tdate}$, 即 <code>datetime(start_time) &lt; datetime(tdate, '+1 day') and datetime(end_time) &gt; datetime(tdate)</code><br>— 来自答案的表达式</li>
+<li>长数轴下方的红色小数值区间是一个反例，　前面提到的条件在这里没有被满足。</li>
+</ul>
+<h1 id="Q6"><a href="#Q6" class="headerlink" title="Q6"></a>Q6</h1><p>One of the possible data-entry errors is to record a bike as being used in two different trips, at the same time. Thus, we want to spot pairs of overlapping intervals (start time, end time). To keep the output manageable, we ask you to do this check for bikes with <code>id between 100 and 200 (both inclusive)</code>. Note: Assume that no trip has negative time, i.e., for all trips, start time &lt;= end time.</p>
+<p>Details: For each conflict (a pair of conflict trips), print the bike id, former trip id, former start time, former end time, latter trip id, latter start time, latter end time. Sort by bike id (increasing), break ties with former trip id (increasing) and then latter trip id (increasing).</p>
+<p>Hint: (1) Report each conflict pair only once, so that <code>former trip id &lt; latter trip id</code>. (2) We give you the (otherwise tricky) condition for conflicts: start1 &lt; end2 AND end1 &gt; start2</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> t1.bike_id, t1.id, t1.start_time, t1.end_time, t2.id, t2.start_time, t2.end_time</span><br><span class="line"><span class="keyword">from</span> trip t1, trip t2</span><br><span class="line"><span class="keyword">where</span> t1.start_time &lt; t2.end_time <span class="keyword">and</span></span><br><span class="line">      t1.end_time &gt; t2.start_time <span class="keyword">and</span></span><br><span class="line">      t1.id &lt; t2.id <span class="keyword">and</span></span><br><span class="line">      t1.bike_id <span class="keyword">between</span> <span class="number">100</span> <span class="keyword">and</span> <span class="number">200</span> <span class="keyword">and</span></span><br><span class="line">      t1.bike_id = t2.bike_id</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> t1.bike_id <span class="keyword">asc</span>, t1.id <span class="keyword">asc</span>, t2.id <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> t1.bike_id, t1.id, t1.start_time, t1.end_time, t2.id, t2.start_time, t2.end_time </span><br><span class="line"><span class="keyword">from</span> trip <span class="keyword">as</span> t1, trip <span class="keyword">as</span> t2 </span><br><span class="line"><span class="keyword">where</span> t1.bike_id = t2.bike_id <span class="keyword">and</span> </span><br><span class="line">      t1.bike_id <span class="keyword">between</span> <span class="number">100</span> <span class="keyword">and</span> <span class="number">200</span> <span class="keyword">and</span> </span><br><span class="line">      t1.id &lt; t2.id <span class="keyword">and</span> t1.start_time &lt; t2.end_time <span class="keyword">and</span> </span><br><span class="line">      t2.start_time &lt; t1.end_time </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> t1.bike_id <span class="keyword">asc</span>, t1.id <span class="keyword">asc</span>, t2.id <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q7"><a href="#Q7" class="headerlink" title="Q7"></a>Q7</h1><p>Find all the bikes that have been to more than one city. A bike has been to a city as long as the start station or end station in one of its trips is in that city.</p>
+<p>Details: For each bike that has been to more than one city, print the bike id and the number of cities it has been to. Sort by the number of cities (decreasing), then bike id (increasing).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> trip2cities (bike_id, city1, city2)<span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> t.bike_id, s1.city, s2.city</span><br><span class="line">    <span class="keyword">from</span> trip t, station s1, station s2</span><br><span class="line">    <span class="keyword">where</span> t.start_station_id = s1.station_id <span class="keyword">and</span></span><br><span class="line">          t.end_station_id = s2.station_id),</span><br><span class="line">     tripCity (bike_id, city) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">distinct</span> bike_id, city1</span><br><span class="line">    <span class="keyword">from</span> trip2cities</span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">distinct</span> bike_id, city2</span><br><span class="line">    <span class="keyword">from</span> trip2cities</span><br><span class="line">     )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> bike_id, <span class="keyword">count</span>(<span class="keyword">distinct</span> city) <span class="keyword">as</span> num_city</span><br><span class="line"><span class="keyword">from</span> tripCity</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> bike_id</span><br><span class="line"><span class="keyword">having</span> num_city &gt; <span class="number">1</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_city <span class="keyword">desc</span>, bike_id <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> bike_id, <span class="keyword">count</span>(<span class="keyword">distinct</span>(city)) <span class="keyword">as</span> cnt </span><br><span class="line"><span class="keyword">from</span> trip, station </span><br><span class="line"><span class="keyword">where</span> start_station_id = station_id <span class="keyword">or</span> </span><br><span class="line">      end_station_id = station_id </span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> bike_id </span><br><span class="line"><span class="keyword">having</span> <span class="keyword">count</span>(<span class="keyword">distinct</span>(city)) &gt; <span class="number">1</span> </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> cnt <span class="keyword">desc</span>, bike_id <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>这次的答案总是用一个<code>or</code>来混合所有的start和end</li>
+<li>我总是用<code>union all</code>或<code>union</code>, 我的目的是努力生成数量最小的中间结果，来加速SQL查询</li>
+<li>绝大多数情况，我的解法比答案要快。(比如这一题)</li>
+</ul>
+<h1 id="Q8"><a href="#Q8" class="headerlink" title="Q8"></a>Q8</h1><p>Find what is the average number of trips made per day on each type of weather day. The type of weather on a day is specified by weather.events, such as ‘Rain’, ‘Fog’ and so on. For simplicity, we consider all days that does not have a weather event (<code>weather.events = '\N'</code>) as a single type of weather. Here a trip belongs to a date only if its start time is on that date. We use the weather at the starting position of that trip as its weather type as well. There are also ‘Rain’ and ‘rain’ in weather.events. For simplicity, we consider them as different types of weathers. When counting the total number of days for a weather, we consider a weather happened on a date as long as it happened in at least one region on that date.</p>
+<p>Details: Print the name of the weather and the average number of trips made per day on that type of weather (round to <code>four</code> decimal places using <code>ROUND()</code>). Sort by the average number of trips (decreasing), then weather name (increasing).</p>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> weather_days(<span class="keyword">events</span>, cnt) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> w.events, <span class="keyword">count</span>(<span class="keyword">distinct</span> w.date) <span class="keyword">as</span> cnt </span><br><span class="line">    <span class="keyword">from</span> weather w </span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> w.events</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> w.events, <span class="keyword">round</span>(<span class="keyword">cast</span>(<span class="keyword">count</span>(<span class="keyword">distinct</span> t.id) <span class="keyword">as</span> <span class="built_in">float</span>)/<span class="keyword">cast</span>(wd.cnt <span class="keyword">as</span> <span class="built_in">float</span>), <span class="number">4</span>) <span class="keyword">as</span> <span class="keyword">avg</span> </span><br><span class="line"><span class="keyword">from</span> trip t, station s, weather w, weather_days wd</span><br><span class="line"><span class="keyword">where</span> t.start_station_id = s.station_id <span class="keyword">and</span> s.zip_code = w.zip_code <span class="keyword">and</span> <span class="built_in">date</span>(t.start_time) = w.date <span class="keyword">and</span> w.events = wd.events</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> w.events</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">avg</span> <span class="keyword">desc</span>, w.events <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>(我看完答案才理解这题的意思: When counting the total number of days for a weather, we consider a weather happened on a date as long as it happened in at least one region on that date.)</p>
+<h1 id="Q9"><a href="#Q9" class="headerlink" title="Q9"></a>Q9</h1><p>A short trip is a trip whose duration is <code>&lt;= 60 seconds</code>. Compute the average temperature that a short trip starts versus the average temperature that a non-short trip starts. We use weather.mean_temp on the date of the start time as the Temperature measurement.</p>
+<p>Details: Print the average temperature that a short trip starts and the average temperature that a non-short trip starts. (on the same row, and both round to <code>four</code> decimal places using <code>ROUND()</code>) <code>Please refer to the updated note before Q1 when calculating the duration of a trip.</code></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> shortT <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(w.mean_temp) <span class="keyword">as</span> <span class="keyword">avg</span></span><br><span class="line">    <span class="keyword">from</span> trip t, station s, weather w</span><br><span class="line">    <span class="keyword">where</span> <span class="built_in">date</span>(t.start_time) = w.date <span class="keyword">and</span></span><br><span class="line">          strftime(<span class="string">'%s'</span>, end_time) - strftime(<span class="string">'%s'</span>, start_time) &lt;= <span class="number">60</span> <span class="keyword">and</span></span><br><span class="line">          t.start_station_id = s.station_id <span class="keyword">and</span></span><br><span class="line">          s.zip_code = w.zip_code),</span><br><span class="line">     non_shortT <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(w.mean_temp) <span class="keyword">as</span> <span class="keyword">avg</span></span><br><span class="line">    <span class="keyword">from</span> trip t, station s, weather w</span><br><span class="line">    <span class="keyword">where</span> <span class="built_in">date</span>(t.start_time) = w.date <span class="keyword">and</span></span><br><span class="line">          strftime(<span class="string">'%s'</span>, end_time) - strftime(<span class="string">'%s'</span>, start_time) &gt; <span class="number">60</span> <span class="keyword">and</span></span><br><span class="line">          t.start_station_id = s.station_id <span class="keyword">and</span></span><br><span class="line">          s.zip_code = w.zip_code</span><br><span class="line">     )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">ROUND</span>(s.avg, <span class="number">4</span>), <span class="keyword">ROUND</span>(ns.avg, <span class="number">4</span>)</span><br><span class="line"><span class="keyword">from</span> shortT s, non_shortT ns;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">round</span>(x.avg, <span class="number">4</span>), <span class="keyword">round</span>(y.avg, <span class="number">4</span>)</span><br><span class="line"><span class="keyword">from</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(mean_temp) <span class="keyword">as</span> <span class="keyword">avg</span></span><br><span class="line">    <span class="keyword">from</span> weather, station, trip</span><br><span class="line">    <span class="keyword">where</span> <span class="built_in">date</span>(start_time) = <span class="built_in">date</span> <span class="keyword">and</span></span><br><span class="line">          strftime(<span class="string">'%s'</span>, end_time) - strftime(<span class="string">'%s'</span>, start_time) &lt;= <span class="number">60</span> <span class="keyword">and</span></span><br><span class="line">          start_station_id = station_id <span class="keyword">and</span></span><br><span class="line">          station.zip_code = weather.zip_code) <span class="keyword">as</span> x,</span><br><span class="line">     (<span class="keyword">select</span> <span class="keyword">avg</span>(mean_temp) <span class="keyword">as</span> <span class="keyword">avg</span></span><br><span class="line">     <span class="keyword">from</span> weather, station, trip</span><br><span class="line">     <span class="keyword">where</span> <span class="built_in">date</span>(start_time) = <span class="built_in">date</span> <span class="keyword">and</span></span><br><span class="line">           strftime(<span class="string">'%s'</span>, end_time) - strftime(<span class="string">'%s'</span>, start_time) &gt; <span class="number">60</span> <span class="keyword">and</span></span><br><span class="line">           start_station_id = station_id <span class="keyword">and</span> station.zip_code = weather.zip_code) <span class="keyword">as</span> y;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q10"><a href="#Q10" class="headerlink" title="Q10"></a>Q10</h1><p>For each zip code that has experienced ‘Rain-Thunderstorm’ weather, find the station that has the most number of trips in that zip code under the storm weather. For simplicity, we only consider the start time of a trip when deciding the station and the weather for that trip.</p>
+<p>Details: Print the zip code that has experienced the ‘Rain-Thunderstorm’ weather, the name of the station that has the most number of trips under the strom weather in that zip code, and the total number of trips that station has under the storm weather. Sort by the zip code (increasing). You do not need to print the zip code that has experienced ‘Rain-Thunderstorm’ weather but no trip happens on any storm day in that zip code.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> s.zip_code, s.station_name, <span class="keyword">count</span>(<span class="keyword">distinct</span> t.id) <span class="keyword">as</span> num_trips</span><br><span class="line"><span class="keyword">from</span> weather w, station s, trip t</span><br><span class="line"><span class="keyword">where</span> w.events = <span class="string">'Rain-Thunderstorm'</span> <span class="keyword">and</span></span><br><span class="line">      w.date = <span class="built_in">date</span>(t.start_time) <span class="keyword">and</span></span><br><span class="line">      s.station_id = t.start_station_id <span class="keyword">and</span></span><br><span class="line">      s.zip_code = w.zip_code</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> s.zip_code, s.station_name</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_trips <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">1</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> storm_count(zip_code, station_id, station_name, cnt) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> station.zip_code, station_id, station_name, <span class="keyword">count</span>(*)</span><br><span class="line">    <span class="keyword">from</span> weather, station, trip</span><br><span class="line">    <span class="keyword">where</span> <span class="built_in">date</span>(start_time) = <span class="built_in">date</span> <span class="keyword">and</span></span><br><span class="line">          <span class="keyword">events</span> = <span class="string">'Rain-Thunderstorm'</span> <span class="keyword">and</span></span><br><span class="line">          start_station_id = station_id <span class="keyword">and</span></span><br><span class="line">          station.zip_code = weather.zip_code</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> station.zip_code, station_id)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> zip_code, station_name, cnt</span><br><span class="line"><span class="keyword">from</span> storm_count</span><br><span class="line"><span class="keyword">where</span> cnt = (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">max</span>(max_count.cnt)</span><br><span class="line">    <span class="keyword">from</span> storm_count <span class="keyword">as</span> max_count</span><br><span class="line">    <span class="keyword">where</span> max_count.zip_code = storm_count.zip_code)</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> zip_code <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>(我觉得答案过于复杂了，没有必要生成所有的中间结果，再最后和max join)</p>
+<p><br><br><br></p>
+<p>这次最难的题，肯定是第五题！</p>
+<p>这里有别人的答案，也可以借鉴：　<span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC9mNjg4ZjBhNGVhZjk=" title="https://www.jianshu.com/p/f688f0a4eaf9">https://www.jianshu.com/p/f688f0a4eaf9<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-18Fall/" title="[CMU-15445]HomeWork1_18Fall">https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-18Fall/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/SQLite/" rel="tag"><i class="fa fa-tag"></i> SQLite</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/07/CMU-15445-HomeWork1-19Fall/" rel="prev" title="[CMU-15445]HomeWork1_19Fall">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]HomeWork1_19Fall
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/08/CMU-15445-HomeWork1-17Fall/" rel="next" title="[CMU-15445]HomeWork1_17Fall">
+      [CMU-15445]HomeWork1_17Fall <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#熟悉数据集"><span class="nav-number">1.</span> <span class="nav-text">熟悉数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q1"><span class="nav-number">2.</span> <span class="nav-text">Q1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q2"><span class="nav-number">3.</span> <span class="nav-text">Q2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q3"><span class="nav-number">4.</span> <span class="nav-text">Q3</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q4"><span class="nav-number">5.</span> <span class="nav-text">Q4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q5"><span class="nav-number">6.</span> <span class="nav-text">Q5</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q6"><span class="nav-number">7.</span> <span class="nav-text">Q6</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q7"><span class="nav-number">8.</span> <span class="nav-text">Q7</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q8"><span class="nav-number">9.</span> <span class="nav-text">Q8</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q9"><span class="nav-number">10.</span> <span class="nav-text">Q9</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q10"><span class="nav-number">11.</span> <span class="nav-text">Q10</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/08/CMU-15445-HomeWork1-18Fall/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

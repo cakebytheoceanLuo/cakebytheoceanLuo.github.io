@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章囊括了数据库领域经典书籍，并附上必要链接，方便搜索。所推荐书籍囊括基础概念，实现原理，数据库理论，分布式数据库，数据库事务。 本文基于该文章： 123作者：钱卫宁 华东师范大学 数据科学与工程学院 教授&#x2F;院长链接：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;52498996&#x2F;answer&#x2F;142789892来源：知乎">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[DBMS Books]数据库书籍推荐">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/10/books/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="这篇文章囊括了数据库领域经典书籍，并附上必要链接，方便搜索。所推荐书籍囊括基础概念，实现原理，数据库理论，分布式数据库，数据库事务。 本文基于该文章： 123作者：钱卫宁 华东师范大学 数据科学与工程学院 教授&#x2F;院长链接：https:&#x2F;&#x2F;www.zhihu.com&#x2F;question&#x2F;52498996&#x2F;answer&#x2F;142789892来源：知乎">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-10T22:53:07.000Z">
+<meta property="article:modified_time" content="2020-03-10T22:54:09.438Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Books">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/10/books/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[DBMS Books]数据库书籍推荐 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/books/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [DBMS Books]数据库书籍推荐
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-10 23:53:07 / 修改时间：23:54:09" itemprop="dateCreated datePublished" datetime="2020-03-10T23:53:07+01:00">2020-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/10/books/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS Books]数据库书籍推荐" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章囊括了数据库领域经典书籍，并附上必要链接，方便搜索。所推荐书籍囊括基础概念，实现原理，数据库理论，分布式数据库，数据库事务。</p>
+<p>本文基于该文章：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">作者：钱卫宁 华东师范大学 数据科学与工程学院 教授/院长</span><br><span class="line">链接：https://www.zhihu.com/question/52498996/answer/142789892</span><br><span class="line">来源：知乎</span><br></pre></td></tr></tbody></table></figure>
+<a id="more"></a>
+<hr>
+<p>0.完整教材：</p>
+<ul>
+<li><p>全书：Hector Garcia-Molina, Jeffrey D. Ullman, Jennifer Widom: <strong>Database systems - the complete book</strong> (2. ed.). Pearson Education 2009, ISBN 978-0-13-187325-4, pp. I-XXVI, 1-1203</p>
+<ul>
+<li>官网：　<span class="exturl" data-url="aHR0cDovL2luZm9sYWIuc3RhbmZvcmQuZWR1L351bGxtYW4vZHNjYi5odG1s" title="http://infolab.stanford.edu/~ullman/dscb.html">http://infolab.stanford.edu/~ullman/dscb.html<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8xMTM3MjYyLw==" title="https://book.douban.com/subject/1137262/">https://book.douban.com/subject/1137262/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+<li><p>奶牛书：Raghu Ramakrishnan, Johannes Gehrke: <strong>Database management systems</strong> (3. ed.). McGraw-Hill 2003, ISBN 978-0-07-115110-8, pp. I-XXXII, 1-1065</p>
+<ul>
+<li>官网: <span class="exturl" data-url="aHR0cDovL3BhZ2VzLmNzLndpc2MuZWR1L35kYmJvb2sv" title="http://pages.cs.wisc.edu/~dbbook/">http://pages.cs.wisc.edu/~dbbook/<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8xMTU1OTM0Lw==" title="https://book.douban.com/subject/1155934/">https://book.douban.com/subject/1155934/<i class="fa fa-external-link"></i></span></li>
+<li>注: 清华大学出版社有出版英文影印版, 豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8xMTQ2MjMzLw==" title="https://book.douban.com/subject/1146233/">https://book.douban.com/subject/1146233/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+<p>1.数据库基础</p>
+<ul>
+<li><p>帆船书：Abraham Silberschatz, Henry F. Korth, S. Sudarshan: <strong>Database System Concepts</strong>, 6th Edition. McGraw-Hill Book Company 2010</p>
+<ul>
+<li>第六版: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI2L2luZGV4Lmh0bWw=" title="https://www.db-book.com/db6/index.html">https://www.db-book.com/db6/index.html<i class="fa fa-external-link"></i></span></li>
+<li>第七版 2019: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI3L2luZGV4Lmh0bWw=" title="https://www.db-book.com/db7/index.html">https://www.db-book.com/db7/index.html<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8xMDU0ODM3OS8=" title="https://book.douban.com/subject/10548379/">https://book.douban.com/subject/10548379/<i class="fa fa-external-link"></i></span></li>
+<li>注: 高等教育出版社有出版英文影印版, 豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8yNjA0NTkzMS8=" title="https://book.douban.com/subject/26045931/">https://book.douban.com/subject/26045931/<i class="fa fa-external-link"></i></span></li>
+<li>注: 机械工业出版社有出版英文影印版, 豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8yMDQ4MDY5My8=" title="https://book.douban.com/subject/20480693/">https://book.douban.com/subject/20480693/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+<li><p>全书前一半：Hector Garcia-Molina, Jeffrey D. Ullman, Jennifer Widom: <strong>Database systems - the complete book</strong> (2. ed.). Pearson Education 2009, ISBN 978-0-13-187325-4, pp. I-XXVI, 1-1203</p>
+<ul>
+<li>全书前一半对应: Jeff Ullman, Jennifer Widom: <strong>A First Course in Database systems</strong><ul>
+<li>官网: <span class="exturl" data-url="aHR0cDovL2luZm9sYWIuc3RhbmZvcmQuZWR1L351bGxtYW4vZmNkYi5odG1s" title="http://infolab.stanford.edu/~ullman/fcdb.html">http://infolab.stanford.edu/~ullman/fcdb.html<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8zOTIzNTc1Lw==" title="https://book.douban.com/subject/3923575/">https://book.douban.com/subject/3923575/<i class="fa fa-external-link"></i></span></li>
+<li>注: 机械工业出版社有出版英文影印版, 豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8zMTgyMTEwLw==" title="https://book.douban.com/subject/3182110/">https://book.douban.com/subject/3182110/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>2.实现</p>
+<ul>
+<li><p>奶牛书：Raghu Ramakrishnan, Johannes Gehrke: <strong>Database management systems</strong> (3. ed.). McGraw-Hill 2003, ISBN 978-0-07-115110-8, pp. I-XXXII, 1-1065</p>
+</li>
+<li><p>全书后一半：Hector Garcia-Molina, Jeffrey D. Ullman, Jennifer Widom: <strong>Database systems - the complete book</strong> (2. ed.). Pearson Education 2009, ISBN 978-0-13-187325-4, pp. I-XXVI, 1-1203</p>
+<ul>
+<li>全书后一半对应: Hector Garcia-Molina, Jeff Ullman, Jennifer Widom: <strong>Database System Implementation</strong><ul>
+<li>: 官网: <span class="exturl" data-url="aHR0cDovL2luZm9sYWIuc3RhbmZvcmQuZWR1L351bGxtYW4vZGJzaS5odG1s" title="http://infolab.stanford.edu/~ullman/dbsi.html">http://infolab.stanford.edu/~ullman/dbsi.html<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC80ODM4NDMwLw==" title="https://book.douban.com/subject/4838430/">https://book.douban.com/subject/4838430/<i class="fa fa-external-link"></i></span></li>
+<li>注: 机械工业出版社有出版英文影印版, 豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC80MTY2NTQ2Lw==" title="https://book.douban.com/subject/4166546/">https://book.douban.com/subject/4166546/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>M. Tamer Özsu, Patrick Valduriez: <strong>Principles of Distributed Database Systems</strong>, Third Edition. Springer 2011, ISBN 978-1-4419-8833-1, pp. I-XIX, 1-845</p>
+<ul>
+<li>Spinger出版社-书目网站: <span class="exturl" data-url="aHR0cHM6Ly93d3cuc3ByaW5nZXIuY29tL3VzL2Jvb2svOTc4MTQ5Mzk0MTc0Mmh0dHBzOi8vYm9vay5kb3ViYW4uY29tL3N1YmplY3QvMjY4NTE2MDUv" title="https://www.springer.com/us/book/9781493941742https://book.douban.com/subject/26851605/">https://www.springer.com/us/book/9781493941742https://book.douban.com/subject/26851605/<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8yNjg1MTYwNS8=" title="https://book.douban.com/subject/26851605/">https://book.douban.com/subject/26851605/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+<p>3.理论</p>
+<ul>
+<li><p>棒球书：J.D. Ullman: <strong>Principles of Database and Knowledge-base Systems</strong>, Vol. I/II. 1988/1989</p>
+<ul>
+<li>ACM-书目链接: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS9ib29rLzEwLjU1NTUvNDI3OTA=" title="https://dl.acm.org/doi/book/10.5555/42790">https://dl.acm.org/doi/book/10.5555/42790<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+<li><p>爱丽丝书：Serge Abiteboul, Richard Hull, Victor Vianu: <strong>Foundations of Databases</strong>. Addison-Wesley 1995, ISBN 0-201-53771-0</p>
+<ul>
+<li>官网：<span class="exturl" data-url="aHR0cDovL3dlYmRhbS5pbnJpYS5mci9BbGljZS8=" title="http://webdam.inria.fr/Alice/">http://webdam.inria.fr/Alice/<i class="fa fa-external-link"></i></span></li>
+<li>与官网即可下载电子版</li>
+</ul>
+</li>
+</ul>
+<p>4.事务</p>
+<ul>
+<li><p>基础：Philip A. Bernstein, Eric Newcomer: <strong>Principles of Transaction Processing for Systems Professionals</strong> (2nd Edition). Morgan Kaufmann. 2009</p>
+<ul>
+<li>ACM－书目链接: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS9ib29rLzEwLjU1NTUvMTIwODkzMA==" title="https://dl.acm.org/doi/book/10.5555/1208930">https://dl.acm.org/doi/book/10.5555/1208930<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC81NDEyODM1Lw==" title="https://book.douban.com/subject/5412835/">https://book.douban.com/subject/5412835/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+<li><p>理论：Gerhard Weikum, Gottfried Vossen: <strong>Transactional Information Systems: Theory, Algorithms, and the Practice of Concurrency Control and Recovery</strong>. Morgan Kaufmann 2002, ISBN 1-55860-508-8</p>
+<ul>
+<li>ACM-书目链接: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS9ib29rLzEwLjU1NTUvMjgyMTU3Mg==" title="https://dl.acm.org/doi/book/10.5555/2821572">https://dl.acm.org/doi/book/10.5555/2821572<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8xNTAzODEyLw==" title="https://book.douban.com/subject/1503812/">https://book.douban.com/subject/1503812/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+<li><p>实现：Jim Gray, Andreas Reuter: <strong>Transaction Processing: Concepts and Techniques</strong>. Morgan Kaufmann 1993, ISBN 1-55860-190-2</p>
+<ul>
+<li>ACM-书目链接: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS9ib29rLzEwLjU1NTUvNTczMzA0" title="https://dl.acm.org/doi/book/10.5555/573304">https://dl.acm.org/doi/book/10.5555/573304<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译版豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8xMTQ0NTQzLw==" title="https://book.douban.com/subject/1144543/">https://book.douban.com/subject/1144543/<i class="fa fa-external-link"></i></span></li>
+<li>注: 人民邮电出版社有出版英文影印版, 豆瓣链接: <span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8zNjUxMDE1Lw==" title="https://book.douban.com/subject/3651015/">https://book.douban.com/subject/3651015/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+<p>5.进阶</p>
+<ul>
+<li><p>红宝书：Peter Bailis, Joseph M. Hellerstein, Michael Stonebraker, editors. <strong>Readings in Database Systems</strong>, 5th Edition (Readings in Database Systems, 5th Edition)</p>
+<ul>
+<li>官网：<span class="exturl" data-url="aHR0cDovL3d3dy5yZWRib29rLmlvLw==" title="http://www.redbook.io/">http://www.redbook.io/<i class="fa fa-external-link"></i></span></li>
+<li>与官网即可下载电子版</li>
+</ul>
+</li>
+<li><p>Joseph M. Hellerstein, Michael Stonebraker, James Hamilton. Architecture of a Database System</p>
+<ul>
+<li>电子版: <span class="exturl" data-url="aHR0cHM6Ly9kc2YuYmVya2VsZXkuZWR1L3BhcGVycy9mbnRkYjA3LWFyY2hpdGVjdHVyZS5wZGY=" title="https://dsf.berkeley.edu/papers/fntdb07-architecture.pdf">https://dsf.berkeley.edu/papers/fntdb07-architecture.pdf<i class="fa fa-external-link"></i></span></li>
+<li>中文翻译(厦门大学数据库实验室 林子雨): <span class="exturl" data-url="aHR0cDovL2RibGFiLnhtdS5lZHUuY24vd3AtY29udGVudC91cGxvYWRzL29sZC9maWxlcy9saW56aXl1LUFyY2hpdGVjdHVyZSUyMG9mJTIwYSUyMERhdGFiYXNlJTIwU3lzdGVtKENoaW5lc2UlMjBWZXJzaW9uKS1BTEwucGRm" title="http://dblab.xmu.edu.cn/wp-content/uploads/old/files/linziyu-Architecture%20of%20a%20Database%20System(Chinese%20Version)-ALL.pdf">http://dblab.xmu.edu.cn/wp-content/uploads/old/files/linziyu-Architecture%20of%20a%20Database%20System(Chinese%20Version)-ALL.pdf<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<p>推荐阅读：</p>
+<p>hzbooks－姚编辑: <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2h6Ym9va3MvYXJ0aWNsZS9kZXRhaWxzLzIxMDU0MjA=" title="https://blog.csdn.net/hzbooks/article/details/2105420">https://blog.csdn.net/hzbooks/article/details/2105420<i class="fa fa-external-link"></i></span></p>
+<p>数据库有没有类似现代操作系统的好书？ - <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3F1ZXN0aW9uLzUyNDk4OTk2" title="https://www.zhihu.com/question/52498996">https://www.zhihu.com/question/52498996<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/10/books/" title="[DBMS Books]数据库书籍推荐">https://cakebytheoceanluo.github.io/2020/03/10/books/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Books/" rel="tag"><i class="fa fa-tag"></i> Books</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/" rel="prev" title="[Leetcode-SQL] 185.department.top.three.salaries">
+      <i class="fa fa-chevron-left"></i> [Leetcode-SQL] 185.department.top.three.salaries
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/11/DBMS-PostgreSQL-PageLayout/" rel="next" title="[DBMS][PostgreSQL]Page Layout 页面布局">
+      [DBMS][PostgreSQL]Page Layout 页面布局 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/10/books/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

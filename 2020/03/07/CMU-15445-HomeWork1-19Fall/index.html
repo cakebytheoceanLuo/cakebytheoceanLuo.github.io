@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="2019 Fall: HOMEWORK #1 - SQL Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;homework1&#x2F;Solution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;files&#x2F;hw1-sols.tar.gz">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]HomeWork1_19Fall">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/07/CMU-15445-HomeWork1-19Fall/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="2019 Fall: HOMEWORK #1 - SQL Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;homework1&#x2F;Solution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;files&#x2F;hw1-sols.tar.gz">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/3/3c/SW_-_Empire_Strikes_Back.jpg">
+<meta property="article:published_time" content="2020-03-07T14:52:02.000Z">
+<meta property="article:modified_time" content="2020-03-08T09:32:03.831Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="SQLite">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/3/3c/SW_-_Empire_Strikes_Back.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/07/CMU-15445-HomeWork1-19Fall/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]HomeWork1_19Fall | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/07/CMU-15445-HomeWork1-19Fall/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]HomeWork1_19Fall
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-07 15:52:02" itemprop="dateCreated datePublished" datetime="2020-03-07T15:52:02+01:00">2020-03-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-08 10:32:03" itemprop="dateModified" datetime="2020-03-08T10:32:03+01:00">2020-03-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/07/CMU-15445-HomeWork1-19Fall/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]HomeWork1_19Fall" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2019 Fall: HOMEWORK #1 - SQL</p>
+<p>Homework: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvaG9tZXdvcmsxLw==" title="https://15445.courses.cs.cmu.edu/fall2019/homework1/">https://15445.courses.cs.cmu.edu/fall2019/homework1/<i class="fa fa-external-link"></i></span><br>Solution: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvZmlsZXMvaHcxLXNvbHMudGFyLmd6" title="https://15445.courses.cs.cmu.edu/fall2019/files/hw1-sols.tar.gz">https://15445.courses.cs.cmu.edu/fall2019/files/hw1-sols.tar.gz<i class="fa fa-external-link"></i></span></p>
+<a id="more"></a>
+<p>CMU推荐使用 SQLite: <span class="exturl" data-url="aHR0cHM6Ly93d3cuc3FsaXRlLm9yZy9pbmRleC5odG1s" title="https://www.sqlite.org/index.html">https://www.sqlite.org/index.html<i class="fa fa-external-link"></i></span></p>
+<p>已检查过我的解法和答案生成的结果一样。</p>
+<!-- TODO: link 文章 SQLITE 安装 和SQLITE数据集 -->
+<h1 id="熟悉数据集"><a href="#熟悉数据集" class="headerlink" title="熟悉数据集"></a>熟悉数据集</h1><p><span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvaG9tZXdvcmsxLw==" title="https://15445.courses.cs.cmu.edu/fall2019/homework1/">https://15445.courses.cs.cmu.edu/fall2019/homework1/<i class="fa fa-external-link"></i></span>  -&gt; CHECK THE SCHEMA</p>
+<h1 id="Q1"><a href="#Q1" class="headerlink" title="Q1"></a>Q1</h1><p>The purpose of this query is to make sure that the formatting of your output matches exactly the formatting of our auto-grading script.</p>
+<p>Details: List all distinct types of titles ordered by type.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span>(<span class="keyword">type</span>) </span><br><span class="line"><span class="keyword">from</span> titles </span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">type</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q2"><a href="#Q2" class="headerlink" title="Q2"></a>Q2</h1><p>List the longest title of each type along with the runtime minutes.</p>
+<p>Details: Find the titles which are the longest by runtime minutes. There might be cases where there is a tie for the longest titles - in that case return all of them. Display the types, primary titles and runtime minutes, and order it according to type (ascending) and use primary titles (ascending) as tie-breaker.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> longestINtype <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">max</span>(runtime_minutes) <span class="keyword">as</span> <span class="keyword">max</span>, <span class="keyword">type</span></span><br><span class="line">    <span class="keyword">from</span> titles</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">type</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> t.type, t.primary_title, t.runtime_minutes</span><br><span class="line"><span class="keyword">from</span> titles t, longestINtype l</span><br><span class="line"><span class="keyword">where</span> t.runtime_minutes = l.max <span class="keyword">and</span> t.type = l.type</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> t.type <span class="keyword">asc</span>, t.primary_title <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WITH</span> types(<span class="keyword">type</span>, runtime_minutes) <span class="keyword">AS</span> ( </span><br><span class="line">  <span class="keyword">SELECT</span> <span class="keyword">type</span>, <span class="keyword">MAX</span>(runtime_minutes)</span><br><span class="line">    <span class="keyword">FROM</span> titles</span><br><span class="line">    <span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">type</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">SELECT</span> titles.type, titles.primary_title, titles.runtime_minutes</span><br><span class="line"><span class="keyword">FROM</span> titles</span><br><span class="line"><span class="keyword">JOIN</span> types</span><br><span class="line"><span class="keyword">ON</span> titles.runtime_minutes == types.runtime_minutes <span class="keyword">AND</span> titles.type == types.type</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> titles.type, titles.primary_title;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q3"><a href="#Q3" class="headerlink" title="Q3"></a>Q3</h1><p>List all types of titles along with the number of associated titles.<br>Details: Print type and number of associated titles. For example, <code>tvShort|4075</code>. Sort by number of titles in ascending order.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">type</span>, <span class="keyword">count</span>(*) <span class="keyword">as</span> counter</span><br><span class="line"><span class="keyword">from</span> titles</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">type</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> counter <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">type</span>, <span class="keyword">count</span>(*) <span class="keyword">AS</span> title_count <span class="keyword">FROM</span> titles <span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="keyword">type</span> <span class="keyword">ORDER</span> <span class="keyword">BY</span> title_count <span class="keyword">ASC</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q4"><a href="#Q4" class="headerlink" title="Q4"></a>Q4</h1><p>Which decades saw the most number of titles getting premiered? List the number of titles in every decade. Like <code>2010s|2789741</code>.</p>
+<p>Details: Print all decades and the number of titles. Print the relevant decade in a fancier format by constructing a string that looks like this: <code>2010s</code>. Sort the decades in decreasing order with respect to the number of titles. Remember to exclude titles which have not been premiered (i.e. where <code>premiered</code> is <code>NULL</code>)</p>
+<p>PS: Add this to your watchlist: <span class="exturl" data-url="aHR0cHM6Ly93d3cuaW1kYi5jb20vdGl0bGUvdHQ1MTc0NjQwLw==" title="https://www.imdb.com/title/tt5174640/">100 Years (2115)<i class="fa fa-external-link"></i></span></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> premieredASchar (title_id, pre) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> title_id, <span class="keyword">cast</span>(premiered <span class="keyword">as</span> <span class="built_in">char</span>(<span class="number">4</span>))</span><br><span class="line">    <span class="keyword">from</span> titles</span><br><span class="line">    <span class="keyword">where</span> premiered <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">    ),</span><br><span class="line">     premieredDecades (title_id, decade) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> title_id, <span class="keyword">substr</span>(pre, <span class="number">1</span>, <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">from</span> premieredASchar</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> decade || <span class="string">'0s'</span> <span class="keyword">as</span> decade, <span class="keyword">count</span>(<span class="keyword">distinct</span> title_id) <span class="keyword">as</span> num_mov</span><br><span class="line"><span class="keyword">from</span> premieredDecades</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> decade</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_mov <span class="keyword">desc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>我的思路：<ul>
+<li>将不是<code>NULL</code>的<code>premiered</code>视作一个固定长度为4的<code>CHAR</code></li>
+<li>将这个<code>CHAR</code>的最后一个字符抹去</li>
+<li>然后同一个decade的tuple会被 <code>GROUP BY</code> 进一个组 (例如<code>2015</code> -&gt; <code>201</code>, 这个<code>201</code>就是我们的Hash Key/Hash Bucket)</li>
+<li>Hash Function: $f(char[0:3]) = char[0:2]$</li>
+</ul>
+</li>
+</ul>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line"><span class="keyword">CAST</span>(premiered/<span class="number">10</span>*<span class="number">10</span> <span class="keyword">AS</span> <span class="built_in">TEXT</span>) || <span class="string">'s'</span> <span class="keyword">AS</span> decade,</span><br><span class="line"><span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> num_movies</span><br><span class="line"><span class="keyword">FROM</span> titles</span><br><span class="line"><span class="keyword">WHERE</span> premiered <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> decade</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> num_movies <span class="keyword">DESC</span>;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>答案思路类似，只是将<code>premiered</code>做<code>INTEGER</code>做数值运算</li>
+</ul>
+<h1 id="Q5"><a href="#Q5" class="headerlink" title="Q5"></a>Q5</h1><p>List the decades and the percentage of titles which premiered in the corresponding decade. Display like : <code>2010s|45.7042</code></p>
+<p>Details: The percentage of titles for a decade is the number of titles which premiered that decade divided by the total number of titles. For the total number of titles, count all titles including ones that have not been premiered. Round the percentage to four decimal places using <code>ROUND()</code>.</p>
+<p>(这题完全基于Q4)</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> premieredASchar (title_id, pre) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> title_id, <span class="keyword">cast</span>(premiered <span class="keyword">as</span> <span class="built_in">char</span>(<span class="number">4</span>))</span><br><span class="line">    <span class="keyword">from</span> titles</span><br><span class="line">    <span class="keyword">where</span> premiered <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">    ),</span><br><span class="line">     premieredDecades (title_id, decade) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> title_id, <span class="keyword">substr</span>(pre, <span class="number">1</span>, <span class="number">3</span>)</span><br><span class="line">    <span class="keyword">from</span> premieredASchar</span><br><span class="line">    ),</span><br><span class="line">     num_title (<span class="keyword">num</span>) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">count</span>(*)</span><br><span class="line">    <span class="keyword">from</span> titles</span><br><span class="line">     )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> p.decade || <span class="string">'0s'</span> <span class="keyword">as</span> decade,</span><br><span class="line">       <span class="keyword">ROUND</span>(<span class="number">100.0</span> * <span class="keyword">count</span>(<span class="keyword">distinct</span> p.title_id) / n.num, <span class="number">4</span>) <span class="keyword">as</span> percentage</span><br><span class="line"><span class="keyword">from</span> premieredDecades p, num_title n</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> p.decade</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> percentage <span class="keyword">desc</span>, p.decade <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line"><span class="keyword">CAST</span>(premiered/<span class="number">10</span>*<span class="number">10</span> <span class="keyword">AS</span> <span class="built_in">TEXT</span>) || <span class="string">'s'</span> <span class="keyword">AS</span> decade,</span><br><span class="line"><span class="keyword">ROUND</span>(<span class="keyword">CAST</span>(<span class="keyword">COUNT</span>(*) <span class="keyword">AS</span> <span class="built_in">REAL</span>) / (<span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> titles) * <span class="number">100.0</span>, <span class="number">4</span>) <span class="keyword">as</span> percentage</span><br><span class="line"><span class="keyword">FROM</span> titles</span><br><span class="line"><span class="keyword">WHERE</span> premiered <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> decade</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> percentage <span class="keyword">DESC</span>, decade <span class="keyword">ASC</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q6"><a href="#Q6" class="headerlink" title="Q6"></a>Q6</h1><p>List the top 10 dubbed titles with the number of dubs.</p>
+<p>Details: Count the number of titles in <code>akas</code> for each title in the <code>titles</code> table, and list only the top ten. Print the primary title and the number of corresponding dubbed movies.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> t.primary_title, <span class="keyword">count</span>(a.title) <span class="keyword">as</span> num_dubs</span><br><span class="line"><span class="keyword">from</span> akas a, titles t</span><br><span class="line"><span class="keyword">where</span> a.title_id = t.title_id</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> t.title_id, t.primary_title</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> num_dubs <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WITH</span> translations <span class="keyword">AS</span> (</span><br><span class="line">  <span class="keyword">SELECT</span> title_id, <span class="keyword">count</span>(*) <span class="keyword">as</span> num_translations</span><br><span class="line">    <span class="keyword">FROM</span> akas</span><br><span class="line">    <span class="keyword">GROUP</span> <span class="keyword">BY</span> title_id</span><br><span class="line">    <span class="keyword">ORDER</span> <span class="keyword">BY</span> num_translations <span class="keyword">DESC</span>, title_id</span><br><span class="line">    <span class="keyword">LIMIT</span> <span class="number">10</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">SELECT</span> titles.primary_title, translations.num_translations</span><br><span class="line"><span class="keyword">FROM</span> translations</span><br><span class="line"><span class="keyword">JOIN</span> titles</span><br><span class="line"><span class="keyword">ON</span> titles.title_id == translations.title_id</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> translations.num_translations <span class="keyword">DESC</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q7"><a href="#Q7" class="headerlink" title="Q7"></a>Q7</h1><p>List the IMDB Top 250 movies along with its weighted rating.</p>
+<p>Details: The weighted rating of a movie is calculated according to the following formula:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Weighted rating (WR) = (v/(v+m)) * R + (m/(v+m)) * C</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>R = average rating for the movie (mean), i.e. ratings.rating</li>
+<li>v = number of votes for the movie, i.e. ratings.votes</li>
+<li>m = minimum votes required to be listed in the Top 250 (current 25000)</li>
+<li>C = weighted average rating of all movies</li>
+</ul>
+<p>Print the movie name along with its weighted rating. For example: <code>The Shawshank Redemption|9.27408375213064</code>.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> C (val) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">sum</span>(r.rating * r.votes) / <span class="keyword">sum</span>(votes)</span><br><span class="line">    <span class="keyword">from</span> ratings r, titles t</span><br><span class="line">    <span class="keyword">where</span> t.title_id = r.title_id <span class="keyword">and</span> t.type = <span class="string">'movie'</span></span><br><span class="line">), WR (primary_title, val) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> t.primary_title,</span><br><span class="line">           (r.votes / (r.votes + <span class="number">25000.0</span>)) * r.rating + (<span class="number">25000.0</span> / (r.votes + <span class="number">25000.0</span>)) * c.val</span><br><span class="line">    <span class="keyword">from</span> ratings r, titles t, c</span><br><span class="line">    <span class="keyword">where</span> t.title_id = r.title_id <span class="keyword">and</span> t.type = <span class="string">'movie'</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> WR</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> val <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">250</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WITH</span></span><br><span class="line">  av(average_rating) <span class="keyword">AS</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> <span class="keyword">SUM</span>(rating * votes) / <span class="keyword">SUM</span>(votes)</span><br><span class="line">      <span class="keyword">FROM</span> ratings</span><br><span class="line">      <span class="keyword">JOIN</span> titles</span><br><span class="line">      <span class="keyword">ON</span> titles.title_id == ratings.title_id <span class="keyword">AND</span> titles.type == <span class="string">"movie"</span></span><br><span class="line">  ),</span><br><span class="line">  mn(min_rating) <span class="keyword">AS</span> (<span class="keyword">SELECT</span> <span class="number">25000.0</span>)</span><br><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">primary_title,</span><br><span class="line">(votes / (votes + min_rating)) * rating + (min_rating / (votes + min_rating)) * average_rating <span class="keyword">as</span> weighed_rating</span><br><span class="line"><span class="keyword">FROM</span> ratings, av, mn</span><br><span class="line"><span class="keyword">JOIN</span> titles</span><br><span class="line"><span class="keyword">ON</span> titles.title_id == ratings.title_id <span class="keyword">and</span> titles.type == <span class="string">"movie"</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> weighed_rating <span class="keyword">DESC</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">250</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q8"><a href="#Q8" class="headerlink" title="Q8"></a>Q8</h1><p>List the number of actors / actresses who have appeared in any title with Mark Hamill (born in 1951).</p>
+<p>Details: Print only the total number of actors and actresses. The answer should include Mark Hamill himself.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> c.person_id)</span><br><span class="line"><span class="keyword">from</span> people mh, crew c_mh, crew c</span><br><span class="line"><span class="keyword">where</span> mh.name = <span class="string">'Mark Hamill'</span> <span class="keyword">and</span> mh.born = <span class="number">1951</span> <span class="keyword">and</span></span><br><span class="line">      mh.person_id = c_mh.person_id <span class="keyword">and</span></span><br><span class="line">      c_mh.title_id = c.title_id <span class="keyword">and</span></span><br><span class="line">      (c.category = <span class="string">'actor'</span> <span class="keyword">or</span> c.category = <span class="string">'actress'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WITH</span> hamill_titles <span class="keyword">AS</span> (</span><br><span class="line">  <span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span>(crew.title_id)</span><br><span class="line">    <span class="keyword">FROM</span> people</span><br><span class="line">    <span class="keyword">JOIN</span> crew</span><br><span class="line">    <span class="keyword">ON</span> crew.person_id == people.person_id <span class="keyword">AND</span> people.name == <span class="string">"Mark Hamill"</span> <span class="keyword">AND</span> people.born == <span class="number">1951</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span>(crew.person_id))</span><br><span class="line"><span class="keyword">FROM</span> crew</span><br><span class="line"><span class="keyword">WHERE</span> (crew.category == <span class="string">"actor"</span> <span class="keyword">OR</span> crew.category == <span class="string">"actress"</span>) <span class="keyword">AND</span> crew.title_id <span class="keyword">in</span> hamill_titles;</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="Q9"><a href="#Q9" class="headerlink" title="Q9"></a>Q9</h1><p>List the number of actors / actresses who have appeared in any title with Mark Hamill (born in 1951).</p>
+<p>Details: Print only the total number of actors and actresses. The answer should include Mark Hamill himself.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> t.primary_title</span><br><span class="line"><span class="keyword">from</span> people mh, crew c_mh, people gl, crew c_gl, titles t</span><br><span class="line"><span class="keyword">where</span> mh.name = <span class="string">'Mark Hamill'</span> <span class="keyword">and</span> mh.born = <span class="number">1951</span> <span class="keyword">and</span> mh.person_id = c_mh.person_id <span class="keyword">and</span></span><br><span class="line">      gl.name = <span class="string">'George Lucas'</span> <span class="keyword">and</span> gl.born = <span class="number">1944</span> <span class="keyword">and</span> gl.person_id = c_gl.person_id <span class="keyword">and</span></span><br><span class="line">      c_mh.title_id = t.title_id <span class="keyword">and</span></span><br><span class="line">      c_gl.title_id = t.title_id <span class="keyword">and</span></span><br><span class="line">      t.type = <span class="string">'movie'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> t.primary_title <span class="keyword">asc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WITH</span> hamill_movies(title_id) <span class="keyword">AS</span> (</span><br><span class="line">  <span class="keyword">SELECT</span> crew.title_id</span><br><span class="line">    <span class="keyword">FROM</span> crew</span><br><span class="line">    <span class="keyword">JOIN</span> people</span><br><span class="line">    <span class="keyword">ON</span> crew.person_id == people.person_id <span class="keyword">AND</span> people.name == <span class="string">"Mark Hamill"</span> <span class="keyword">AND</span> people.born == <span class="number">1951</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">SELECT</span> titles.primary_title</span><br><span class="line"><span class="keyword">FROM</span> crew</span><br><span class="line"><span class="keyword">JOIN</span> people</span><br><span class="line"><span class="keyword">ON</span> crew.person_id == people.person_id <span class="keyword">AND</span> people.name == <span class="string">"George Lucas"</span> <span class="keyword">AND</span> people.born == <span class="number">1944</span> <span class="keyword">AND</span> crew.title_id <span class="keyword">IN</span> hamill_movies</span><br><span class="line"><span class="keyword">JOIN</span> titles</span><br><span class="line"><span class="keyword">ON</span> crew.title_id == titles.title_id <span class="keyword">AND</span> titles.type == <span class="string">"movie"</span></span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> titles.primary_title;</span><br></pre></td></tr></tbody></table></figure>
+<p><img data-src="https://upload.wikimedia.org/wikipedia/en/3/3c/SW_-_Empire_Strikes_Back.jpg" alt="The Empire Strikes Back"><br>— <span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvVGhlX0VtcGlyZV9TdHJpa2VzX0JhY2sjL21lZGlhL0ZpbGU6U1dfLV9FbXBpcmVfU3RyaWtlc19CYWNrLmpwZw==" title="https://en.wikipedia.org/wiki/The_Empire_Strikes_Back#/media/File:SW_-_Empire_Strikes_Back.jpg">https://en.wikipedia.org/wiki/The_Empire_Strikes_Back#/media/File:SW_-_Empire_Strikes_Back.jpg<i class="fa fa-external-link"></i></span></p>
+<h1 id="Q10"><a href="#Q10" class="headerlink" title="Q10"></a>Q10</h1><p>List all distinct genres and the number of titles associated with them.</p>
+<p>Details: The <code>titles</code> table contains the titles with their genres. Each title is associated with zero or more genres stored in the <code>genres</code> column as comma-separated values (like “Documentary,Short”). Count the number of titles associated with each genre, and list the genres and the counts, and order it according to the counts (greatest to least). Don’t forget to filter empty genres (where <code>genres</code> is blank).</p>
+<p>Hint: You might find <span class="exturl" data-url="aHR0cHM6Ly9zcWxpdGUub3JnL2xhbmdfd2l0aC5odG1s" title="https://sqlite.org/lang_with.html">CTEs<i class="fa fa-external-link"></i></span> useful.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> genres <span class="keyword">as</span>(</span><br><span class="line">    <span class="keyword">select</span> genres <span class="keyword">as</span> g</span><br><span class="line">    <span class="keyword">from</span> titles</span><br><span class="line">    <span class="keyword">where</span> genres != <span class="string">'\N'</span></span><br><span class="line">    ),</span><br><span class="line">     <span class="keyword">split</span>(word, <span class="keyword">str</span>) <span class="keyword">AS</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="string">''</span>, g || <span class="string">','</span></span><br><span class="line">    <span class="keyword">from</span> genres</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">        <span class="keyword">substr</span>(<span class="keyword">str</span>, <span class="number">0</span>, <span class="keyword">instr</span>(<span class="keyword">str</span>, <span class="string">','</span>)),</span><br><span class="line">        <span class="keyword">substr</span>(<span class="keyword">str</span>, <span class="keyword">instr</span>(<span class="keyword">str</span>, <span class="string">','</span>) + <span class="number">1</span>)</span><br><span class="line">    <span class="keyword">from</span> <span class="keyword">split</span></span><br><span class="line">    <span class="keyword">where</span> <span class="keyword">str</span> != <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> word, <span class="keyword">count</span>(*) <span class="keyword">as</span> <span class="keyword">count</span></span><br><span class="line"><span class="keyword">from</span> <span class="keyword">split</span></span><br><span class="line"><span class="keyword">where</span> word != <span class="string">''</span></span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> word</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> <span class="keyword">count</span> <span class="keyword">desc</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>答案：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">WITH</span> <span class="keyword">RECURSIVE</span> <span class="keyword">split</span>(genre, rest) <span class="keyword">AS</span> (</span><br><span class="line">  <span class="keyword">SELECT</span> <span class="string">''</span>, genres || <span class="string">','</span> <span class="keyword">FROM</span> titles <span class="keyword">WHERE</span> genres != <span class="string">"\N"</span></span><br><span class="line">   <span class="keyword">UNION</span> <span class="keyword">ALL</span></span><br><span class="line">  <span class="keyword">SELECT</span> <span class="keyword">substr</span>(rest, <span class="number">0</span>, <span class="keyword">instr</span>(rest, <span class="string">','</span>)),</span><br><span class="line">         <span class="keyword">substr</span>(rest, <span class="keyword">instr</span>(rest, <span class="string">','</span>)+<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">FROM</span> <span class="keyword">split</span></span><br><span class="line">   <span class="keyword">WHERE</span> rest != <span class="string">''</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">SELECT</span> genre, <span class="keyword">count</span>(*) <span class="keyword">as</span> genre_count</span><br><span class="line"><span class="keyword">FROM</span> <span class="keyword">split</span> </span><br><span class="line"><span class="keyword">WHERE</span> genre != <span class="string">''</span></span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> genre</span><br><span class="line"><span class="keyword">ORDER</span> <span class="keyword">BY</span> genre_count <span class="keyword">DESC</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>这个最后一题花了我半个小时，因为SQLite 没有<code>string split</code>类型的库函数，我参考了：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMjQyNTg4NzgvaG93LXRvLXNwbGl0LWNvbW1hLXNlcGFyYXRlZC12YWx1ZS1pbi1zcWxpdGU=" title="https://stackoverflow.com/questions/24258878/how-to-split-comma-separated-value-in-sqlite">https://stackoverflow.com/questions/24258878/how-to-split-comma-separated-value-in-sqlite<i class="fa fa-external-link"></i></span></p>
+<p>我很怀疑答案也参考这个页面，因为结构完全类似 <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span></p>
+<p>另外实名diss这个表格不符合 <code>1NF: 第一范式</code>： <span class="exturl" data-url="aHR0cHM6Ly96aC53aWtpcGVkaWEub3JnL3dpa2kvJUU2JTk1JUIwJUU2JThEJUFFJUU1JUJBJTkzJUU4JUE3JTg0JUU4JThDJTgzJUU1JThDJTk2" title="https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96">https://zh.wikipedia.org/wiki/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%A7%84%E8%8C%83%E5%8C%96<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/07/CMU-15445-HomeWork1-19Fall/" title="[CMU-15445]HomeWork1_19Fall">https://cakebytheoceanluo.github.io/2020/03/07/CMU-15445-HomeWork1-19Fall/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/SQLite/" rel="tag"><i class="fa fa-tag"></i> SQLite</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/06/CMU-15445-Lec02-part2/" rel="prev" title="[CMU-15445]Lec02_part2">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec02_part2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/08/CMU-15445-HomeWork1-18Fall/" rel="next" title="[CMU-15445]HomeWork1_18Fall">
+      [CMU-15445]HomeWork1_18Fall <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#熟悉数据集"><span class="nav-number">1.</span> <span class="nav-text">熟悉数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q1"><span class="nav-number">2.</span> <span class="nav-text">Q1</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q2"><span class="nav-number">3.</span> <span class="nav-text">Q2</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q3"><span class="nav-number">4.</span> <span class="nav-text">Q3</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q4"><span class="nav-number">5.</span> <span class="nav-text">Q4</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q5"><span class="nav-number">6.</span> <span class="nav-text">Q5</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q6"><span class="nav-number">7.</span> <span class="nav-text">Q6</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q7"><span class="nav-number">8.</span> <span class="nav-text">Q7</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q8"><span class="nav-number">9.</span> <span class="nav-text">Q8</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q9"><span class="nav-number">10.</span> <span class="nav-text">Q9</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Q10"><span class="nav-number">11.</span> <span class="nav-text">Q10</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/07/CMU-15445-HomeWork1-19Fall/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

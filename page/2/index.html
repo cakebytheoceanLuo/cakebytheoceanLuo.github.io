@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="关于数据库的一切">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/page/2/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="罗济高">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/page/2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : true,
+    isPost : false
+  };
+</script>
+
+  <title>关于数据库的一切 - 罗济高的博客</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/12/SQL-Leetcode-262-trips-and-users/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/12/SQL-Leetcode-262-trips-and-users/" class="post-title-link" itemprop="url">[Leetcode-SQL] 262.trips.and.users</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-12 20:13:14 / 修改时间：22:26:46" itemprop="dateCreated datePublished" datetime="2020-03-12T20:13:14+01:00">2020-03-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/12/SQL-Leetcode-262-trips-and-users/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 262.trips.and.users" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>262.Trips and Users</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Trips (<span class="keyword">Id</span> <span class="built_in">int</span>, Client_Id <span class="built_in">int</span>, Driver_Id <span class="built_in">int</span>, City_Id <span class="built_in">int</span>, <span class="keyword">Status</span> ENUM(<span class="string">'completed'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'cancelled_by_client'</span>), Request_at <span class="built_in">varchar</span>(<span class="number">50</span>))</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> <span class="keyword">Users</span> (Users_Id <span class="built_in">int</span>, Banned <span class="built_in">varchar</span>(<span class="number">50</span>), <span class="keyword">Role</span> ENUM(<span class="string">'client'</span>, <span class="string">'driver'</span>, <span class="string">'partner'</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Trips</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'1'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'6'</span>, <span class="string">'cancelled_by_client'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'8'</span>, <span class="string">'2'</span>, <span class="string">'12'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'9'</span>, <span class="string">'3'</span>, <span class="string">'10'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'12'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-03'</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> <span class="keyword">Users</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Yes'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'11'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'12'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'13'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> Trips;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">Users</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TYPE</span> <span class="keyword">status</span> <span class="keyword">AS</span> ENUM(<span class="string">'completed'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'cancelled_by_client'</span>);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TYPE</span> <span class="keyword">role</span> <span class="keyword">AS</span> ENUM(<span class="string">'client'</span>, <span class="string">'driver'</span>, <span class="string">'partner'</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Trips (<span class="keyword">Id</span> <span class="built_in">int</span>, Client_Id <span class="built_in">int</span>, Driver_Id <span class="built_in">int</span>, City_Id <span class="built_in">int</span>, <span class="keyword">Status</span> <span class="keyword">status</span>, Request_at <span class="built_in">varchar</span>(<span class="number">50</span>));</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">Users</span> (Users_Id <span class="built_in">int</span>, Banned <span class="built_in">varchar</span>(<span class="number">50</span>), <span class="keyword">Role</span> <span class="keyword">role</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'1'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'6'</span>, <span class="string">'cancelled_by_client'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'8'</span>, <span class="string">'2'</span>, <span class="string">'12'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'9'</span>, <span class="string">'3'</span>, <span class="string">'10'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'12'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-03'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Yes'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'11'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'12'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'13'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>The <code>Trips</code> table holds all taxi trips. Each trip has a unique Id, while Client_Id and Driver_Id are both foreign keys to the Users_Id at the Users table. Status is an ENUM type of (‘completed’, ‘cancelled_by_driver’, ‘cancelled_by_client’).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-----------+-----------+---------+--------------------+----------+</span></span><br><span class="line">| Id | Client_Id | Driver_Id | City_Id |        Status      |Request_at|</span><br><span class="line">+<span class="comment">----+-----------+-----------+---------+--------------------+----------+</span></span><br><span class="line">| 1  |     1     |    10     |    1    |     completed      |2013-10-01|</span><br><span class="line">| 2  |     2     |    11     |    1    | cancelled_by_driver|2013-10-01|</span><br><span class="line">| 3  |     3     |    12     |    6    |     completed      |2013-10-01|</span><br><span class="line">| 4  |     4     |    13     |    6    | cancelled_by_client|2013-10-01|</span><br><span class="line">| 5  |     1     |    10     |    1    |     completed      |2013-10-02|</span><br><span class="line">| 6  |     2     |    11     |    6    |     completed      |2013-10-02|</span><br><span class="line">| 7  |     3     |    12     |    6    |     completed      |2013-10-02|</span><br><span class="line">| 8  |     2     |    12     |    12   |     completed      |2013-10-03|</span><br><span class="line">| 9  |     3     |    10     |    12   |     completed      |2013-10-03| </span><br><span class="line">| 10 |     4     |    13     |    12   | cancelled_by_driver|2013-10-03|</span><br><span class="line">+<span class="comment">----+-----------+-----------+---------+--------------------+----------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>The Users table holds all users. Each user has an unique Users_Id, and Role is an ENUM type of (‘client’, ‘driver’, ‘partner’).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----------+--------+--------+</span></span><br><span class="line">| Users_Id | Banned |  Role  |</span><br><span class="line">+<span class="comment">----------+--------+--------+</span></span><br><span class="line">|    1     |   No   | client |</span><br><span class="line">|    2     |   Yes  | client |</span><br><span class="line">|    3     |   No   | client |</span><br><span class="line">|    4     |   No   | client |</span><br><span class="line">|    10    |   No   | driver |</span><br><span class="line">|    11    |   No   | driver |</span><br><span class="line">|    12    |   No   | driver |</span><br><span class="line">|    13    |   No   | driver |</span><br><span class="line">+<span class="comment">----------+--------+--------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Write a SQL query to find the cancellation rate of requests made by unbanned users (both client and driver must be unbanned) between Oct 1, 2013 and Oct 3, 2013. The cancellation rate is computed by dividing the number of canceled (by client or driver) requests made by unbanned users by the total number of requests made by unbanned users.</p>
+<p>For the above tables, your SQL query should return the following rows with the cancellation rate being rounded to two decimal places.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">------------+-------------------+</span></span><br><span class="line">|     Day    | Cancellation Rate |</span><br><span class="line">+<span class="comment">------------+-------------------+</span></span><br><span class="line">| 2013-10-01 |       0.33        |</span><br><span class="line">| 2013-10-02 |       0.00        |</span><br><span class="line">| 2013-10-03 |       0.50        |</span><br><span class="line">+<span class="comment">------------+-------------------+</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/12/SQL-Leetcode-262-trips-and-users/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/12/SQL-Leetcode-197-rising-temperature/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/12/SQL-Leetcode-197-rising-temperature/" class="post-title-link" itemprop="url">[Leetcode-SQL] 197.rising.temperature</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-12 20:09:58 / 修改时间：22:26:59" itemprop="dateCreated datePublished" datetime="2020-03-12T20:09:58+01:00">2020-03-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/12/SQL-Leetcode-197-rising-temperature/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 197.rising.temperature" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>197.Rising Temperature</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Weather (<span class="keyword">Id</span> <span class="built_in">int</span>, RecordDate <span class="built_in">date</span>, Temperature <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Weather;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'2015-01-01'</span>, <span class="string">'10'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2015-01-02'</span>, <span class="string">'25'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'2015-01-03'</span>, <span class="string">'20'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'2015-01-04'</span>, <span class="string">'30'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Weather;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Weather (<span class="keyword">Id</span> <span class="built_in">int</span>, RecordDate <span class="built_in">date</span>, Temperature <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'2015-01-01'</span>, <span class="string">'10'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2015-01-02'</span>, <span class="string">'25'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'2015-01-03'</span>, <span class="string">'20'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'2015-01-04'</span>, <span class="string">'30'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>Given a <code>Weather</code> table, write a SQL query to find all dates’ Ids with higher temperature compared to its previous (yesterday’s) dates.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+------------------+------------------+</span></span><br><span class="line">| Id(INT) | RecordDate(DATE) | Temperature(INT) |</span><br><span class="line">+<span class="comment">---------+------------------+------------------+</span></span><br><span class="line">|       1 |       2015-01-01 |               10 |</span><br><span class="line">|       2 |       2015-01-02 |               25 |</span><br><span class="line">|       3 |       2015-01-03 |               20 |</span><br><span class="line">|       4 |       2015-01-04 |               30 |</span><br><span class="line">+<span class="comment">---------+------------------+------------------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>For example, return the following Ids for the above <code>Weather</code> table:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+</span></span><br><span class="line">| Id |</span><br><span class="line">+<span class="comment">----+</span></span><br><span class="line">|  2 |</span><br><span class="line">|  4 |</span><br><span class="line">+<span class="comment">----+</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/12/SQL-Leetcode-197-rising-temperature/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/12/SQL-Leetcode-196-delete-duplicate-emails/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/12/SQL-Leetcode-196-delete-duplicate-emails/" class="post-title-link" itemprop="url">[Leetcode-SQL] 196.delete.duplicate.emails</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-12 19:59:44 / 修改时间：22:25:54" itemprop="dateCreated datePublished" datetime="2020-03-12T19:59:44+01:00">2020-03-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/12/SQL-Leetcode-196-delete-duplicate-emails/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 196.delete.duplicate.emails" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>196.Delete Duplicate Emails</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Person (<span class="keyword">Id</span> <span class="built_in">int</span>, Email <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Person</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'john@example.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'bob@example.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'john@example.com'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Person;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Person (<span class="keyword">Id</span> <span class="built_in">int</span>, Email <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'john@example.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'bob@example.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'john@example.com'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>Write a SQL query to delete all duplicate email entries in a table named <code>Person</code>, keeping only unique emails based on its smallest Id.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+------------------+</span></span><br><span class="line">| Id | Email            |</span><br><span class="line">+<span class="comment">----+------------------+</span></span><br><span class="line">| 1  | john@example.com |</span><br><span class="line">| 2  | bob@example.com  |</span><br><span class="line">| 3  | john@example.com |</span><br><span class="line">+<span class="comment">----+------------------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Id is the primary key column for this table.<br>For example, after running your query, the above <code>Person</code> table should have the following rows:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+------------------+</span></span><br><span class="line">| Id | Email            |</span><br><span class="line">+<span class="comment">----+------------------+</span></span><br><span class="line">| 1  | john@example.com |</span><br><span class="line">| 2  | bob@example.com  |</span><br><span class="line">+<span class="comment">----+------------------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Note:</p>
+<p>Your output is the whole <code>Person</code> table after executing your sql. Use <code>delete</code> statement.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/12/SQL-Leetcode-196-delete-duplicate-emails/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/11/CMU-15445-Lec03/" class="post-title-link" itemprop="url">[CMU-15445]Lec03</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-11 10:51:09" itemprop="dateCreated datePublished" datetime="2020-03-11T10:51:09+01:00">2020-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 19:39:26" itemprop="dateModified" datetime="2020-03-13T19:39:26+01:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/11/CMU-15445-Lec03/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec03" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Database Storage Part I - 数据库存储 I</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAzLXN0b3JhZ2UxLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/03-storage1.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/03-storage1.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDMtc3RvcmFnZTEucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapter 10.1-10.2, 10.5-10.6</p>
+<p>这节两课，我们会了数据库内部的存储。</p>
+<p>Database Storage 在CMU分成了两部分，在两节课中讲。这是第一部分。</p>
+<p>这部分涉及存储的硬件, 操作系统提供的syscall, 数据库缓存区(buffer pool)的缓存页(buffer page), Slotted page等等。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/11/CMU-15445-Lec03/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/11/DBMS-PostgreSQL-PageLayout/" class="post-title-link" itemprop="url">[DBMS][PostgreSQL]Page Layout 页面布局</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-11 10:46:36 / 修改时间：21:38:36" itemprop="dateCreated datePublished" datetime="2020-03-11T10:46:36+01:00">2020-03-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/11/DBMS-PostgreSQL-PageLayout/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS][PostgreSQL]Page Layout 页面布局" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这篇文章服务于<a href="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/">[CMU-15445]Lec03</a></p>
+<p>绝大部分的关系数据库的page layout采用的都是slotted page, 学术上的创新的主意也往往基于它。我们今天来看一看PostgreSQL中的page layout，以及它在<code>insert</code>, <code>delete</code>等操作下的具体行为。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/11/DBMS-PostgreSQL-PageLayout/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/books/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/10/books/" class="post-title-link" itemprop="url">[DBMS Books]数据库书籍推荐</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-10 23:53:07 / 修改时间：23:54:09" itemprop="dateCreated datePublished" datetime="2020-03-10T23:53:07+01:00">2020-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/10/books/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS Books]数据库书籍推荐" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这篇文章囊括了数据库领域经典书籍，并附上必要链接，方便搜索。所推荐书籍囊括基础概念，实现原理，数据库理论，分布式数据库，数据库事务。</p>
+<p>本文基于该文章：</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">作者：钱卫宁 华东师范大学 数据科学与工程学院 教授/院长</span><br><span class="line">链接：https://www.zhihu.com/question/52498996/answer/142789892</span><br><span class="line">来源：知乎</span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/10/books/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/" class="post-title-link" itemprop="url">[Leetcode-SQL] 185.department.top.three.salaries</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-10 15:09:14 / 修改时间：15:13:32" itemprop="dateCreated datePublished" datetime="2020-03-10T15:09:14+01:00">2020-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 185.department.top.three.salaries" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>185.Department Top Three Salaries</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, DepartmentId <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Department (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Employee</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Janet'</span>, <span class="string">'69000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'Randy'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'Will'</span>, <span class="string">'70000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Department</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'IT'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Sales'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Employee;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Department;</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, DepartmentId <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Department (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Janet'</span>, <span class="string">'69000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'Randy'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'Will'</span>, <span class="string">'70000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'IT'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Sales'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>The <code>Employee</code> table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br><span class="line">| Id | Name  | Salary | DepartmentId |</span><br><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br><span class="line">| 1  | Joe   | 85000  | 1            |</span><br><span class="line">| 2  | Henry | 80000  | 2            |</span><br><span class="line">| 3  | Sam   | 60000  | 2            |</span><br><span class="line">| 4  | Max   | 90000  | 1            |</span><br><span class="line">| 5  | Janet | 69000  | 1            |</span><br><span class="line">| 6  | Randy | 85000  | 1            |</span><br><span class="line">| 7  | Will  | 70000  | 1            |</span><br><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>The <code>Department</code> table holds all departments of the company.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+----------+</span></span><br><span class="line">| Id | Name     |</span><br><span class="line">+<span class="comment">----+----------+</span></span><br><span class="line">| 1  | IT       |</span><br><span class="line">| 2  | Sales    |</span><br><span class="line">+<span class="comment">----+----------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Write a SQL query to find employees who earn the top three salaries in each of the department. For the above tables, your SQL query should return the following rows (order of rows does not matter).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">------------+----------+--------+</span></span><br><span class="line">| Department | Employee | Salary |</span><br><span class="line">+<span class="comment">------------+----------+--------+</span></span><br><span class="line">| IT         | Max      | 90000  |</span><br><span class="line">| IT         | Randy    | 85000  |</span><br><span class="line">| IT         | Joe      | 85000  |</span><br><span class="line">| IT         | Will     | 70000  |</span><br><span class="line">| Sales      | Henry    | 80000  |</span><br><span class="line">| Sales      | Sam      | 60000  |</span><br><span class="line">+<span class="comment">------------+----------+--------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Explanation:</p>
+<p>In IT department, Max earns the highest salary, both Randy and Joe earn the second highest salary, and Will earns the third highest salary. There are only two employees in the Sales department, Henry earns the highest salary while Sam earns the second highest salary.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/SQL-Leetcode-184-department-highest-salary/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/10/SQL-Leetcode-184-department-highest-salary/" class="post-title-link" itemprop="url">[Leetcode-SQL] 184.department.highest.salary</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-10 15:02:16 / 修改时间：15:13:39" itemprop="dateCreated datePublished" datetime="2020-03-10T15:02:16+01:00">2020-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/10/SQL-Leetcode-184-department-highest-salary/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 184.department.highest.salary" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>184.Department Highest Salary</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, DepartmentId <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Department (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Employee</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'70000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Jim'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Department</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'IT'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Sales'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Employee;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Department;</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, DepartmentId <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Department (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'70000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Jim'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'IT'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Sales'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>The <code>Employee</code> table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br><span class="line">| Id | Name  | Salary | DepartmentId |</span><br><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br><span class="line">| 1  | Joe   | 70000  | 1            |</span><br><span class="line">| 2  | Jim   | 90000  | 1            |</span><br><span class="line">| 3  | Henry | 80000  | 2            |</span><br><span class="line">| 4  | Sam   | 60000  | 2            |</span><br><span class="line">| 5  | Max   | 90000  | 1            |</span><br><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>The <code>Department</code> table holds all departments of the company.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+----------+</span></span><br><span class="line">| Id | Name     |</span><br><span class="line">+<span class="comment">----+----------+</span></span><br><span class="line">| 1  | IT       |</span><br><span class="line">| 2  | Sales    |</span><br><span class="line">+<span class="comment">----+----------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Write a SQL query to find employees who have the highest salary in each of the departments. For the above tables, your SQL query should return the following rows (order of rows does not matter).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">------------+----------+--------+</span></span><br><span class="line">| Department | Employee | Salary |</span><br><span class="line">+<span class="comment">------------+----------+--------+</span></span><br><span class="line">| IT         | Max      | 90000  |</span><br><span class="line">| IT         | Jim      | 90000  |</span><br><span class="line">| Sales      | Henry    | 80000  |</span><br><span class="line">+<span class="comment">------------+----------+--------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Explanation:</p>
+<p>Max and Jim both have the highest salary in the IT department and Henry has the highest salary in the Sales department.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/10/SQL-Leetcode-184-department-highest-salary/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/SQL-Leetcode-183-customers-who-never-order/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/10/SQL-Leetcode-183-customers-who-never-order/" class="post-title-link" itemprop="url">[Leetcode-SQL] 183.customers.who.never.order</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-10 14:59:45 / 修改时间：15:13:46" itemprop="dateCreated datePublished" datetime="2020-03-10T14:59:45+01:00">2020-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/10/SQL-Leetcode-183-customers-who-never-order/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 183.customers.who.never.order" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>183.Customers Who Never Order</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Customers (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>))</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Orders (<span class="keyword">Id</span> <span class="built_in">int</span>, CustomerId <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Customers</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Orders</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Orders (<span class="keyword">Id</span>, CustomerId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'3'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Orders (<span class="keyword">Id</span>, CustomerId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'1'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Customers;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Orders;</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Customers (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Orders (<span class="keyword">Id</span> <span class="built_in">int</span>, CustomerId <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Customers (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Orders (<span class="keyword">Id</span>, CustomerId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'3'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Orders (<span class="keyword">Id</span>, CustomerId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'1'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>Suppose that a website contains two tables, the <code>Customers</code> table and the <code>Orders</code> table. Write a SQL query to find all customers who never order anything.</p>
+<p>Table: <code>Customers</code>.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-------+</span></span><br><span class="line">| Id | Name  |</span><br><span class="line">+<span class="comment">----+-------+</span></span><br><span class="line">| 1  | Joe   |</span><br><span class="line">| 2  | Henry |</span><br><span class="line">| 3  | Sam   |</span><br><span class="line">| 4  | Max   |</span><br><span class="line">+<span class="comment">----+-------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Table: <code>Orders</code>.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+------------+</span></span><br><span class="line">| Id | CustomerId |</span><br><span class="line">+<span class="comment">----+------------+</span></span><br><span class="line">| 1  | 3          |</span><br><span class="line">| 2  | 1          |</span><br><span class="line">+<span class="comment">----+------------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Using the above tables as example, return the following:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">-----------+</span></span><br><span class="line">| Customers |</span><br><span class="line">+<span class="comment">-----------+</span></span><br><span class="line">| Henry     |</span><br><span class="line">| Max       |</span><br><span class="line">+<span class="comment">-----------+</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/10/SQL-Leetcode-183-customers-who-never-order/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/SQL-Leetcode-182-duplicate-emails/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/10/SQL-Leetcode-182-duplicate-emails/" class="post-title-link" itemprop="url">[Leetcode-SQL] 182.duplicate.emails</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-10 14:57:45 / 修改时间：15:13:51" itemprop="dateCreated datePublished" datetime="2020-03-10T14:57:45+01:00">2020-03-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/10/SQL-Leetcode-182-duplicate-emails/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 182.duplicate.emails" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>182.Duplicate Emails</p>
+<p>SQL Schema</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Person (<span class="keyword">Id</span> <span class="built_in">int</span>, Email <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Person</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'a@b.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'c@d.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'a@b.com'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Person;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Person (<span class="keyword">Id</span> <span class="built_in">int</span>, Email <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'a@b.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'c@d.com'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Person (<span class="keyword">Id</span>, Email) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'a@b.com'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>Write a SQL query to find all duplicate emails in a table named <code>Person</code>.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+---------+</span></span><br><span class="line">| Id | Email   |</span><br><span class="line">+<span class="comment">----+---------+</span></span><br><span class="line">| 1  | a@b.com |</span><br><span class="line">| 2  | c@d.com |</span><br><span class="line">| 3  | a@b.com |</span><br><span class="line">+<span class="comment">----+---------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>For example, your query should return the following for the above table:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+</span></span><br><span class="line">| Email   |</span><br><span class="line">+<span class="comment">---------+</span></span><br><span class="line">| a@b.com |</span><br><span class="line">+<span class="comment">---------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Note: All emails are in lowercase.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/10/SQL-Leetcode-182-duplicate-emails/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+  </div>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+  </nav>
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

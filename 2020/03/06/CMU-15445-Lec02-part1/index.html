@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Advanced SQL 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级的S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec02_part1">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Advanced SQL 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级的S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/1.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/2.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/3.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/4.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/5.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/6.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/7.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/8.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/9.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/11.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/12.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/13.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/14.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/15.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/18.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/19.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/20.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/21.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/22.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/23.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/24.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/25.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/26.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/27.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/28.jpg">
+<meta property="article:published_time" content="2020-03-06T20:32:58.000Z">
+<meta property="article:modified_time" content="2020-03-08T16:46:37.516Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="SQLite">
+<meta property="article:tag" content="DBMS">
+<meta property="article:tag" content="PostgreSQL">
+<meta property="article:tag" content="MySQL">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/1.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec02_part1 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec02_part1
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-06 21:32:58" itemprop="dateCreated datePublished" datetime="2020-03-06T21:32:58+01:00">2020-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-08 17:46:37" itemprop="dateModified" datetime="2020-03-08T17:46:37+01:00">2020-03-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/06/CMU-15445-Lec02-part1/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec02_part1" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Advanced SQL 高级SQL</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAyLWFkdmFuY2Vkc3FsLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/02-advancedsql.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/02-advancedsql.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDItYWR2YW5jZWRzcWwucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/02-advancedsql.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/02-advancedsql.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapters 3-5</p>
+<p>这节课，我们会了解高级的SQL句法。(但是实际上这门课对SQL的要求很低，大量其他的SQL练习依旧可以在我的博客中找到)</p>
+<p>如果大家的目的是为了学习SQL，我建议使用PostgreSQL，它出自于学术界，整体行为相对MySQL和SQLite更合理。另外TUM和CMU在SQL教学上都采用PostgreSQL。</p>
+<p>我将这次笔记分成前后两个部分，这是第一部分。</p>
+<!-- 对应的练习　TODO:我的博客 -->
+<a id="more"></a>
+<p><img data-src="/images/CMU1544564/Lec02/1.jpg" alt="1.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/2.jpg" alt="2.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/3.jpg" alt="3.jpg"></p>
+<p>SQL(a.k.a. Strutured Query Language)并不是这门语言一开始名字，IBM给这个语言的最初的名字是　SEQUEL。所有现在大部分人依旧将　SQL 读作　SEQUEL。</p>
+<p>最好能讲上面几个概念记住，我们学校在本科生的数据库课中考SQL的全称，百分之九十的同学回答错误。</p>
+<p><img data-src="/images/CMU1544564/Lec02/4.jpg" alt="4.jpg"></p>
+<p>Comparison of different SQL implementations：　<span class="exturl" data-url="aHR0cDovL3Ryb2Vscy5hcnZpbi5kay9kYi9yZGJtcy8=" title="http://troels.arvin.dk/db/rdbms/">http://troels.arvin.dk/db/rdbms/<i class="fa fa-external-link"></i></span> <!-- TODO: --></p>
+<p>最好大致对SQL的标准有一定的印象，因为各个RDBMS对SQL标准的支持都不一样，大有百花齐放之势，我们会在这节课后面的部分见到。</p>
+<p><img data-src="/images/CMU1544564/Lec02/5.jpg" alt="5.jpg"></p>
+<p><strong>这里要注意: SQL使用的是bag semantic，即允许重复值出现。</strong></p>
+<p><img data-src="/images/CMU1544564/Lec02/6.jpg" alt="6.jpg"></p>
+<h1 id="EXAMPLE-DATABASE"><a href="#EXAMPLE-DATABASE" class="headerlink" title="EXAMPLE DATABASE"></a>EXAMPLE DATABASE</h1><p>我使用一个很小的<strong>流行歌手</strong>数据集(我并不觉得Bieber是一个rapper<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span>)</p>
+<p><img data-src="/images/CMU1544564/Lec02/7.jpg" alt="7.jpg"></p>
+<p>对应的SQL语句　<a href="https://cakebytheoceanluo.github.io/download/CMU15445/lec02_schema.sql">下载</a>：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> student <span class="keyword">CASCADE</span>;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> course <span class="keyword">CASCADE</span>;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> enrolled;</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> student </span><br><span class="line">   (<span class="keyword">sid</span> <span class="built_in">int</span> primary <span class="keyword">key</span>,</span><br><span class="line">    <span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">16</span>), </span><br><span class="line">    login <span class="built_in">varchar</span>(<span class="number">32</span>), </span><br><span class="line">    age <span class="built_in">smallint</span>, </span><br><span class="line">    gpa <span class="built_in">numeric</span>(<span class="number">2</span>, <span class="number">1</span>) <span class="keyword">check</span> (gpa <span class="keyword">between</span> <span class="number">0.0</span> <span class="keyword">and</span> <span class="number">4.0</span>)</span><br><span class="line">   );</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> course </span><br><span class="line">   (cid <span class="built_in">varchar</span>(<span class="number">32</span>) primary <span class="keyword">key</span>, </span><br><span class="line">    <span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">not</span> <span class="literal">null</span></span><br><span class="line">   );</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> enrolled </span><br><span class="line">   (<span class="keyword">sid</span> <span class="built_in">int</span> <span class="keyword">references</span> student (<span class="keyword">sid</span>) <span class="keyword">on</span> <span class="keyword">delete</span> <span class="keyword">cascade</span>, </span><br><span class="line">    cid <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">references</span> course (cid) <span class="keyword">on</span> <span class="keyword">delete</span> <span class="keyword">cascade</span>, </span><br><span class="line">    grade <span class="built_in">char</span>(<span class="number">1</span>) <span class="keyword">check</span> (grade <span class="keyword">in</span> (<span class="string">'A'</span>, <span class="string">'B'</span>, <span class="string">'C'</span>)),</span><br><span class="line">    primary <span class="keyword">key</span> (<span class="keyword">sid</span>, cid)</span><br><span class="line">   );</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> student (<span class="keyword">sid</span>, <span class="keyword">name</span>, login, age, gpa) <span class="keyword">values</span> (<span class="number">53666</span>, <span class="string">'Kanye'</span>, <span class="string">'kanye@cs'</span>, <span class="number">39</span>, <span class="number">4.0</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> student (<span class="keyword">sid</span>, <span class="keyword">name</span>, login, age, gpa) <span class="keyword">values</span> (<span class="number">53688</span>, <span class="string">'Bieber'</span>, <span class="string">'jbieber@cs'</span>, <span class="number">22</span>, <span class="number">3.9</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> student (<span class="keyword">sid</span>, <span class="keyword">name</span>, login, age, gpa) <span class="keyword">values</span> (<span class="number">53655</span>, <span class="string">'Tupac'</span>, <span class="string">'shakur@cs'</span>, <span class="number">26</span>, <span class="number">3.5</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> course (cid, <span class="keyword">name</span>) <span class="keyword">values</span> (<span class="string">'15-445'</span>, <span class="string">'Database Systems'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> course (cid, <span class="keyword">name</span>) <span class="keyword">values</span> (<span class="string">'15-721'</span>, <span class="string">'Advanced Database Systems'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> course (cid, <span class="keyword">name</span>) <span class="keyword">values</span> (<span class="string">'15-826'</span>, <span class="string">'Data Mining'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> course (cid, <span class="keyword">name</span>) <span class="keyword">values</span> (<span class="string">'15-823'</span>, <span class="string">'Advanced Topics in Databases'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> enrolled (<span class="keyword">sid</span>, cid, grade) <span class="keyword">values</span> (<span class="number">53666</span>, <span class="string">'15-445'</span>, <span class="string">'C'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> enrolled (<span class="keyword">sid</span>, cid, grade) <span class="keyword">values</span> (<span class="number">53688</span>, <span class="string">'15-721'</span>, <span class="string">'A'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> enrolled (<span class="keyword">sid</span>, cid, grade) <span class="keyword">values</span> (<span class="number">53666</span>, <span class="string">'15-826'</span>, <span class="string">'B'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> enrolled (<span class="keyword">sid</span>, cid, grade) <span class="keyword">values</span> (<span class="number">53655</span>, <span class="string">'15-445'</span>, <span class="string">'B'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> enrolled (<span class="keyword">sid</span>, cid, grade) <span class="keyword">values</span> (<span class="number">53666</span>, <span class="string">'15-721'</span>, <span class="string">'C'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>可以在PostgreSQL, MySQL, SQLite中使用</li>
+</ul>
+<h2 id="check"><a href="#check" class="headerlink" title="check"></a><code>check</code></h2><p><code>check</code>是确认insert指是否满足我们规定的不变量(invariant):</p>
+<ul>
+<li><code>gpa numeric(2, 1) check (gpa between 0.0 and 4.0)</code></li>
+<li><code>grade char(1) check (grade in ('A', 'B', 'C')</code></li>
+</ul>
+<p>我们尝试在PostgreSQL中，insert一个违背这个不变量的tuple,　我们就能看到对应的ERROR:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">testdb=# insert into enrolled (sid, cid, grade) values (53666, '15-445', 'Z');</span><br><span class="line">ERROR:  <span class="keyword">new</span> row <span class="keyword">for</span> relation <span class="string">"enrolled"</span> violates check constraint <span class="string">"enrolled_grade_check"</span></span><br><span class="line">DETAIL:  Failing row contains (<span class="number">53666</span>, <span class="number">15</span><span class="number">-445</span>, Z).</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="on-delete-cascade"><a href="#on-delete-cascade" class="headerlink" title="on delete cascade"></a><code>on delete cascade</code></h2><p><code>cascade</code>: 很象征地描述了一种像瀑布一样的连锁效应。这个词在西方语境下比较常用，对应我们可以理解成<strong>连锁效应</strong>即可。(这个词这个门课最后的事务transaction还会出现。)</p>
+<p><code>enrolled</code>这个表格的字段都是来自<code>student</code>和<code>course</code>的外键，因此这个表格依赖于其他两个表格。让我们想象一下，如果我们删去一个<code>student</code>或<code>course</code>，如果删去的tuple在<code>enrolled</code>拥有外键，那么对应在<code>enrolled</code>的tuple也需要被删除。不然<code>enrolled</code>中就出现了一个<strong>僵尸</strong>：对应不到<code>student</code>或<code>course</code>。</p>
+<p>我们尝试在PostgreSQL中，删除<code>student Bieber</code>, 看看他的<code>enrolled</code>怎么变化：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">testdb=# select * from enrolled;</span><br><span class="line">  sid  |  cid   | grade </span><br><span class="line">-------+--------+-------</span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-445</span> | C</span><br><span class="line"> <span class="number">53688</span> | <span class="number">15</span><span class="number">-721</span> | A</span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-826</span> | B</span><br><span class="line"> <span class="number">53655</span> | <span class="number">15</span><span class="number">-445</span> | B</span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-721</span> | C</span><br><span class="line">(<span class="number">5</span> rows)</span><br><span class="line"></span><br><span class="line">testdb=# delete from student where name = 'Bieber';</span><br><span class="line">DELETE <span class="number">1</span></span><br><span class="line"></span><br><span class="line">testdb=# select * from enrolled;</span><br><span class="line">  sid  |  cid   | grade </span><br><span class="line">-------+--------+-------</span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-445</span> | C</span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-826</span> | B</span><br><span class="line"> <span class="number">53655</span> | <span class="number">15</span><span class="number">-445</span> | B</span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-721</span> | C</span><br><span class="line">(<span class="number">4</span> rows)</span><br></pre></td></tr></tbody></table></figure>
+<p>我们可以用删除前后<code>enrollled</code>表格，发现<code>Bieber</code>对应的<code>sid 53688</code>也被删除了。</p>
+<p>(注意再重新将加入删除的tuple或者重新<code>drop table ... create table ... insert</code>，我们后面的练习以及需要<code>Bieber</code>)</p>
+<p><br><br><br></p>
+<h1 id="AGGREGATES-聚合函数"><a href="#AGGREGATES-聚合函数" class="headerlink" title="AGGREGATES　聚合函数"></a>AGGREGATES　聚合函数</h1><p><img data-src="/images/CMU1544564/Lec02/8.jpg" alt="8.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/9.jpg" alt="9.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/11.jpg" alt="11.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/12.jpg" alt="12.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/13.jpg" alt="13.jpg"></p>
+<ul>
+<li>上图中结果表格错误, 应为：</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">        avg         | count </span><br><span class="line"><span class="comment">--------------------+-------</span></span><br><span class="line"> 3.8000000000000000 |     3</span><br><span class="line">(1 row)</span><br></pre></td></tr></tbody></table></figure>
+<p><img data-src="/images/CMU1544564/Lec02/14.jpg" alt="14.jpg"></p>
+<h2 id="Undefined-e-cid-select-not-from-group-by"><a href="#Undefined-e-cid-select-not-from-group-by" class="headerlink" title="Undefined e.cid: select not from group by"></a>Undefined <code>e.cid</code>: select not from group by</h2><p><img data-src="/images/CMU1544564/Lec02/15.jpg" alt="15.jpg"></p>
+<p>上图中，我们选择了一个字段<code>e.cid</code>，它并不出现在<code>group by</code>从句中(根本没有任何<code>group by</code>从句), 这违反了SQL  syntax句法。但是这个行为在不同的DBMS, 有不一样的作用：</p>
+<h3 id="PostgreSQL"><a href="#PostgreSQL" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h3><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">testdb=#  select avg(s.gpa), e.cid from enrolled as e, student as s where e.sid = s.sid;</span><br><span class="line">ERROR:  column <span class="string">"e.cid"</span> must appear in the GROUP BY clause <span class="keyword">or</span> be used in an aggregate function</span><br><span class="line">LINE 1: select avg(s.gpa), e.cid from enrolled as e, student as s wh...</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h3><p>MySQL 区分　两种模式mode:</p>
+<ul>
+<li>ANSI: <code>set session sql_mode = 'ansi';</code> 即SQL Standard</li>
+<li>traditional: <code>set session sql_mode = 'traditional';</code>　</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set session sql_mode = 'ansi';</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select avg(s.gpa), e.cid from enrolled as e, student as s where e.sid = s.sid;</span><br><span class="line">ERROR 1140 (42000): In aggregated query without GROUP BY, expression <span class="comment">#2 of SELECT list contains nonaggregated column 'test_db.e.cid'; this is incompatible with sql_mode=only_full_group_by</span></span><br><span class="line"></span><br><span class="line">mysql&gt; set session sql_mode = 'traditional';</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select avg(s.gpa), e.cid from enrolled as e, student as s where e.sid = s.sid;</span><br><span class="line">+<span class="comment">------------+--------+</span></span><br><span class="line">| avg(s.gpa) | cid    |</span><br><span class="line">+<span class="comment">------------+--------+</span></span><br><span class="line">|    3.88000 | 15-445 |</span><br><span class="line">+<span class="comment">------------+--------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="SQLite"><a href="#SQLite" class="headerlink" title="SQLite"></a>SQLite</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sqlite&gt; select avg(s.gpa), e.cid from enrolled as e, student as s where e.sid = s.sid;</span><br><span class="line">3.88|</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h1 id="GROUP-BY"><a href="#GROUP-BY" class="headerlink" title="GROUP BY"></a><code>GROUP BY</code></h1><p><img data-src="/images/CMU1544564/Lec02/18.jpg" alt="18.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/19.jpg" alt="19.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/20.jpg" alt="20.jpg"></p>
+<h2 id="HAVING"><a href="#HAVING" class="headerlink" title="HAVING"></a><code>HAVING</code></h2><p><img data-src="/images/CMU1544564/Lec02/21.jpg" alt="21.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/22.jpg" alt="22.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/23.jpg" alt="23.jpg"></p>
+<p><code>HAVING</code>从句可以说是<code>WHERE</code>从句带聚合函数的版本。它们俩都在对tuple做一些筛选的工作。后面我们会在query optimization中提到logical plan中的selection pushdown / early filtering。这个优化就是尽可能早得对提前筛选出符合<code>WHERE</code>和<code>HAVING</code>从句条件的tuple，尽量让查询中间结果的集合尽可能小。</p>
+<h3 id="PostgreSQL-1"><a href="#PostgreSQL-1" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h3><p>上面这个例子，不适用于PostgreSQL:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">testdb=# select avg(s.gpa) as avg_gpa, e.cid from enrolled e, student s where e.sid = s.sid group by e.cid having avg_gpa &gt; <span class="number">3.9</span>;</span><br><span class="line">ERROR:  column <span class="string">"avg_gpa"</span> does <span class="keyword">not</span> exist</span><br><span class="line">LINE <span class="number">1</span>: ...udent s where e.sid = s.sid group by e.cid having avg_gpa &gt; ...</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">testdb=# select avg(s.gpa) as avg_gpa, e.cid from enrolled e, student s where e.sid = s.sid group by e.cid having avg(s.gpa) &gt; <span class="number">3.9</span>;</span><br><span class="line">      avg_gpa       |  cid   </span><br><span class="line">--------------------+--------</span><br><span class="line"> <span class="number">4.0000000000000000</span> | <span class="number">15</span><span class="number">-826</span></span><br><span class="line"> <span class="number">3.9500000000000000</span> | <span class="number">15</span><span class="number">-721</span></span><br><span class="line">(<span class="number">2</span> rows)</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="MySQL-1"><a href="#MySQL-1" class="headerlink" title="MySQL"></a>MySQL</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select avg(s.gpa) as avg_gpa, e.cid from enrolled e, student s where e.sid = s.sid group by e.cid having avg_gpa &gt; 3.9;</span><br><span class="line">+<span class="comment">---------+--------+</span></span><br><span class="line">| avg_gpa | cid    |</span><br><span class="line">+<span class="comment">---------+--------+</span></span><br><span class="line">| 3.95000 | 15-721 |</span><br><span class="line">| 4.00000 | 15-826 |</span><br><span class="line">+<span class="comment">---------+--------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="SQLite-1"><a href="#SQLite-1" class="headerlink" title="SQLite"></a>SQLite</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sqlite&gt; select avg(s.gpa) as avg_gpa, e.cid from enrolled e, student s where e.sid = s.sid group by e.cid having avg(s.gpa) &gt; 3.9;</span><br><span class="line">4|15-826</span><br><span class="line">3.95|15-721</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h1 id="STRING-OPERATIONS"><a href="#STRING-OPERATIONS" class="headerlink" title="STRING OPERATIONS"></a>STRING OPERATIONS</h1><p>在字符串的处理上，各个数据库开始放飞自我，点名MySQL, SQLite不遵守SQL Standard</p>
+<p><img data-src="/images/CMU1544564/Lec02/24.jpg" alt="24.jpg"></p>
+<h2 id="PostgreSQL-2"><a href="#PostgreSQL-2" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">testdb=<span class="comment"># select * from student where upper(name) = upper('KaNyE');</span></span><br><span class="line">  sid  | name  |  login   | age | gpa </span><br><span class="line"><span class="comment">-------+-------+----------+-----+-----</span></span><br><span class="line"> 53666 | Kanye | kanye@cs |  39 | 4.0</span><br><span class="line">(1 row)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="MySQL-2"><a href="#MySQL-2" class="headerlink" title="MySQL"></a>MySQL</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; set session sql_mode = 'traditional';</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from student where name = 'KaNyE';</span><br><span class="line">+<span class="comment">-------+-------+----------+------+------+</span></span><br><span class="line">| sid   | name  | login    | age  | gpa  |</span><br><span class="line">+<span class="comment">-------+-------+----------+------+------+</span></span><br><span class="line">| 53666 | Kanye | kanye@cs |   39 |  4.0 |</span><br><span class="line">+<span class="comment">-------+-------+----------+------+------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">set</span> <span class="keyword">session</span> sql_mode = <span class="string">'ansi'</span>;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from student where name = 'KaNyE';</span><br><span class="line">+<span class="comment">-------+-------+----------+------+------+</span></span><br><span class="line">| sid   | name  | login    | age  | gpa  |</span><br><span class="line">+<span class="comment">-------+-------+----------+------+------+</span></span><br><span class="line">| 53666 | Kanye | kanye@cs |   39 |  4.0 |</span><br><span class="line">+<span class="comment">-------+-------+----------+------+------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select 'An' 'Dy' ' Pavlo';</span><br><span class="line">+<span class="comment">------------+</span></span><br><span class="line">| An         |</span><br><span class="line">+<span class="comment">------------+</span></span><br><span class="line">| AnDy Pavlo |</span><br><span class="line">+<span class="comment">------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<p><img data-src="/images/CMU1544564/Lec02/25.jpg" alt="25.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/26.jpg" alt="26.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/27.jpg" alt="27.jpg"></p>
+<p><br></p>
+<h1 id="DATE-TIME-OPERATIONS"><a href="#DATE-TIME-OPERATIONS" class="headerlink" title="DATE/TIME OPERATIONS"></a>DATE/TIME OPERATIONS</h1><p>在时间日期的处理上，各个数据库真正都不太一样了：</p>
+<p><img data-src="/images/CMU1544564/Lec02/28.jpg" alt="28.jpg"></p>
+<h2 id="Get-the-of-days-since-the-beginning-of-the-year"><a href="#Get-the-of-days-since-the-beginning-of-the-year" class="headerlink" title="Get the # of days since the beginning of the year."></a>Get the # of days since the beginning of the year.</h2><h3 id="PostgreSQL-3"><a href="#PostgreSQL-3" class="headerlink" title="PostgreSQL"></a>PostgreSQL</h3><ul>
+<li><code>now()</code>: a function</li>
+<li><code>current_timestamp</code>: a keyword</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">testdb=# select now();</span><br><span class="line">              now              </span><br><span class="line">-------------------------------</span><br><span class="line"> <span class="number">2020</span><span class="number">-03</span><span class="number">-04</span> <span class="number">14</span>:<span class="number">02</span>:<span class="number">08.170335</span>+<span class="number">01</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">testdb=# select current_timestamp;</span><br><span class="line">       current_timestamp       </span><br><span class="line">-------------------------------</span><br><span class="line"> <span class="number">2020</span><span class="number">-03</span><span class="number">-04</span> <span class="number">14</span>:<span class="number">03</span>:<span class="number">04.507685</span>+<span class="number">01</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">testdb=# select extract(day from (select now()));</span><br><span class="line"> date_part </span><br><span class="line">-----------</span><br><span class="line">         <span class="number">4</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">testdb=# select extract(day from (now()));</span><br><span class="line"> date_part </span><br><span class="line">-----------</span><br><span class="line">         <span class="number">4</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">testdb=# select date(now()) - date('2020-01-01') as days;</span><br><span class="line"> days </span><br><span class="line">------</span><br><span class="line">   <span class="number">63</span></span><br><span class="line">(<span class="number">1</span> row)</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="MySQL-3"><a href="#MySQL-3" class="headerlink" title="MySQL"></a>MySQL</h3><ul>
+<li><code>now()</code>: a function</li>
+<li><code>current_timestamp</code>: a keyword</li>
+<li><code>unix_timestamp</code>: use unix timestamp in seconds</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select now();</span><br><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">| now()               |</span><br><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">| 2020-03-04 14:03:41 |</span><br><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> <span class="keyword">current_timestamp</span>;</span><br><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">| current_timestamp   |</span><br><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">| 2020-03-04 14:04:22 |</span><br><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> <span class="keyword">extract</span>(<span class="keyword">day</span> <span class="keyword">from</span> (<span class="keyword">now</span>()));</span><br><span class="line">+<span class="comment">---------------------------+</span></span><br><span class="line">| extract(day from (now())) |</span><br><span class="line">+<span class="comment">---------------------------+</span></span><br><span class="line">|                         4 |</span><br><span class="line">+<span class="comment">---------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"><span class="comment">-- wrong answer!!!</span></span><br><span class="line">mysql&gt; <span class="keyword">select</span> <span class="built_in">date</span>(<span class="keyword">now</span>()) - <span class="built_in">date</span>(<span class="string">'2020-01-01'</span>) <span class="keyword">as</span> <span class="keyword">days</span>;</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">| days |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">|  203 |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> <span class="keyword">round</span>((<span class="keyword">unix_timestamp</span>(<span class="built_in">date</span>(<span class="keyword">now</span>())) - <span class="keyword">unix_timestamp</span>(<span class="built_in">date</span>(<span class="string">'2020-01-01'</span>))) / (<span class="number">60</span> * <span class="number">60</span> * <span class="number">24</span>), <span class="number">0</span>) <span class="keyword">as</span> <span class="keyword">days</span>;</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">| days |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">|   63 |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> <span class="keyword">datediff</span>(<span class="built_in">date</span>(<span class="keyword">now</span>()), <span class="built_in">date</span>(<span class="string">'2020-01-01'</span>)) <span class="keyword">as</span> <span class="keyword">days</span>;</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">| days |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">|   63 |</span><br><span class="line">+<span class="comment">------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="SQLite-2"><a href="#SQLite-2" class="headerlink" title="SQLite"></a>SQLite</h3><ul>
+<li>julianday: <span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvSnVsaWFuX2RheQ==" title="https://en.wikipedia.org/wiki/Julian_day">https://en.wikipedia.org/wiki/Julian_day<i class="fa fa-external-link"></i></span></li>
+<li>儒略日: <span class="exturl" data-url="aHR0cHM6Ly96aC53aWtpcGVkaWEub3JnL3dpa2kvJUU1JTg0JTkyJUU3JTk1JUE1JUU2JTk3JUE1" title="https://zh.wikipedia.org/wiki/%E5%84%92%E7%95%A5%E6%97%A5">https://zh.wikipedia.org/wiki/%E5%84%92%E7%95%A5%E6%97%A5<i class="fa fa-external-link"></i></span></li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- To return the current date and time in UTC, you use the following statement:</span></span><br><span class="line">sqlite&gt; SELECT datetime('now');</span><br><span class="line">2020-03-04 13:26:51</span><br><span class="line"></span><br><span class="line">sqlite&gt; SELECT datetime('now','localtime');</span><br><span class="line">2020-03-04 14:26:53</span><br><span class="line"></span><br><span class="line">sqlite&gt; SELECT strftime('%d', datetime('now','localtime'));</span><br><span class="line">04</span><br><span class="line"></span><br><span class="line"><span class="comment">-- wrong answer!!!</span></span><br><span class="line">sqlite&gt; SELECT date('now') - date('2020-01-01') as days;</span><br><span class="line">0</span><br><span class="line"></span><br><span class="line">sqlite&gt; SELECT julianday(date('now')) - julianday('2020-01-01') as days;</span><br><span class="line">63</span><br></pre></td></tr></tbody></table></figure><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/" title="[CMU-15445]Lec02_part1">https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/SQLite/" rel="tag"><i class="fa fa-tag"></i> SQLite</a>
+              <a href="/tags/DBMS/" rel="tag"><i class="fa fa-tag"></i> DBMS</a>
+              <a href="/tags/PostgreSQL/" rel="tag"><i class="fa fa-tag"></i> PostgreSQL</a>
+              <a href="/tags/MySQL/" rel="tag"><i class="fa fa-tag"></i> MySQL</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/05/CMU-15445-Lec01/" rel="prev" title="[CMU-15445]Lec01">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec01
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/06/CMU-15445-Lec02-part2/" rel="next" title="[CMU-15445]Lec02_part2">
+      [CMU-15445]Lec02_part2 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#EXAMPLE-DATABASE"><span class="nav-number">1.</span> <span class="nav-text">EXAMPLE DATABASE</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#check"><span class="nav-number">1.1.</span> <span class="nav-text">check</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#on-delete-cascade"><span class="nav-number">1.2.</span> <span class="nav-text">on delete cascade</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#AGGREGATES-聚合函数"><span class="nav-number">2.</span> <span class="nav-text">AGGREGATES　聚合函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Undefined-e-cid-select-not-from-group-by"><span class="nav-number">2.1.</span> <span class="nav-text">Undefined e.cid: select not from group by</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PostgreSQL"><span class="nav-number">2.1.1.</span> <span class="nav-text">PostgreSQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL"><span class="nav-number">2.1.2.</span> <span class="nav-text">MySQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLite"><span class="nav-number">2.1.3.</span> <span class="nav-text">SQLite</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#GROUP-BY"><span class="nav-number">3.</span> <span class="nav-text">GROUP BY</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HAVING"><span class="nav-number">3.1.</span> <span class="nav-text">HAVING</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PostgreSQL-1"><span class="nav-number">3.1.1.</span> <span class="nav-text">PostgreSQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL-1"><span class="nav-number">3.1.2.</span> <span class="nav-text">MySQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLite-1"><span class="nav-number">3.1.3.</span> <span class="nav-text">SQLite</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#STRING-OPERATIONS"><span class="nav-number">4.</span> <span class="nav-text">STRING OPERATIONS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PostgreSQL-2"><span class="nav-number">4.1.</span> <span class="nav-text">PostgreSQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySQL-2"><span class="nav-number">4.2.</span> <span class="nav-text">MySQL</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DATE-TIME-OPERATIONS"><span class="nav-number">5.</span> <span class="nav-text">DATE&#x2F;TIME OPERATIONS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Get-the-of-days-since-the-beginning-of-the-year"><span class="nav-number">5.1.</span> <span class="nav-text">Get the # of days since the beginning of the year.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PostgreSQL-3"><span class="nav-number">5.1.1.</span> <span class="nav-text">PostgreSQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL-3"><span class="nav-number">5.1.2.</span> <span class="nav-text">MySQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQLite-2"><span class="nav-number">5.1.3.</span> <span class="nav-text">SQLite</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

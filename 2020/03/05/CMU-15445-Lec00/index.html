@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="CMU 15-445&#x2F;645 Intro to Database Systems 是一门非常优秀的关系数据库管理系统入门的课。它从系统的角度，对关系数据库管理系统的各个组成部分进行介绍。它帮助我注意到了很多我之前疏漏的地方，是一个很好对所有数据库概念查漏补缺的机会。这里我以2019 Fall学期的内容为主，分享我的笔记。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec00">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec00/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="CMU 15-445&#x2F;645 Intro to Database Systems 是一门非常优秀的关系数据库管理系统入门的课。它从系统的角度，对关系数据库管理系统的各个组成部分进行介绍。它帮助我注意到了很多我之前疏漏的地方，是一个很好对所有数据库概念查漏补缺的机会。这里我以2019 Fall学期的内容为主，分享我的笔记。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/lec01/6.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/lec01/8.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/lec01/12.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/lec01/15.jpg">
+<meta property="article:published_time" content="2020-03-05T08:35:54.000Z">
+<meta property="article:modified_time" content="2020-03-06T09:50:18.050Z">
+<meta property="article:author" content="罗济高">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/lec01/6.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec00/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec00 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec00/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec00
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-05 09:35:54" itemprop="dateCreated datePublished" datetime="2020-03-05T09:35:54+01:00">2020-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-06 10:50:18" itemprop="dateModified" datetime="2020-03-06T10:50:18+01:00">2020-03-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/05/CMU-15445-Lec00/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec00" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>CMU 15-445/645 Intro to Database Systems 是一门非常优秀的<strong>关系数据库管理系统</strong>入门的课。它从系统的角度，对关系数据库管理系统的各个组成部分进行介绍。它帮助我注意到了很多我之前疏漏的地方，是一个很好对所有数据库概念查漏补缺的机会。这里我以2019 Fall学期的内容为主，分享我的笔记。</p>
+<a id="more"></a>
+<h1 id="教授"><a href="#教授" class="headerlink" title="教授"></a>教授</h1><p>大名鼎鼎的<span class="exturl" data-url="aHR0cHM6Ly93d3cuY3MuY211LmVkdS9+cGF2bG8v" title="https://www.cs.cmu.edu/~pavlo/">Andy Pavlo<i class="fa fa-external-link"></i></span></p>
+<p>我很有幸在他来TUM的时候，听了一次他的 guest lecture。</p>
+<h1 id="课程页面"><a href="#课程页面" class="headerlink" title="课程页面"></a>课程页面</h1><p>在课程页面中可以找到课件，作业(以及答案)，实验(Assignment)等等材料：</p>
+<ul>
+<li>2019: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkv" title="https://15445.courses.cs.cmu.edu/fall2019/">https://15445.courses.cs.cmu.edu/fall2019/<i class="fa fa-external-link"></i></span></li>
+<li>2018: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgv" title="https://15445.courses.cs.cmu.edu/fall2018/">https://15445.courses.cs.cmu.edu/fall2018/<i class="fa fa-external-link"></i></span></li>
+<li>2017: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTcv" title="https://15445.courses.cs.cmu.edu/fall2017/">https://15445.courses.cs.cmu.edu/fall2017/<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p>2018和2019很像，但是2017年的内容不太一样。</p>
+<h1 id="课程视频录像"><a href="#课程视频录像" class="headerlink" title="课程视频录像"></a>课程视频录像</h1><h2 id="YouTube"><a href="#YouTube" class="headerlink" title="YouTube"></a>YouTube</h2><ul>
+<li>2019: <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1vZVlCZGdoYUlqYyZhbXA7bGlzdD1QTFNFOE9EaGpaWGpib2hrTkJXUXNfb3RUckJUcmp5b2hp" title="https://www.youtube.com/watch?v=oeYBdghaIjc&amp;list=PLSE8ODhjZXjbohkNBWQs_otTrBTrjyohi">https://www.youtube.com/watch?v=oeYBdghaIjc&amp;list=PLSE8ODhjZXjbohkNBWQs_otTrBTrjyohi<i class="fa fa-external-link"></i></span></li>
+<li>2018: <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj12eVZHbV8yaUZ3VSZhbXA7bGlzdD1QTFNFOE9EaGpaWGphM2hnbXV3aGY4OXFib1Yxa094TXg3" title="https://www.youtube.com/watch?v=vyVGm_2iFwU&amp;list=PLSE8ODhjZXja3hgmuwhf89qboV1kOxMx7">https://www.youtube.com/watch?v=vyVGm_2iFwU&amp;list=PLSE8ODhjZXja3hgmuwhf89qboV1kOxMx7<i class="fa fa-external-link"></i></span></li>
+<li>2017: <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj14amhRMGU5SGxkcyZhbXA7bGlzdD1QTFNFOE9EaGpaWGpZdXRWelRlQWRzOHhVdDFyY215VDd4" title="https://www.youtube.com/watch?v=xjhQ0e9Hlds&amp;list=PLSE8ODhjZXjYutVzTeAds8xUt1rcmyT7x">https://www.youtube.com/watch?v=xjhQ0e9Hlds&amp;list=PLSE8ODhjZXjYutVzTeAds8xUt1rcmyT7x<i class="fa fa-external-link"></i></span></li>
+</ul>
+<h2 id="哔哩哔哩"><a href="#哔哩哔哩" class="headerlink" title="哔哩哔哩"></a>哔哩哔哩</h2><p>课程视频是应用Creative Commons版权协议，见　<span class="exturl" data-url="aHR0cHM6Ly9zdXBwb3J0Lmdvb2dsZS5jb20veW91dHViZS9hbnN3ZXIvMjc5NzQ2OA==" title="https://support.google.com/youtube/answer/2797468">https://support.google.com/youtube/answer/2797468<i class="fa fa-external-link"></i></span> 。因此我们在B站也可以看到如下：</p>
+<ul>
+<li>2019: <span class="exturl" data-url="aHR0cHM6Ly93d3cuYmlsaWJpbGkuY29tL3ZpZGVvL2F2OTE5MTkzMjk/ZnJvbT1zZWFyY2gmYW1wO3NlaWQ9MTU5ODIyNTc4MDMxODkyNDIxNjY=" title="https://www.bilibili.com/video/av91919329?from=search&amp;seid=15982257803189242166">https://www.bilibili.com/video/av91919329?from=search&amp;seid=15982257803189242166<i class="fa fa-external-link"></i></span></li>
+<li>2018: <span class="exturl" data-url="aHR0cHM6Ly93d3cuYmlsaWJpbGkuY29tL3ZpZGVvL2F2Mzk3MzExODU/ZnJvbT1zZWFyY2gmYW1wO3NlaWQ9MTU5ODIyNTc4MDMxODkyNDIxNjY=" title="https://www.bilibili.com/video/av39731185?from=search&amp;seid=15982257803189242166">https://www.bilibili.com/video/av39731185?from=search&amp;seid=15982257803189242166<i class="fa fa-external-link"></i></span></li>
+<li>2017: 无</li>
+</ul>
+<h1 id="音乐-joy"><a href="#音乐-joy" class="headerlink" title="音乐 (:joy:)"></a>音乐 (<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span>)</h1><ul>
+<li>2018开场音乐:<br>　A Tribe Called Quest - Vibes and Stuff <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj0yZmtiZ1IyRnN3aw==" title="https://www.youtube.com/watch?v=2fkbgR2Fswk">https://www.youtube.com/watch?v=2fkbgR2Fswk<i class="fa fa-external-link"></i></span></li>
+<li>2018结束音乐:<br>　Geto Boys &amp; Ice Cube - 5th Ward South Central Malt <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1WRERQOUozR2Y4cw==" title="https://www.youtube.com/watch?v=VDDP9J3Gf8s">https://www.youtube.com/watch?v=VDDP9J3Gf8s<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1aZDd3alJDR2otUQ==" title="https://www.youtube.com/watch?v=Zd7wjRCGj-Q">https://www.youtube.com/watch?v=Zd7wjRCGj-Q<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly9nZW5pdXMuY29tL0dldG8tYm95cy01dGgtd2FyZC1zb3V0aC1jZW50cmFsLW1hbHQtbHlyaWNz" title="https://genius.com/Geto-boys-5th-ward-south-central-malt-lyrics">https://genius.com/Geto-boys-5th-ward-south-central-malt-lyrics<i class="fa fa-external-link"></i></span></li>
+<li>2019开场音乐:<br>　Dan Le Sac &amp; Scroobius Pip - Thou Shalt Always Kill <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1DV3JNR1h3aEZMaw==" title="https://www.youtube.com/watch?v=CWrMGXwhFLk">https://www.youtube.com/watch?v=CWrMGXwhFLk<i class="fa fa-external-link"></i></span></li>
+<li>2019结束音乐:<br>　Wu-Tang Clan - Shaolin Brew <span class="exturl" data-url="aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1WcmhZMHFSXzdVMA==" title="https://www.youtube.com/watch?v=VrhY0qR_7U0">https://www.youtube.com/watch?v=VrhY0qR_7U0<i class="fa fa-external-link"></i></span></li>
+</ul>
+<h1 id="SYLLABUS-COURSE-INFORMATION"><a href="#SYLLABUS-COURSE-INFORMATION" class="headerlink" title="SYLLABUS -  COURSE INFORMATION"></a>SYLLABUS -  COURSE INFORMATION</h1><blockquote>
+<p>This course is on the design and implementation of database management systems. Topics include data models (relational, document, key/value), storage models (n-ary, decomposition), query languages (SQL, stored procedures), storage architectures (heaps, log-structured), indexing (order preserving trees, hash tables), transaction processing (ACID, concurrency control), recovery (logging, checkpoints), query processing (joins, sorting, aggregation, optimization), and parallel architectures (multi-core, distributed). Case studies on open-source and commercial database systems are used to illustrate these techniques and trade-offs. The course is appropriate for students with lit systems programming skills.</p>
+</blockquote>
+<h1 id="课程要求"><a href="#课程要求" class="headerlink" title="课程要求"></a>课程要求</h1><p>这部分是我<strong>主观</strong>的想法和经验，我基本看过整个课内容，抽象出这门课内容上的要求：</p>
+<ul>
+<li>本科生基础课程度的 计算机组成 <ul>
+<li>CPU中指令的执行</li>
+<li>存储层次(<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvTWVtb3J5X2hpZXJhcmNoeQ==" title="https://en.wikipedia.org/wiki/Memory_hierarchy">Memory hierarchy<i class="fa fa-external-link"></i></span>)</li>
+<li>指令流水线，分支预测(<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvUHJlZGljYXRpb25fKGNvbXB1dGVyX2FyY2hpdGVjdHVyZQ==" title="https://en.wikipedia.org/wiki/Predication_(computer_architecture">Predication<i class="fa fa-external-link"></i></span>))</li>
+<li>单指令流多数据流 Single instruction, multiple data (SIMD)</li>
+</ul>
+</li>
+<li>本科生基础课程度的 操作系统<ul>
+<li>线程与进程关联和通信</li>
+<li>内存管理，虚拟内存</li>
+<li>文件系统</li>
+</ul>
+</li>
+<li>本科生基础课程度的　数据库课程<ul>
+<li>了解理论概念即可</li>
+</ul>
+</li>
+<li>超过本科生基础课程度的　现代C++编程能力<ul>
+<li>C++11 和 C++17</li>
+<li>线程安全</li>
+<li>C++项目管理<ul>
+<li>git</li>
+<li>CMake</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>反而单纯数据库中理论的东西不再重要，如Function Dependency, Normal Form, Tuple Calculus, Domain Calculus。(2019 Fall)这门课舍弃了这些东西，来有更多时间花在数据库操作系统内部的架构和实现。我个人建议最好同时也上过本科生程度的数据库课程，这样能将所有理论概念和实现联系在一起。但是总体上，对系统方向的要求远远高于对理论的要求。</p>
+<h1 id="其他人的笔记"><a href="#其他人的笔记" class="headerlink" title="其他人的笔记"></a>其他人的笔记</h1><h2 id="完整笔记"><a href="#完整笔记" class="headerlink" title="完整笔记"></a>完整笔记</h2><p>数据库设计 - 西部小笼包 <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vbmIvMzYyNjU4NDE=" title="https://www.jianshu.com/nb/36265841">https://www.jianshu.com/nb/36265841<i class="fa fa-external-link"></i></span></p>
+<p>Database - fxjwind　<span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZnhqd2luZC9jYXRlZ29yeS8xNDkzODMzLmh0bWw=" title="https://www.cnblogs.com/fxjwind/category/1493833.html">https://www.cnblogs.com/fxjwind/category/1493833.html<i class="fa fa-external-link"></i></span></p>
+<h2 id="非完整笔记"><a href="#非完整笔记" class="headerlink" title="非完整笔记"></a>非完整笔记</h2><p>Gexrior的博客 <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0dleHJpb3I=" title="https://blog.csdn.net/Gexrior">https://blog.csdn.net/Gexrior<i class="fa fa-external-link"></i></span></p>
+<p>CMU数据库系统总结 - liu-jianhao’s Blog <span class="exturl" data-url="aHR0cHM6Ly9saXUtamlhbmhhby5naXRodWIuaW8vMjAxOC8xMC9jbXUlRTYlOTUlQjAlRTYlOEQlQUUlRTUlQkElOTMlRTclQjMlQkIlRTclQkIlOUYlRTYlODAlQkIlRTclQkIlOTMv" title="https://liu-jianhao.github.io/2018/10/cmu%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E6%80%BB%E7%BB%93/">https://liu-jianhao.github.io/2018/10/cmu%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E6%80%BB%E7%BB%93/<i class="fa fa-external-link"></i></span></p>
+<p><br><br><br></p>
+<hr>
+<h1 id="ADMINISTRIVIA"><a href="#ADMINISTRIVIA" class="headerlink" title="ADMINISTRIVIA"></a>ADMINISTRIVIA</h1><p>第一次课的时候提到这门课的结构等事项，我们移步到这一次笔记中：</p>
+<p><img data-src="/images/CMU1544564/lec01/6.jpg" alt="6.jpg"></p>
+<p><img data-src="/images/CMU1544564/lec01/8.jpg" alt="8.jpg"></p>
+<ul>
+<li>第六版：<span class="exturl" data-url="aHR0cHM6Ly9kYi1ib29rLmNvbS9kYjYvaW5kZXguaHRtbA==" title="https://db-book.com/db6/index.html">https://db-book.com/db6/index.html<i class="fa fa-external-link"></i></span></li>
+<li>第七版：<span class="exturl" data-url="aHR0cHM6Ly9kYi1ib29rLmNvbS9kYjcvaW5kZXguaHRtbA==" title="https://db-book.com/db7/index.html">https://db-book.com/db7/index.html<i class="fa fa-external-link"></i></span></li>
+<li>这一门课主要介绍的内容都是几十年前成熟的技术。所有两版书对我们学生都一样。</li>
+<li>这个书我推荐英文版的：　<span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8yNjA0NTkzMS8=" title="https://book.douban.com/subject/26045931/">https://book.douban.com/subject/26045931/<i class="fa fa-external-link"></i></span>　高等教育出版社出版了影印版，适合国内喜欢实体纸质书的同学。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/lec01/12.jpg" alt="12.jpg"></p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWI=" title="https://github.com/cmu-db/bustub">https://github.com/cmu-db/bustub<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><img data-src="/images/CMU1544564/lec01/15.jpg" alt="15.jpg"></p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5jcy5jbXUuZWR1Lw==" title="https://db.cs.cmu.edu/">https://db.cs.cmu.edu/<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi90ZXJyaWVy" title="https://github.com/cmu-db/terrier">https://github.com/cmu-db/terrier<i class="fa fa-external-link"></i></span></li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec00/" title="[CMU-15445]Lec00">https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec00/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/03/Security-GPG-encrypt/" rel="prev" title="[Security]GPG管理和文件加密">
+      <i class="fa fa-chevron-left"></i> [Security]GPG管理和文件加密
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/05/CMU-15445-Lec01/" rel="next" title="[CMU-15445]Lec01">
+      [CMU-15445]Lec01 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#教授"><span class="nav-number">1.</span> <span class="nav-text">教授</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#课程页面"><span class="nav-number">2.</span> <span class="nav-text">课程页面</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#课程视频录像"><span class="nav-number">3.</span> <span class="nav-text">课程视频录像</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#YouTube"><span class="nav-number">3.1.</span> <span class="nav-text">YouTube</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哔哩哔哩"><span class="nav-number">3.2.</span> <span class="nav-text">哔哩哔哩</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#音乐-joy"><span class="nav-number">4.</span> <span class="nav-text">音乐 (😂)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SYLLABUS-COURSE-INFORMATION"><span class="nav-number">5.</span> <span class="nav-text">SYLLABUS -  COURSE INFORMATION</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#课程要求"><span class="nav-number">6.</span> <span class="nav-text">课程要求</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他人的笔记"><span class="nav-number">7.</span> <span class="nav-text">其他人的笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#完整笔记"><span class="nav-number">7.1.</span> <span class="nav-text">完整笔记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#非完整笔记"><span class="nav-number">7.2.</span> <span class="nav-text">非完整笔记</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ADMINISTRIVIA"><span class="nav-number">8.</span> <span class="nav-text">ADMINISTRIVIA</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec00/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

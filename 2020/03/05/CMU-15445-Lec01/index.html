@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="The Relational Model 关系代数 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;01-introduction.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;01-introduction.pdfReading: Chapters 1-2, 6 这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec01">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="The Relational Model 关系代数 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;01-introduction.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;01-introduction.pdfReading: Chapters 1-2, 6 这">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/1.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/16.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/17.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/18.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/19.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/20.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/21.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/22.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/23.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/24.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/25.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/26.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/27.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/28.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/29.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/30.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/31.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/32.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/33.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/34.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/35.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/36.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/37.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/38.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/39.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/40.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/41.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/42.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/43.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/44.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/45.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/46.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/47.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/48.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/49.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/50.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/51.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/52.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/53.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/54.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/55.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/56.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/57.jpg">
+<meta property="article:published_time" content="2020-03-05T19:00:26.000Z">
+<meta property="article:modified_time" content="2020-03-12T17:27:17.750Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Relation Algebra">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec01/1.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec01 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec01
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-05 20:00:26" itemprop="dateCreated datePublished" datetime="2020-03-05T20:00:26+01:00">2020-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-12 18:27:17" itemprop="dateModified" datetime="2020-03-12T18:27:17+01:00">2020-03-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Relation-Algebra/" itemprop="url" rel="index"><span itemprop="name">Relation Algebra</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/05/CMU-15445-Lec01/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec01" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>The Relational Model 关系代数</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAxLWludHJvZHVjdGlvbi5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/slides/01-introduction.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/01-introduction.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDEtaW50cm9kdWN0aW9uLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/notes/01-introduction.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/01-introduction.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapters 1-2, 6</p>
+<p>这节课，我们会了解数据库的概况，然后同时了解一下关系代数和基础的SQL。</p>
+<p>更多的基础SQL练习可以在我之前的博客找到：　见 <a href="https://cakebytheoceanluo.github.io/2020/02/22/SQL-%E5%9F%BA%E7%A1%80SQL/">[SQL]基础SQL</a></p>
+<a id="more"></a>
+<p><img data-src="/images/CMU1544564/Lec01/1.jpg" alt="1.jpg"></p>
+<h1 id="DBMS-数据库管理系统"><a href="#DBMS-数据库管理系统" class="headerlink" title="DBMS 数据库管理系统"></a>DBMS 数据库管理系统</h1><p>这一部分我们粗略的去了解，DBMSs的意义。它是System Program(或System Programming)最有特征的代表，因为High End的DBMSs始终以运行在服务器的操作系统上，同时它又需要向普通的用户的User Program提供服务。从某种程度上说，数据库的确是存在于操作系统和普通应用的一层介质，它的最主要功能是高效快速且安全地向普通应用提供数据借口和服务，因此普通应用的开发者只需要注意对应的借口，而不需要自己花很多时间去实现数据库的功能。</p>
+<p>(当然存在一个学术方向是数据库的总体统一: 数据库运行在专属的芯片和操作系统上，它们都对大数据处理(large scaled data processing)作了最大程度的优化。　见 <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvcGVvcGxlL3NpdGVzL2dpY2V2YS9tYXRlcmlhbHMvcmVzZWFyY2gucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/people/sites/giceva/materials/research.pdf?lang=de">https://db.in.tum.de/people/sites/giceva/materials/research.pdf?lang=de<i class="fa fa-external-link"></i></span> )</p>
+<p><img data-src="/images/CMU1544564/Lec01/16.jpg" alt="16.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/17.jpg" alt="17.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/18.jpg" alt="18.jpg"></p>
+<h2 id="FLAT-FILE-STRAWMAN-纯文本稻草人"><a href="#FLAT-FILE-STRAWMAN-纯文本稻草人" class="headerlink" title="FLAT FILE STRAWMAN 纯文本稻草人"></a>FLAT FILE STRAWMAN 纯文本稻草人</h2><p>Flat File：　一种包含没有相对关系结构的记录的文件。 这个类型通常用来描述文字处理、其他结构字符或标记被移除了的文本</p>
+<p><img data-src="/images/CMU1544564/Lec01/19.jpg" alt="19.jpg"></p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>假设我们没有任何数据库，我们以纯文本文件(这里用<code>.csv</code>表格文件)来存储我们需要的数据：</p>
+<ul>
+<li><a href="https://cakebytheoceanluo.github.io/download/CMU15445/Lec01_album.csv">lec01_album.csv　下载</a></li>
+<li><a href="https://cakebytheoceanluo.github.io/download/CMU15445/Lec01_artist.csv">lec01_artist.csv　下载</a></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec01/20.jpg" alt="20.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/21.jpg" alt="21.jpg"></p>
+<p>如果我们在开发一个普通应用，而不使用任何数据库。我们可以使用在我们的应用中使用高级语言去代替SQL查询。这当然让开发过程变得艰难，因为我们不仅需要完成我们自己应用的开发，甚至还需要完成一个类似数据库的应用。不止开发任务的加重，我们继续看这种纯文本存储的作法其他的缺点。这些缺点就是我们使用数据库管理系统的论点。</p>
+<h3 id="纯文本存储的缺点！"><a href="#纯文本存储的缺点！" class="headerlink" title="纯文本存储的缺点！"></a>纯文本存储的缺点！</h3><h4 id="DATA-INTEGRITY-数据完整性"><a href="#DATA-INTEGRITY-数据完整性" class="headerlink" title="DATA INTEGRITY 数据完整性"></a>DATA INTEGRITY 数据完整性</h4><p><img data-src="/images/CMU1544564/Lec01/22.jpg" alt="22.jpg"></p>
+<blockquote>
+<ul>
+<li>我们该如何确保这个音乐家对每个专辑 都是同样的那个音乐家呢？</li>
+<li>如果有人在出道日期上写了个‘哈哈哈’，怎么办呢</li>
+<li>我们要如何存储多个音乐家合作发布的专辑呢？</li>
+</ul>
+</blockquote>
+<p><br></p>
+<ul>
+<li>我们或者其他用户在有文件操作权限的情况下，可以任意修改这个文件。这样这个文件依旧是一个纯文本文件，但是我们的普通应用不再能理解这个纯文本文件：比如课件中的三个情况</li>
+</ul>
+<h4 id="IMPLEMENTATION-实现"><a href="#IMPLEMENTATION-实现" class="headerlink" title="IMPLEMENTATION 实现"></a>IMPLEMENTATION 实现</h4><p><img data-src="/images/CMU1544564/Lec01/23.jpg" alt="23.jpg"></p>
+<ul>
+<li>第一点：我们只能每次读取整个文件去找其中的一个record，这样是没有效率的。</li>
+<li>第二点：我们之前提到了，开发效率很低。</li>
+</ul>
+<h4 id="DURABILITY-持久性"><a href="#DURABILITY-持久性" class="headerlink" title="DURABILITY 持久性"></a>DURABILITY 持久性</h4><p><img data-src="/images/CMU1544564/Lec01/24.jpg" alt="24.jpg"></p>
+<ul>
+<li>第一点: 如果在写文件的时候机器宕机，那正在进行的文件修改就会消失。事务 transaction</li>
+<li>第二点: 如何对这个文件支持分布式的情况? Scale Out</li>
+</ul>
+<h2 id="DATABASE-MANAGEMENT-SYSTEM"><a href="#DATABASE-MANAGEMENT-SYSTEM" class="headerlink" title="DATABASE MANAGEMENT SYSTEM"></a>DATABASE MANAGEMENT SYSTEM</h2><p><img data-src="/images/CMU1544564/Lec01/25.jpg" alt="25.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/26.jpg" alt="26.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/27.jpg" alt="27.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/28.jpg" alt="28.jpg"></p>
+<p>Edgar F. Codd (Ted Codd.): <span class="exturl" data-url="aHR0cHM6Ly93d3cubmFwLmVkdS9yZWFkLzEyNDczL2NoYXB0ZXIvMTUjODI=" title="https://www.nap.edu/read/12473/chapter/15#82">https://www.nap.edu/read/12473/chapter/15#82<i class="fa fa-external-link"></i></span></p>
+<p>Edgar F. Codd (Ted Codd.)是数据库中关系代数的奠基人，因此他获得了<span class="exturl" data-url="aHR0cHM6Ly9hbXR1cmluZy5hY20ub3JnL2F3YXJkX3dpbm5lcnMvY29kZF8xMDAwODkyLmNmbQ==" title="https://amturing.acm.org/award_winners/codd_1000892.cfm">1981年的图灵奖<i class="fa fa-external-link"></i></span>。</p>
+<ul>
+<li>A relational model of data for large shared data banks: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS8xMC4xMTQ1LzM2MjM4NC4zNjI2ODU=" title="https://dl.acm.org/doi/10.1145/362384.362685">https://dl.acm.org/doi/10.1145/362384.362685<i class="fa fa-external-link"></i></span></li>
+<li>Derivability, redundancy and consistency of relations stored in large data banks: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS8xMC4xMTQ1LzE1NTgzMzQuMTU1ODMzNg==" title="https://dl.acm.org/doi/10.1145/1558334.1558336">https://dl.acm.org/doi/10.1145/1558334.1558336<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p>当时是数据库的蛮荒年代，甚至没有relation关系一说。IBM在开发当时的数据库时，经常需要浪费时间去重写重构以前的代码。这就是Ted Codd.提出关系代数的原因，运用关系这个数学模型，能对数据很好进行建模，减少不必要的开发时间浪费：</p>
+<ul>
+<li>Store database in simple data structures: 即关系relation，它是对表格的数学抽象表达。</li>
+<li>Access data through high-level language: 我们可以理解成SQL (Ted Codd.当时用是不是SQL, 但是在几十年的发展中，只有SQL存活了下来。)</li>
+<li>Physical storage left up to implementation: 我们称 关系模型relation model为逻辑模型 logical model, 它和真正的实现 physical storage 没有很大关系。正是因为这个logical 和 physical 的解耦，IBM当时才能避免不断重构代码而去节省时间。</li>
+</ul>
+<h2 id="DATA-MODELS"><a href="#DATA-MODELS" class="headerlink" title="DATA MODELS"></a>DATA MODELS</h2><p><img data-src="/images/CMU1544564/Lec01/29.jpg" alt="29.jpg"></p>
+<ul>
+<li>data model: High level abstraction of relation</li>
+<li>schema架构: 对应SQL<code>create table</code>语句，关系数据库中每一个表格中每一个字段的字段名和字段值的数据类型需要一开始就被指定，不能更改。 </li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec01/30.jpg" alt="30.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/31.jpg" alt="31.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/32.jpg" alt="32.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/33.jpg" alt="33.jpg"><br>最后的 Hierachical 和　Network属于 遗产系统 Legacy system。</p>
+<p><img data-src="/images/CMU1544564/Lec01/34.jpg" alt="34.jpg"></p>
+<p><br><br><br></p>
+<h1 id="RELATIONAL-MODEL-关系模型"><a href="#RELATIONAL-MODEL-关系模型" class="headerlink" title="RELATIONAL MODEL 关系模型"></a>RELATIONAL MODEL 关系模型</h1><p><img data-src="/images/CMU1544564/Lec01/35.jpg" alt="35.jpg"></p>
+<p>关系模型有三个部分：</p>
+<ul>
+<li>Structure: table schema</li>
+<li>Integrity: 确保数据库的内容满足限制，也包含table schema 和 <code>create table</code>中的指令, 比如<code>check</code></li>
+<li>Manipulation: SQL</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec01/36.jpg" alt="36.jpg"></p>
+<ul>
+<li><strong>关系代数的关系是一个不带顺序的集合</strong></li>
+<li><code>NULL</code> 是一个未定义　未知的值，它在数据库的的表达和具体实现相关。</li>
+</ul>
+<h2 id="PRIMARY-KEYS-主键"><a href="#PRIMARY-KEYS-主键" class="headerlink" title="PRIMARY KEYS 主键"></a>PRIMARY KEYS 主键</h2><p><img data-src="/images/CMU1544564/Lec01/37.jpg" alt="37.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/38.jpg" alt="38.jpg"></p>
+<h2 id="FOREIGN-KEYS-外键"><a href="#FOREIGN-KEYS-外键" class="headerlink" title="FOREIGN KEYS　外键"></a>FOREIGN KEYS　外键</h2><p><img data-src="/images/CMU1544564/Lec01/39.jpg" alt="39.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/40.jpg" alt="40.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/41.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/42.jpg" alt="42.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/43.jpg" alt="43.jpg"></p>
+<ul>
+<li>Cascade Deletion: 如果一个表的一个tuple(元组)被删除，对应的其他表中的外键相关联的tuple也会被删除</li>
+<li><code>ArtistAlbum</code>表格的存在：<ul>
+<li>允许一个Artist对应多个Album (<code>1:N</code>的关系)</li>
+<li>允许一个Album对应多个Artist (<code>1:N</code>的关系)</li>
+</ul>
+</li>
+</ul>
+<h2 id="DATA-MANIPULATION-LANGUAGES-DML"><a href="#DATA-MANIPULATION-LANGUAGES-DML" class="headerlink" title="DATA MANIPULATION LANGUAGES (DML)"></a>DATA MANIPULATION LANGUAGES (DML)</h2><p><img data-src="/images/CMU1544564/Lec01/44.jpg" alt="44.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/45.jpg" alt="45.jpg"></p>
+<p>我们在这门课中只学习 relation algebra关系代数。</p>
+<p><br><br><br></p>
+<h1 id="RELATIONAL-ALGEBRA-关系代数"><a href="#RELATIONAL-ALGEBRA-关系代数" class="headerlink" title="RELATIONAL ALGEBRA 关系代数"></a>RELATIONAL ALGEBRA 关系代数</h1><p><img data-src="/images/CMU1544564/Lec01/46.jpg" alt="46.jpg"></p>
+<p>关系代数基于集合代数(set algebra)，但是拥有更多的运算符号。</p>
+<h2 id="SELECT"><a href="#SELECT" class="headerlink" title="SELECT"></a>SELECT</h2><p><img data-src="/images/CMU1544564/Lec01/47.jpg" alt="47.jpg"></p>
+<p>SELECT起到一个对谓词判断(predicate)的筛选作用： 运用条件，筛选得到满足条件的tuple，但是不改变这些tuple。、</p>
+<p>这里需要注意：<strong>关系代数中的SELECT运算符　对应　SQL中的WHERE从句</strong></p>
+<h2 id="PROJECTION"><a href="#PROJECTION" class="headerlink" title="PROJECTION"></a>PROJECTION</h2><p><img data-src="/images/CMU1544564/Lec01/48.jpg" alt="48.jpg"></p>
+<p>PROJECTION是对原tuple进行操作，投影出所需要的字段，去掉不需要的字段</p>
+<p>这里需要注意：<strong>关系代数中的PROJECTION运算符　对应　SQL中的SELECT从句</strong></p>
+<h2 id="UNION"><a href="#UNION" class="headerlink" title="UNION"></a>UNION</h2><p><img data-src="/images/CMU1544564/Lec01/49.jpg" alt="49.jpg"></p>
+<h2 id="INTERSECTION"><a href="#INTERSECTION" class="headerlink" title="INTERSECTION"></a>INTERSECTION</h2><p><img data-src="/images/CMU1544564/Lec01/50.jpg" alt="50.jpg"></p>
+<h2 id="DIFFERENCE"><a href="#DIFFERENCE" class="headerlink" title="DIFFERENCE"></a>DIFFERENCE</h2><p><img data-src="/images/CMU1544564/Lec01/51.jpg" alt="51.jpg"></p>
+<!-- TODO: union all, intersection all, except all -->
+<h2 id="PRODUCT"><a href="#PRODUCT" class="headerlink" title="PRODUCT"></a>PRODUCT</h2><p><img data-src="/images/CMU1544564/Lec01/52.jpg" alt="52.jpg"></p>
+<h2 id="JOIN"><a href="#JOIN" class="headerlink" title="JOIN"></a>JOIN</h2><p><img data-src="/images/CMU1544564/Lec01/53.jpg" alt="53.jpg"></p>
+<p>这里需要注意： <code>NATURAL JOIN</code>只是join的一种情况，指两个表格的<strong>相同名字，相同数据类型</strong>的字段进行连接(Join)。我们任然有很多很多途径去完成join, 见 <a href="https://cakebytheoceanluo.github.io/2020/02/22/SQL-%E5%9F%BA%E7%A1%80SQL/">[SQL]基础SQL</a></p>
+<h2 id="EXTRA-OPERATORS"><a href="#EXTRA-OPERATORS" class="headerlink" title="EXTRA OPERATORS"></a>EXTRA OPERATORS</h2><p><img data-src="/images/CMU1544564/Lec01/54.jpg" alt="54.jpg"></p>
+<p>其他课上没有讲的运算符依然很重要，需要自己去看书了解。这些符号经常会在数据库论文中出现。</p>
+<!-- TODO: 关系代数符号 -->
+<p><br></p>
+<h1 id="结论和其他"><a href="#结论和其他" class="headerlink" title="结论和其他"></a>结论和其他</h1><p><img data-src="/images/CMU1544564/Lec01/55.jpg" alt="55.jpg"></p>
+<ul>
+<li>我们可以看到，对于一个查询，可以有不同的途径(关系代数表达式)去完成。这些途径的复杂度很可能不一样，这个是数据库SQL的一个优化点。　(logical plan)</li>
+<li>SQL是属于<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvRGVjbGFyYXRpdmVfcHJvZ3JhbW1pbmc=" title="https://en.wikipedia.org/wiki/Declarative_programming">声明式编程 Declarative programming<i class="fa fa-external-link"></i></span>，就是我们只是指定我们想得到什么数据，而不指定通过什么形式去获得它。这个给了数据库去找出最佳的(最快速的)途径去解决SQL查询。也映照了上一点提到的<strong>优化点</strong>。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec01/56.jpg" alt="56.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/57.jpg" alt="57.jpg"> </p>
+<h1 id="Last-Word-joy"><a href="#Last-Word-joy" class="headerlink" title="Last Word (:joy:)"></a>Last Word (<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f602.png?v8">😂</span>)</h1><blockquote>
+<p>The most important thing you need to understand about databases throughout this, through the rest of your life is the following: when you look back at the 36 Chambers, understand who were the original 9 involved in it. You have the RZA, the GZA, Inspectah Deck, Ghostface Killah, Masta Killa, U-God, Method Man, Ol’ Dirty Bastard, Raekwon. But, the other important thing too is Cappadonna was in jail at the time, so he was actually an original member of the clan. But because he was in jail, he couldn’t be on the 36 Chambers. So, that’s the most important thing you need to understand throughout this entire semester.</p>
+</blockquote>
+<p>引用：</p>
+<p>CMU 15445 1.关系模型 - 西部小笼包: <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC9kZDRlNDgwYjRjODQ=" title="https://www.jianshu.com/p/dd4e480b4c84">https://www.jianshu.com/p/dd4e480b4c84<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/" title="[CMU-15445]Lec01">https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/Relation-Algebra/" rel="tag"><i class="fa fa-tag"></i> Relation Algebra</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/05/CMU-15445-Lec00/" rel="prev" title="[CMU-15445]Lec00">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec00
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/06/CMU-15445-Lec02-part1/" rel="next" title="[CMU-15445]Lec02_part1">
+      [CMU-15445]Lec02_part1 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#DBMS-数据库管理系统"><span class="nav-number">1.</span> <span class="nav-text">DBMS 数据库管理系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#FLAT-FILE-STRAWMAN-纯文本稻草人"><span class="nav-number">1.1.</span> <span class="nav-text">FLAT FILE STRAWMAN 纯文本稻草人</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">1.1.1.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#纯文本存储的缺点！"><span class="nav-number">1.1.2.</span> <span class="nav-text">纯文本存储的缺点！</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DATA-INTEGRITY-数据完整性"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">DATA INTEGRITY 数据完整性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IMPLEMENTATION-实现"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">IMPLEMENTATION 实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DURABILITY-持久性"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">DURABILITY 持久性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DATABASE-MANAGEMENT-SYSTEM"><span class="nav-number">1.2.</span> <span class="nav-text">DATABASE MANAGEMENT SYSTEM</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DATA-MODELS"><span class="nav-number">1.3.</span> <span class="nav-text">DATA MODELS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RELATIONAL-MODEL-关系模型"><span class="nav-number">2.</span> <span class="nav-text">RELATIONAL MODEL 关系模型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PRIMARY-KEYS-主键"><span class="nav-number">2.1.</span> <span class="nav-text">PRIMARY KEYS 主键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FOREIGN-KEYS-外键"><span class="nav-number">2.2.</span> <span class="nav-text">FOREIGN KEYS　外键</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DATA-MANIPULATION-LANGUAGES-DML"><span class="nav-number">2.3.</span> <span class="nav-text">DATA MANIPULATION LANGUAGES (DML)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RELATIONAL-ALGEBRA-关系代数"><span class="nav-number">3.</span> <span class="nav-text">RELATIONAL ALGEBRA 关系代数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SELECT"><span class="nav-number">3.1.</span> <span class="nav-text">SELECT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PROJECTION"><span class="nav-number">3.2.</span> <span class="nav-text">PROJECTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#UNION"><span class="nav-number">3.3.</span> <span class="nav-text">UNION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#INTERSECTION"><span class="nav-number">3.4.</span> <span class="nav-text">INTERSECTION</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DIFFERENCE"><span class="nav-number">3.5.</span> <span class="nav-text">DIFFERENCE</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PRODUCT"><span class="nav-number">3.6.</span> <span class="nav-text">PRODUCT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JOIN"><span class="nav-number">3.7.</span> <span class="nav-text">JOIN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EXTRA-OPERATORS"><span class="nav-number">3.8.</span> <span class="nav-text">EXTRA OPERATORS</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论和其他"><span class="nav-number">4.</span> <span class="nav-text">结论和其他</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Last-Word-joy"><span class="nav-number">5.</span> <span class="nav-text">Last Word (😂)</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

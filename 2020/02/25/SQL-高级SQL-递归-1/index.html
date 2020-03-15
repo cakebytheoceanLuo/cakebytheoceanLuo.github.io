@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在这篇文章高级SQL中我们会遇到递归查询。这篇文章我们对递归进行一个初步介绍，然后用SQL的递归实现一些编程语言中的递归函数，再对大学数据集进行递归的查询。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[SQL]高级SQL-递归(1)">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-1/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="在这篇文章高级SQL中我们会遇到递归查询。这篇文章我们对递归进行一个初步介绍，然后用SQL的递归实现一些编程语言中的递归函数，再对大学数据集进行递归的查询。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://db.in.tum.de/teaching/ws1920/grundlagen/uni.png?lang=de">
+<meta property="og:image" content="https://hyper-db.de/uniEngl.png">
+<meta property="article:published_time" content="2020-02-25T14:45:11.000Z">
+<meta property="article:modified_time" content="2020-03-10T22:52:21.134Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Recursion">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://db.in.tum.de/teaching/ws1920/grundlagen/uni.png?lang=de">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[SQL]高级SQL-递归(1) | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [SQL]高级SQL-递归(1)
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-25 15:45:11" itemprop="dateCreated datePublished" datetime="2020-02-25T15:45:11+01:00">2020-02-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-10 23:52:21" itemprop="dateModified" datetime="2020-03-10T23:52:21+01:00">2020-03-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-1/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]高级SQL-递归(1)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>在这篇文章<strong>高级SQL</strong>中我们会遇到递归查询。这篇文章我们对递归进行一个初步介绍，然后用SQL的递归实现一些编程语言中的递归函数，再对大学数据集进行递归的查询。</p>
+<a id="more"></a>
+<h1 id="递归-Recursion"><a href="#递归-Recursion" class="headerlink" title="递归 Recursion"></a>递归 Recursion</h1><p>我们这一篇文章采用并介绍PostgreSQL的SQL递归(Recursion)语法。<br>递归同时是一个数据库之内有语法syntax差异的地方，可能每一个数据库都实现了递归，但是关键词<code>key word</code>不一样。比如一个<code>Oracle</code>的SQL：使用<code>CONNECT BY</code>关键词去实现递归。</p>
+<p>这篇文章(或者我的SQL文章系列)主要介绍如果使用SQL语句，而且重点在使用数据集来用SQL来解决一些查询问题。这一篇文章我们会先大致介绍一下SQL递归的结构，然后会用多种数据集进行练习，加深印象。</p>
+<h2 id="SQL递归结构"><a href="#SQL递归结构" class="headerlink" title="SQL递归结构"></a>SQL递归结构</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> tmp_name (att1, att2, ...) <span class="keyword">as</span> (</span><br><span class="line">    <span class="comment">-- basic case</span></span><br><span class="line">    <span class="keyword">union</span> <span class="comment">-- union / union all</span></span><br><span class="line">    <span class="comment">-- recursive case</span></span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+<p>可以再稍微仔细一些：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> tmp_name (att1, att2, ...) <span class="keyword">as</span> (</span><br><span class="line">    <span class="comment">-- basic case</span></span><br><span class="line">    <span class="keyword">select</span> ... <span class="keyword">from</span> ...</span><br><span class="line">    <span class="keyword">union</span> <span class="comment">-- union / union all</span></span><br><span class="line">    <span class="comment">-- recursive case</span></span><br><span class="line">    <span class="keyword">select</span> ... <span class="keyword">from</span> ..., tmp_name </span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+<p>重点是<code>recursive case</code>中我们在使用<code>tmp_name</code>，而这个正是我们正在定义的表格。这个过程就是递归的核心(我们在定义这个表格的时候，也用到了这个表格自己)。<code>with recursive</code>这个关键词用递归的方式新建了一个暂时的表格<code>tmp_name</code>，我们可以在之后用。</p>
+<p>这个定义其实和图论(Graph theory)中的<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvVHJhbnNpdGl2ZV9jbG9zdXJl" title="https://en.wikipedia.org/wiki/Transitive_closure">传递闭包(Transitive closure)<i class="fa fa-external-link"></i></span>和<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvU3QtY29ubmVjdGl2aXR5" title="https://en.wikipedia.org/wiki/St-connectivity">可到达性(st-connectivity)<i class="fa fa-external-link"></i></span>很类似。</p>
+<h2 id="SQL递归内部处理"><a href="#SQL递归内部处理" class="headerlink" title="SQL递归内部处理"></a>SQL递归内部处理</h2><p>在SQL引擎内部，递归并不是真正的被”递归地处理”。”递归地处理”指：每一次新建一个call stack，然后继续进行同一个函数使用不同参数的运算。这个我们可以很<code>black box</code>地去测试：写一个不终止的递归，但是它最后仅仅只是不终止，而不是stack overflow。这可以间接的说明递归是被内部处理成一个类似<code>while</code>的循环。</p>
+<h2 id="union-vs-union-all"><a href="#union-vs-union-all" class="headerlink" title="union vs. union all"></a><code>union</code> vs. <code>union all</code></h2><ul>
+<li><p><code>union</code>: 对两个集合进行并集操作，除去重复行(即集合语义 Set Semantics)，同时进行默认规则(第一列升序)的排序。</p>
+</li>
+<li><p><code>union all</code>: 对两个集合进行并集操作，不除去重复行(即包语义 Bag Semantics)，不进行排序。</p>
+</li>
+</ul>
+<p>很显然<code>union all</code>做的操作相对较少，所以它速度更快(如果数据量相同，也无重复生成的前提下)。但是<code>union all</code>很可能在递归的情况导致SQL无法终止，原因就是不断有(重复的)tuple被生成。这一点也和上一点有相关:<strong>递归其实是被处理成循环</strong>。</p>
+<p>一个小小的例子是：<br>假设$A$已经在结果的集合里面，但是下一步又产生一个新的$A$。</p>
+<ul>
+<li>对于<code>union</code>，它可以发现这个集合并不会增加新元素，那么这个SQL引擎内部的循环就结束了。对于我们<code>top user</code>，这个递归的SQL也就结束了。</li>
+<li>对于<code>union all</code>, 它可以发现这个包(Bag)又多了一个新元素$A$，再下一步又会新生成一个$A$，这个过程会一直进行下去。对于SQL引擎，这就变成了一个无止境的循环。对于我们<code>top user</code>，这个递归SQL无法终止。</li>
+</ul>
+<p>如果我们的数据库的行为是上述那样，这时候我们可以猜想：这个递归SQL会被内部处理成一个<code>while</code>循环，结束的条件是这个集合/包没有新的元素再被生成。</p>
+<p>我们会在<span class="exturl" data-url="aHR0cHM6Ly9zZWdtZW50ZmF1bHQuY29tL2EvMTE5MDAwMDAyMTYyNTczNSNpdGVtLTI=" title="https://segmentfault.com/a/1190000021625735#item-2">下一篇文章<i class="fa fa-external-link"></i></span>会遇到真正的例子以及这方面很多练习。</p>
+<h2 id="第一部分数据集-Uni-Schema"><a href="#第一部分数据集-Uni-Schema" class="headerlink" title="第一部分数据集 - Uni Schema"></a>第一部分数据集 - Uni Schema</h2><p>Uni Schema 数据集在　<span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbnRlcmZhY2UuaHRtbA==" title="https://hyper-db.de/interface.html">https://hyper-db.de/interface.html<i class="fa fa-external-link"></i></span>　可以直接使用。另外在这个网页不允许进行写操作:<code>insert</code>, <code>update</code>, <code>delete</code>之类的transactional query。当然<code>create table</code>和<code>drop table</code>也不被允许。</p>
+<p>架构 Schema:<br><img data-src="https://db.in.tum.de/teaching/ws1920/grundlagen/uni.png?lang=de" alt="schema_de"></p>
+<p><img data-src="https://hyper-db.de/uniEngl.png" alt="schema_en"></p>
+<p>下载:<br><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vdW5pX215c3FsLnNxbD9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/uni_mysql.sql?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/uni_mysql.sql?lang=de<i class="fa fa-external-link"></i></span></p>
+<p>Schma和大部分SQL语句来自<span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvcGVvcGxlL3NpdGVzL2tlbXBlci8/bGFuZz1kZQ==" title="https://db.in.tum.de/people/sites/kemper/?lang=de">Prof. Alfons Kemper, Ph.D.<i class="fa fa-external-link"></i></span>的课件和书。</p>
+<p>课件：</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi8/bGFuZz1kZQ==" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi9wZGYvS2FwaXRlbDQucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p>书：　<span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mLz9sYW5nPWRl" title="https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de<i class="fa fa-external-link"></i></span></p>
+<h3 id="前导课-voraussetzen"><a href="#前导课-voraussetzen" class="headerlink" title="前导课(voraussetzen)"></a>前导课(voraussetzen)</h3><ul>
+<li><p>找Der Wiener Kreis这门课的前导课(voraussetzen)：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> vorgaenger</span><br><span class="line"><span class="keyword">from</span> voraussetzen, vorlesungen</span><br><span class="line"><span class="keyword">where</span> nachfolger = vorlnr <span class="keyword">and</span> titel = <span class="string">'Der Wiener Kreis'</span>;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>找Der Wiener Kreis这门课的前导课(voraussetzen)的前导课(voraussetzen)：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> v1.vorgaenger</span><br><span class="line"><span class="keyword">from</span> voraussetzen v1, voraussetzen v2, vorlesungen vorl </span><br><span class="line"><span class="keyword">where</span> v1.nachfolger = v2.vorgaenger <span class="keyword">and</span> v2.nachfolger = vorl.vorlnr <span class="keyword">and</span> vorl.titel = <span class="string">'Der Wiener Kreis'</span>;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>传递闭包(Transitive closure)</p>
+</li>
+</ul>
+<script type="math/tex; mode=display">tran_{A, B}(R) = \{(a, b) | \exists k \in \mathbb{N} (\exists \Gamma 1, \dots, \Gamma k \in R \\ (\Gamma 1.A = \Gamma 2.B \wedge \dots \Gamma k-1.A = \Gamma k.B \wedge \Gamma 1.A=a \wedge \Gamma k.B = b))\}</script><p>也就是找出一条路径。</p>
+<ul>
+<li>Der Wiener Kreis是所有(直接和间接)前提们：</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> transVorl (vorg, nachf) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> vorgaenger, nachfolger</span><br><span class="line">    <span class="keyword">from</span> voraussetzen</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> t.vorg, v.nachfolger</span><br><span class="line">    <span class="keyword">from</span> transVorl t, voraussetzen v</span><br><span class="line">    <span class="keyword">where</span> t.nachf = v.vorgaenger</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> titel</span><br><span class="line"><span class="keyword">from</span> vorlesungen</span><br><span class="line"><span class="keyword">where</span> vorlnr <span class="keyword">in</span> (</span><br><span class="line">    <span class="keyword">select</span> vorg</span><br><span class="line">    <span class="keyword">from</span> transVorl</span><br><span class="line">    <span class="keyword">where</span> nachf <span class="keyword">in</span> (</span><br><span class="line">        <span class="keyword">select</span> nachf</span><br><span class="line">        <span class="keyword">from</span> vorlesungen</span><br><span class="line">        <span class="keyword">where</span> titel = <span class="string">'Der Wiener Kreis'</span></span><br><span class="line">        )</span><br><span class="line">    )</span><br></pre></td></tr></tbody></table></figure>
+<p>或者<br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> transVorl (vorg, nachf) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> vorgaenger, nachfolger</span><br><span class="line">    <span class="keyword">from</span> voraussetzen</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> t.vorg, v.nachfolger</span><br><span class="line">    <span class="keyword">from</span> transVorl t, voraussetzen v</span><br><span class="line">    <span class="keyword">where</span> t.nachf = v.vorgaenger</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> v1.titel</span><br><span class="line"><span class="keyword">from</span> vorlesungen v1, transVorl t, vorlesungen v2</span><br><span class="line"><span class="keyword">where</span> v1.vorlnr = t.vorg <span class="keyword">and</span> t.nachf = v2.vorlnr <span class="keyword">and</span> v2.titel = <span class="string">'Der Wiener Kreis'</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<ul>
+<li>Bioethik是所有(直接和间接)前提们：</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> voraussetzen_rec <span class="keyword">as</span> (</span><br><span class="line"><span class="keyword">select</span> vorlnr</span><br><span class="line"><span class="keyword">from</span> vorlesungen v</span><br><span class="line"><span class="keyword">where</span> titel = <span class="string">'Bioethik'</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> vor.vorgaenger</span><br><span class="line"><span class="keyword">from</span> voraussetzen_rec v, voraussetzen vor</span><br><span class="line"><span class="keyword">where</span> v.vorlnr = vor.nachfolger</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> v.titel</span><br><span class="line"><span class="keyword">from</span> vorlesungen v, voraussetzen_rec vor</span><br><span class="line"><span class="keyword">where</span> v.vorlnr = vor.vorlnr <span class="keyword">and</span> v.titel != <span class="string">'Bioethik'</span></span><br></pre></td></tr></tbody></table></figure>
+<p>这个也是换了另外一种思路去表达。</p>
+<h3 id="前导课-voraussetzen-对路径长度计数"><a href="#前导课-voraussetzen-对路径长度计数" class="headerlink" title="前导课(voraussetzen), 对路径长度计数"></a>前导课(voraussetzen), 对路径长度计数</h3><ul>
+<li>计算完成这些课至少需要多少学期：<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> transVorl (vorg, nachf, <span class="keyword">len</span>) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> vorgaenger, nachfolger, <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> voraussetzen</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> t.vorg, v.nachfolger, t.len + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> transVorl t, voraussetzen v</span><br><span class="line">    <span class="keyword">where</span> t.nachf = v.vorgaenger</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">max</span>(t.len) + <span class="number">1</span> <span class="keyword">as</span> MinStudySemester</span><br><span class="line"><span class="keyword">from</span> transVorl t, vorlesungen v</span><br><span class="line"><span class="keyword">where</span> v.titel = <span class="string">'Der Wiener Kreis'</span>;</span><br></pre></td></tr></tbody></table></figure>
+或者<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> transVorl (vorlnr, <span class="keyword">len</span>) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> vorlnr, <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> vorlesungen</span><br><span class="line">    <span class="keyword">where</span> titel = <span class="string">'Der Wiener Kreis'</span></span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> v.vorgaenger, t.len + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> transVorl t, voraussetzen v</span><br><span class="line">    <span class="keyword">where</span> t.vorlnr = v.nachfolger</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">max</span>(<span class="keyword">len</span>) MinStudySemester</span><br><span class="line"><span class="keyword">from</span> transVorl;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<hr>
+<h2 id="画一颗树："><a href="#画一颗树：" class="headerlink" title="画一颗树："></a>画一颗树：</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> tree (step, <span class="built_in">text</span>) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="number">0</span>, <span class="string">'              *'</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> step + <span class="number">1</span>,</span><br><span class="line">        (<span class="keyword">case</span></span><br><span class="line">            <span class="keyword">when</span> step = <span class="keyword">length</span>(<span class="built_in">text</span>) / <span class="number">2</span> <span class="keyword">then</span> <span class="keyword">concat</span>(<span class="keyword">repeat</span>(<span class="string">' '</span>, <span class="keyword">length</span>(<span class="built_in">text</span>) / <span class="number">2</span>), <span class="string">'*'</span>)</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">concat</span>(</span><br><span class="line">                <span class="keyword">substring</span>(<span class="built_in">text</span> <span class="keyword">from</span> <span class="number">0</span> <span class="keyword">for</span> <span class="keyword">length</span>(<span class="built_in">text</span>) - (<span class="number">2</span> * step + <span class="number">1</span>)),</span><br><span class="line">                <span class="keyword">repeat</span>(<span class="string">'*'</span>, <span class="number">2</span> * step + <span class="number">3</span>))</span><br><span class="line">        <span class="keyword">end</span>)</span><br><span class="line">    <span class="keyword">from</span> tree</span><br><span class="line">    <span class="keyword">where</span> step &lt;= <span class="keyword">length</span>(<span class="built_in">text</span>) / <span class="number">2</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> t.text</span><br><span class="line"><span class="keyword">from</span> tree t</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> step;</span><br></pre></td></tr></tbody></table></figure>
+<p>输出(这里只建议用shell运行postgresql，用其他接口不一定看得出是树)：</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">             text              </span><br><span class="line">-------------------------------</span><br><span class="line">               *</span><br><span class="line">              ***</span><br><span class="line">             *****</span><br><span class="line">            *******</span><br><span class="line">           *********</span><br><span class="line">          ***********</span><br><span class="line">         *************</span><br><span class="line">        ***************</span><br><span class="line">       *****************</span><br><span class="line">      *******************</span><br><span class="line">     *********************</span><br><span class="line">    ***********************</span><br><span class="line">   *************************</span><br><span class="line">  ***************************</span><br><span class="line"> *****************************</span><br><span class="line">               *</span><br><span class="line">(16 rows)</span><br></pre></td></tr></tbody></table></figure>
+<p>这里用<code>||</code>代替<code>concate</code>：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> tree (step, <span class="built_in">text</span>) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="number">0</span>, <span class="string">'              *'</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> step + <span class="number">1</span>,</span><br><span class="line">        (<span class="keyword">case</span></span><br><span class="line">            <span class="keyword">when</span> step = <span class="keyword">length</span>(<span class="built_in">text</span>) / <span class="number">2</span> <span class="keyword">then</span> <span class="keyword">repeat</span>(<span class="string">' '</span>, <span class="keyword">length</span>(<span class="built_in">text</span>) / <span class="number">2</span>) || <span class="string">'*'</span></span><br><span class="line">            <span class="keyword">else</span> </span><br><span class="line">                <span class="keyword">substring</span>(<span class="built_in">text</span> <span class="keyword">from</span> <span class="number">0</span> <span class="keyword">for</span> <span class="keyword">length</span>(<span class="built_in">text</span>) - (<span class="number">2</span> * step + <span class="number">1</span>)) || <span class="keyword">repeat</span>(<span class="string">'*'</span>, <span class="number">2</span> * step + <span class="number">3</span>)</span><br><span class="line">        <span class="keyword">end</span>)</span><br><span class="line">    <span class="keyword">from</span> tree</span><br><span class="line">    <span class="keyword">where</span> step &lt;= <span class="keyword">length</span>(<span class="built_in">text</span>) / <span class="number">2</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> t.text</span><br><span class="line"><span class="keyword">from</span> tree t</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> step;</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="求10的阶乘"><a href="#求10的阶乘" class="headerlink" title="求10的阶乘"></a>求10的阶乘</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> r (fac, counter) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="number">1</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> fac * (counter + <span class="number">1</span>), counter + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> r</span><br><span class="line">    <span class="keyword">where</span> counter &lt; <span class="number">10</span></span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> fac</span><br><span class="line"><span class="keyword">from</span> r;</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="求前20个的斐波那契数列元素"><a href="#求前20个的斐波那契数列元素" class="headerlink" title="求前20个的斐波那契数列元素"></a>求前20个的斐波那契数列元素</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> r (fibonacci, last_fibonacci, counter) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="number">1</span>, <span class="number">1</span>, <span class="number">2</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> fibonacci + last_fibonacci, fibonacci, counter + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> r</span><br><span class="line">    <span class="keyword">where</span> counter &lt; <span class="number">20</span></span><br><span class="line">    ),</span><br><span class="line">     <span class="keyword">result</span> (fibonacci, last_fibonacci, counter) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="number">1</span>, <span class="number">0</span>, <span class="number">1</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> *</span><br><span class="line">    <span class="keyword">from</span> r</span><br><span class="line">     )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> fibonacci</span><br><span class="line"><span class="keyword">from</span> <span class="keyword">result</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>引用：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi8/bGFuZz1kZQ==" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi9wZGYvS2FwaXRlbDQucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mLz9sYW5nPWRl" title="https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/?lang=de<i class="fa fa-external-link"></i></span></p>
+<!-- 该文章遵循[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh)，要求署名、非商业 、保持一致。在满足[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh) 的基础上可以转载，但请以超链接形式注明出处。文章仅代表作者的知识和看法，如有不同观点，可以回复并讨论。 -->
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-1/" title="[SQL]高级SQL-递归(1)">https://cakebytheoceanluo.github.io/2020/02/25/SQL-高级SQL-递归-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/Recursion/" rel="tag"><i class="fa fa-tag"></i> Recursion</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-4/" rel="prev" title="[SQL]中级SQL(4)">
+      <i class="fa fa-chevron-left"></i> [SQL]中级SQL(4)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-2/" rel="next" title="[SQL]高级SQL-递归(2)">
+      [SQL]高级SQL-递归(2) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#递归-Recursion"><span class="nav-number">1.</span> <span class="nav-text">递归 Recursion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL递归结构"><span class="nav-number">1.1.</span> <span class="nav-text">SQL递归结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL递归内部处理"><span class="nav-number">1.2.</span> <span class="nav-text">SQL递归内部处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#union-vs-union-all"><span class="nav-number">1.3.</span> <span class="nav-text">union vs. union all</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第一部分数据集-Uni-Schema"><span class="nav-number">1.4.</span> <span class="nav-text">第一部分数据集 - Uni Schema</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#前导课-voraussetzen"><span class="nav-number">1.4.1.</span> <span class="nav-text">前导课(voraussetzen)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前导课-voraussetzen-对路径长度计数"><span class="nav-number">1.4.2.</span> <span class="nav-text">前导课(voraussetzen), 对路径长度计数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#画一颗树："><span class="nav-number">1.5.</span> <span class="nav-text">画一颗树：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求10的阶乘"><span class="nav-number">1.6.</span> <span class="nav-text">求10的阶乘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求前20个的斐波那契数列元素"><span class="nav-number">1.7.</span> <span class="nav-text">求前20个的斐波那契数列元素</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-1/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

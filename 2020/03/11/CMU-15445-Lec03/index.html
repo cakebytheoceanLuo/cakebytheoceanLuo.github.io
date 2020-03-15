@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Database Storage Part I - 数据库存储 I Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;03-storage1.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;03-storage1.pdfReading: Chapter 10.1-10.2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec03">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Database Storage Part I - 数据库存储 I Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;03-storage1.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;03-storage1.pdfReading: Chapter 10.1-10.2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/1.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/3.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/4.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/5.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/6.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/7.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/8.jpg">
+<meta property="og:image" content="https://blobs.gitbook.com/assets%2F-LCeQxrze3Z6fEniTf2v%2F-LLjk64O7_5of1p_CGnO%2F-LLjkCG1sMXBB_QrIqZp%2Fpmem_storage_pyramid.jpg?alt=media&amp;token=7b37e107-1927-43a8-b4c1-6e4289cdb458">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/9.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/10.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/12.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/13.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/14.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/15.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/16.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/17.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/18.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/19.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/20.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/21.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/22.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/23.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/24.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/25.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/26.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/27.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/28.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/29.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/30.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/31.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/32.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/33.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/34.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/36.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/37.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/38.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/39.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/41.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/42.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/43.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/44.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/45.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/47.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/48.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/49.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/50.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/51.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/52.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/54.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/55.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/56.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/61.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/57.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/58.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/59.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/60.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/62.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/63.jpg">
+<meta property="article:published_time" content="2020-03-11T09:51:09.000Z">
+<meta property="article:modified_time" content="2020-03-13T18:39:26.649Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Slotted Page">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec03/1.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec03 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec03
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-11 10:51:09" itemprop="dateCreated datePublished" datetime="2020-03-11T10:51:09+01:00">2020-03-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-13 19:39:26" itemprop="dateModified" datetime="2020-03-13T19:39:26+01:00">2020-03-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/11/CMU-15445-Lec03/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec03" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Database Storage Part I - 数据库存储 I</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAzLXN0b3JhZ2UxLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/03-storage1.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/03-storage1.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDMtc3RvcmFnZTEucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapter 10.1-10.2, 10.5-10.6</p>
+<p>这节两课，我们会了数据库内部的存储。</p>
+<p>Database Storage 在CMU分成了两部分，在两节课中讲。这是第一部分。</p>
+<p>这部分涉及存储的硬件, 操作系统提供的syscall, 数据库缓存区(buffer pool)的缓存页(buffer page), Slotted page等等。</p>
+<a id="more"></a>
+<p><img data-src="/images/CMU1544564/Lec03/1.jpg" alt="1.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/3.jpg" alt="3.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/4.jpg" alt="4.jpg"></p>
+<h1 id="Disk-Oriented-Architecture"><a href="#Disk-Oriented-Architecture" class="headerlink" title="Disk-Oriented Architecture"></a>Disk-Oriented Architecture</h1><p><img data-src="/images/CMU1544564/Lec03/5.jpg" alt="5.jpg"></p>
+<p>这个课我们重点在Disk-oriented databases(面向磁盘的数据库), 这是一种比较成熟，诞生很早的数据库类型。在2010s　学术界和工业界中开发了非常多优秀的In-Memory databases(内存数据库)，当然它的数据主要存储(primary storage location)于内存中。内存数据库具体的细节可以在CMU的高级数据库课(CMU 15-721)中学到。</p>
+<p>另外，<strong>年龄比较大</strong>并不意味着Disk-oriented databases没落。相反的是， HDD的可靠性和低廉的价格保障了Disk-oriented databases的市场份额，SSD硬件的读写能力的进步让Disk-oriented databases并不比 In-Memory databases慢很多。近些年，Disk-oriented databases正在努力融合接纳 In-Memory databases 的技术，并拥有相同的performance，见　<span class="exturl" data-url="aHR0cHM6Ly91bWJyYS5kYi5pbi50dW0uZGUv" title="https://umbra.db.in.tum.de/">https://umbra.db.in.tum.de/<i class="fa fa-external-link"></i></span></p>
+<h2 id="Storage-Hierarchy"><a href="#Storage-Hierarchy" class="headerlink" title="Storage Hierarchy"></a>Storage Hierarchy</h2><p><img data-src="/images/CMU1544564/Lec03/6.jpg" alt="6.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/7.jpg" alt="7.jpg"></p>
+<p>我们注意水平的虚线：</p>
+<ul>
+<li>虚线以上：　voltaile devices (易失的存储硬件设备)，数据只能在电力提供的情况下被存储。单位容量价格更贵，随机访问(random access)较快，访问数据粒度(granularity)是Byte, 即每次访问可以获得数据的最小单元是Byte。</li>
+<li>虚线以下：　non-voltaile devices (非易失的存储硬件设备)，数据可以在无电力提供的情况下被存储。单位容量价格更便宜，随机访问(random access)较慢，访问数据粒度(granularity)是Block, 即每次访问可以获得数据的最小单元是Block。一个Block一般为4KiB。</li>
+</ul>
+<p>non-voltaile devices可以被模糊称为<em>disk</em>，当然是在我们不区分SSD, HDD, Network Storage, Tape的时候。另外它们也被称为　block devices，因为是访问粒度是一个block。</p>
+<h3 id="NVM"><a href="#NVM" class="headerlink" title="NVM"></a>NVM</h3><p><img data-src="/images/CMU1544564/Lec03/8.jpg" alt="8.jpg"></p>
+<p>Pavlo教授的第一个PhD学生 Joy Arulraj的主要研究方向是一种新的硬件 Non-voltaile Memory，这种硬件会改变我们已知的 Storage Hierarchy。</p>
+<p>非常不严谨的说，它像是内存和硬盘的孩子：</p>
+<ul>
+<li>访问粒度是Byte</li>
+<li>访问速度稍慢于内存</li>
+<li>非易失</li>
+</ul>
+<p><img data-src="https://blobs.gitbook.com/assets%2F-LCeQxrze3Z6fEniTf2v%2F-LLjk64O7_5of1p_CGnO%2F-LLjkCG1sMXBB_QrIqZp%2Fpmem_storage_pyramid.jpg?alt=media&amp;token=7b37e107-1927-43a8-b4c1-6e4289cdb458" alt="NVM -- Source: Persistent Memory Documentation, pmem"></p>
+<p>Non-Volatile Memory Database Management Systems: <span class="exturl" data-url="aHR0cHM6Ly93d3cubW9yZ2FuY2xheXBvb2wuY29tL2RvaS8xMC4yMjAwL1MwMDg5MUVEMVYwMVkyMDE4MTJEVE0wNTU=" title="https://www.morganclaypool.com/doi/10.2200/S00891ED1V01Y201812DTM055">https://www.morganclaypool.com/doi/10.2200/S00891ED1V01Y201812DTM055<i class="fa fa-external-link"></i></span></p>
+<p>另附上两篇NVM有关的论文, 作者是我本科论文的导师 :lol: : </p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvcGVvcGxlL3NpdGVzL3ZhbnJlbmVuL3BhcGVycy9IeU1lbS5wZGY/bGFuZz1kZQ==" title="https://db.in.tum.de/people/sites/vanrenen/papers/HyMem.pdf?lang=de">Managing Non-Volatile Memory in Database Systems<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvcGVvcGxlL3NpdGVzL3ZhbnJlbmVuL3BhcGVycy9udm1fc3RhdHMucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/people/sites/vanrenen/papers/nvm_stats.pdf?lang=de">Persistent Memory I/O Primitives<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br></p>
+<h2 id="Acess-Time"><a href="#Acess-Time" class="headerlink" title="Acess Time"></a>Acess Time</h2><p><img data-src="/images/CMU1544564/Lec03/9.jpg" alt="9.jpg"></p>
+<ul>
+<li>1s = 1,000 ms = 1,000,000 ns</li>
+<li>红色箭头右侧的是数字只是一个<strong>类比比喻</strong>，假设<code>1ns = 1s</code>,　来使得各个存储介质的访问时间差距变得更清晰。</li>
+</ul>
+<p>Latency numbers every programmer should know: <span class="exturl" data-url="aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vaGVsbGVyYmFyZGUvMjg0MzM3NQ==" title="https://gist.github.com/hellerbarde/2843375">https://gist.github.com/hellerbarde/2843375<i class="fa fa-external-link"></i></span></p>
+<!-- TODO: link more access time -->
+<be>
+
+<h2 id="System-Design-Goals-in-Disk-oriented-databases"><a href="#System-Design-Goals-in-Disk-oriented-databases" class="headerlink" title="System Design Goals (in Disk-oriented databases)"></a>System Design Goals (in Disk-oriented databases)</h2><p>Disk-oriented databases　需要处理比物理内存更大的数据，这意味着数据库需要有缓存区管理器，它<em>提供服务</em>给上层的数据库，让数据库能访问任何一个数据，而这个数据实际上已经由缓存区管理器由硬盘 load 进内存。缓存区管理器的工作就是将数据(实际上是<strong>页</strong>)从硬盘读进内存 或 从内存写入硬盘，目的是让上层的数据库有更高效的缓存机制(caching)，更少的I/O Operation，更高的性能，更短的运行时间。</p>
+<p>几个概念：</p>
+<ul>
+<li>缓存区: Buffer Pool</li>
+<li>缓存区管理器: Buffer Manager / buffer pool manager</li>
+<li>页:　page / Buffer page</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec03/10.jpg" alt="10.jpg"></p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><p>我们演示一下，假设我们刚刚打开数据库，此时数据库的Buffer Pool是空的：</p>
+<p><img data-src="/images/CMU1544564/Lec03/12.jpg" alt="12.jpg"></p>
+<p><br></p>
+<p>Execution Engine调用了buffer pool manager的一个函数: <code>getpage(int : 2)</code>, 为了得到第二个 page。　目前我们只将　Execution Engine视作一个需要 page 的数据库高层的部分，需要 buffer pool manager　提供的服务:</p>
+<p><img data-src="/images/CMU1544564/Lec03/13.jpg" alt="13.jpg"></p>
+<p><br></p>
+<p>这时候数据库需要从硬盘中读<strong>directory page</strong>到内存，directory page是buffer pool的header,　记录了每一个page对应的文件。</p>
+<p>Directory page在这节课后面会被提到，见<a href="#page-directory">Heap File - Page Directory</a></p>
+<p>当directory page进入内存，buffer pool manager从它上面读到了page 2对应的文件位置:</p>
+<p><img data-src="/images/CMU1544564/Lec03/14.jpg" alt="14.jpg"></p>
+<p><br></p>
+<p>接下来page 2被读到内存中，execution engine得到它想要的东西： 一个page2内容在内存的指针。</p>
+<p><img data-src="/images/CMU1544564/Lec03/15.jpg" alt="15.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/16.jpg" alt="16.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/17.jpg" alt="17.jpg"></p>
+<p><br></p>
+<h2 id="Why-not-use-the-OS"><a href="#Why-not-use-the-OS" class="headerlink" title="Why not use the OS?"></a>Why not use the OS?</h2><p>上述整个机制完全和<strong>操作系统中虚拟内存</strong>一致。操作系统给每一个进程(process)提供虚拟内存大小的地址空间(address space)，而虚拟内存的大小往往比机器的物理内存要大，进程被<em>欺骗</em>而使用虚拟内存对应的地址。而操作系统通过MMU映射每一个虚拟内存到物理内存，从而向进程提供对应的物理内存的地址上的数据。而当进程使用超过物理内存大小的地址空间(address space)时，操作系统也是在硬盘和内存中缓存 page，进行swap。</p>
+<p>那既然操作系统和数据库的缓存页机制类似，我们向自己提出一个直击灵魂的问题：<br><strong>为什么数据库不直接用操作系统的页，而浪费时间(?)开发一个buffer pool manager做类似的事情呢？</strong></p>
+<h3 id="mmap"><a href="#mmap" class="headerlink" title="mmap"></a><code>mmap</code></h3><blockquote>
+<p>One way to achieve this virtual memory, is by using mmap to map the contents of a file in a process address space</p>
+</blockquote>
+<p>上面这句话来自于<span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDMtc3RvcmFnZTEucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf">Note<i class="fa fa-external-link"></i></span>, 它实际上不太完整，<code>mmap</code>是一个操作系统提供的<code>syscall</code>:  </p>
+<ul>
+<li>map <strong>the OS file caching area, where the reqeusted file is readed</strong>, in a process address space</li>
+<li>原话中的<code>map the contents of file...</code>会让人误解为，直接从硬盘开始映射，这当然是错的。实际上，操作系统先将文件读进操作系统文件缓存区(file cache)，再将这个缓存区的文件内容映射到对应进程的地址空间。</li>
+</ul>
+<p><br></p>
+<ul>
+<li>或者</li>
+<li>使用direct I/O: <code>O_DIRECT</code> = disable page cache in OS for reading/writing file, 可以避免使用操作系统文件缓存区，直接将文件读取到数据库(比如buffer pool缓存区)的address space。这样性能也会更好。因为省去从操作系统文件缓存区复制进数据库address space这一步。</li>
+</ul>
+<!-- TODO: link Lec05 -->
+<p><code>mmap</code>是一个非常重要的进程通信方式(if <code>shared</code>)，同时也是高性能文件操作的方法。我们以后会仔细讲讲。</p>
+<!-- TODO: mmap -->
+<h3 id="Demo-1"><a href="#Demo-1" class="headerlink" title="Demo"></a>Demo</h3><p><img data-src="/images/CMU1544564/Lec03/18.jpg" alt="18.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/19.jpg" alt="19.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/20.jpg" alt="20.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/21.jpg" alt="21.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/22.jpg" alt="22.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/23.jpg" alt="23.jpg"></p>
+<p>上面的demo的意思是，当我们在物理内存已满的情况下，继续需要page2，这时候会出现一个page fault(页缺失)，我们需要从物理内存中去掉一个page，来给page2提供空间。当然demo最开始的时候，我们需要page1的时候，和我们需要page3的时候，它们都不再物理内存中，这时候我们也遇到了page Fault。</p>
+<p>当<code>mmap</code>遇到一个page fault的时候会被blocked:</p>
+<blockquote>
+<p>Unfortunately, this means that if <code>mmap</code> hits a page fault, this will <strong>block</strong> the process. </p>
+</blockquote>
+<p>上面这句话来自于<span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDMtc3RvcmFnZTEucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf">Note<i class="fa fa-external-link"></i></span></p>
+<blockquote>
+<p>… mmap() can block, because setting up a user visible virtual memory mapping requires a relatively complex data structure setup on the kernel side, which involves kernel allocating memory from its internal allocators …</p>
+</blockquote>
+<p>上面这句话来自于<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzIwMDg1NDU2LzgwNDk0MDg=" title="https://stackoverflow.com/a/20085456/8049408">Can sbrk(2) or mmap(2) block? - oakad’s answer<i class="fa fa-external-link"></i></span></p>
+<p>page Fault时具体发生的事情，完全类似<code>syscall</code>发生的事情一样:<br>当前程序会从ser mode TRAP进入 kernel mode，这时进程一直被blocked (CPU stalled), 直到对应新的page被加载进入kernel space而且程序回到user mode为止。</p>
+<h3 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h3><p>我们已知<code>mmap</code>会被blocked, 这个阻断时间中，数据库上面也做不了，只能等待新的page加载结束。这会带来性能下降问题。</p>
+<p>另外操作系统不能将一个page立即写回硬盘，这一点会在事务Logging中使正确性不能被保证。</p>
+<p>由于<strong>性能问题</strong>和<strong>正确性问题</strong>，<code>mmap</code>比较少在数据库中被采用。</p>
+<p><img data-src="/images/CMU1544564/Lec03/24.jpg" alt="24.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/25.jpg" alt="25.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/26.jpg" alt="26.jpg"></p>
+<p><br><br><br><br><br></p>
+<h1 id="Database-Storage"><a href="#Database-Storage" class="headerlink" title="Database Storage"></a>Database Storage</h1><p><img data-src="/images/CMU1544564/Lec03/27.jpg" alt="27.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/28.jpg" alt="28.jpg"></p>
+<h2 id="File-Storage"><a href="#File-Storage" class="headerlink" title="File Storage"></a>File Storage</h2><p><img data-src="/images/CMU1544564/Lec03/29.jpg" alt="29.jpg"></p>
+<h3 id="Storage-Manager"><a href="#Storage-Manager" class="headerlink" title="Storage Manager"></a>Storage Manager</h3><p>storage manager能够理解解释interpret对应的数据库文件，将数据库文件represent成一个page的集合。它也记录下page的读与写操作，另外page上剩下的存储空间大小也会被记录下来。</p>
+<p><img data-src="/images/CMU1544564/Lec03/30.jpg" alt="30.jpg"></p>
+<h3 id="Database-Pages"><a href="#Database-Pages" class="headerlink" title="Database Pages"></a>Database Pages</h3><blockquote>
+<p>Self-contained:= all the information needed to read each page is on the page itself.</p>
+</blockquote>
+<p>上面这句话来自于<span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDMtc3RvcmFnZTEucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf">Note<i class="fa fa-external-link"></i></span></p>
+<ul>
+<li>Self-contained指这个page拥有metadata(元数据)，这个metadata用来告诉我们如何interpret该page。</li>
+<li>每一个page有一个唯一的page id:<ul>
+<li>如果数据库只有一个文件，在这种简单的情况下，page id可以是对应数据在该文件的offset</li>
+<li>大多数情况，数据库有多个文件。这是page id可以是对应数据所在的<strong>那一个</strong>文件的路径＋在该文件中的offset</li>
+<li>因此每一个page id可以对应上某些数据，这些数据的大小是一个page的大小</li>
+<li>在数据库的高层组成成分中(比如 execution engine)，都需要将对应的page id当做参数，从buffer pool manager中获得对应的page(和数据)。</li>
+</ul>
+</li>
+<li>另外在学术中page也可以是变长的(variable sized): 见 <span class="exturl" data-url="aHR0cDovL2NpZHJkYi5vcmcvY2lkcjIwMjAvcGFwZXJzL3AyOS1uZXVtYW5uLWNpZHIyMC5wZGY=" title="http://cidrdb.org/cidr2020/papers/p29-neumann-cidr20.pdf">Umbra: A Disk-Based System with In-Memory Performance<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec03/31.jpg" alt="31.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/32.jpg" alt="32.jpg"></p>
+<h3 id="Database-Heap"><a href="#Database-Heap" class="headerlink" title="Database Heap"></a>Database Heap</h3><p><img data-src="/images/CMU1544564/Lec03/33.jpg" alt="33.jpg"></p>
+<p>上图说，我们有多种途径去对硬盘上的page位置进行管理，heap file是其中的一种途径，我们重点看一下heap file。</p>
+<blockquote>
+<p>A <strong>heap file</strong> is an unordered collection of pages where tuples that are stored in random order.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec03/34.jpg" alt="34.jpg"></p>
+<h4 id="Linked-List"><a href="#Linked-List" class="headerlink" title="Linked List"></a>Linked List</h4><p>Header page有两个指针：</p>
+<ul>
+<li><code>free page list</code> 指向一个free page的list</li>
+<li><code>data page list</code> 指向一个not free page的list</li>
+</ul>
+<p>如果我们想寻找某一个特定的page (或者一个特定的page id), 我们只能低效地sequential scan。总体上linked list不是一个好主意。</p>
+<p><img data-src="/images/CMU1544564/Lec03/36.jpg" alt="36.jpg"></p>
+<h4 id="Page-Directory"><a href="#Page-Directory" class="headerlink" title="Page Directory"></a>Page Directory</h4><p>page directory:= special pages that tracks <strong>the location and the amount of free space</strong> of data pages in the database files.</p>
+<p>page directory是一种比较常见的方式，　它提供了一种映射：<code>page id -&gt; offset in file</code>, 这样我们可以通过page id找到对应的数据。</p>
+<p>另外我们需要同步(sync)page directory上的信息和实际上的page信息。这需要我们在每次更改page的时候，同时也需要更改page directory上的信息。</p>
+<p><img data-src="/images/CMU1544564/Lec03/37.jpg" alt="37.jpg"></p>
+<p><br><br><br></p>
+<h2 id="Page-Layout"><a href="#Page-Layout" class="headerlink" title="Page Layout"></a>Page Layout</h2><p><img data-src="/images/CMU1544564/Lec03/38.jpg" alt="38.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/39.jpg" alt="39.jpg"></p>
+<h3 id="Tuple-oriented"><a href="#Tuple-oriented" class="headerlink" title="Tuple-oriented"></a>Tuple-oriented</h3><h4 id="Strawman-idea"><a href="#Strawman-idea" class="headerlink" title="Strawman idea"></a>Strawman idea</h4><p>Strawman idea只是一个反面教材，并不是一种好的实现。</p>
+<p><img data-src="/images/CMU1544564/Lec03/41.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/42.jpg" alt="42.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/43.jpg" alt="43.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/44.jpg" alt="44.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/45.jpg" alt="45.jpg"></p>
+<p>这个作法的缺点：</p>
+<ul>
+<li>删除tuple时，会出现external fragmentation</li>
+<li>无法存储长度变长的tuple，比如<code>VARCHAR</code>字符串</li>
+</ul>
+<p><br></p>
+<h4 id="Slotted-Pages"><a href="#Slotted-Pages" class="headerlink" title="Slotted Pages"></a>Slotted Pages</h4><p><img data-src="/images/CMU1544564/Lec03/47.jpg" alt="47.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/48.jpg" alt="48.jpg"></p>
+<p>对于slotted pages，如果我们删除tuple3与更改header后,　我们可以有两种选择：</p>
+<ul>
+<li>将原tuple3的位置留空，不改变其他tuple的位置</li>
+<li>或</li>
+<li>将tuple4向右移动，占有原tuple3的空间，也调整tuple4的指针和header (当然在普遍情况下，需要调整<strong>所有</strong>tuple３之后的tuple)</li>
+</ul>
+<p>我们将上面第二种选择成为compaction，它需要在什么时间发生，有如下几种可能：</p>
+<ul>
+<li>每一次delete以后</li>
+<li>累加一定量的delete后</li>
+<li>每一次insert之前</li>
+<li>在一次特定insert的时候，发现没有<strong>足够空间(即slot array和tuple data重合)</strong></li>
+<li>…</li>
+</ul>
+<p>上述的compaction时间点可能性自然会影响性能，这些可能性都是实现相关，也这该数据库中insert和delete的分布和比例有关。</p>
+<p>有关的一个PostgreSQL中的实验：见<a href="https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/">[DBMS][PostgreSQL] Page Layout 页面布局</a></p>
+<p><br></p>
+<h4 id="Log-Structured-File-Organization"><a href="#Log-Structured-File-Organization" class="headerlink" title="Log-Structured File Organization"></a>Log-Structured File Organization</h4><p><img data-src="/images/CMU1544564/Lec03/49.jpg" alt="49.jpg"></p>
+<ul>
+<li>如上图中，新的操作(insert, delete, update)直接被记录下来，我们就在维护这个log file</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec03/50.jpg" alt="50.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/51.jpg" alt="51.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/52.jpg" alt="52.jpg"></p>
+<p>优点：</p>
+<ul>
+<li>速度很快，只需要向文件中写入一行log信息</li>
+<li>自带log, 在recovery很大帮助</li>
+<li>适合append only的存储形式　(大部分的分布式存储是append only)</li>
+</ul>
+<p>缺点:</p>
+<ul>
+<li>数据读写较慢，需要依靠log生成tuple</li>
+<li>数据分散，且难以缓存(data ends up spread out wide and hard to cache.)</li>
+</ul>
+<p><br><br><br></p>
+<h2 id="Tuple-Layout"><a href="#Tuple-Layout" class="headerlink" title="Tuple Layout"></a>Tuple Layout</h2><p><img data-src="/images/CMU1544564/Lec03/54.jpg" alt="54.jpg"></p>
+<h3 id="Tuple-Header"><a href="#Tuple-Header" class="headerlink" title="Tuple Header"></a>Tuple Header</h3><p><img data-src="/images/CMU1544564/Lec03/55.jpg" alt="55.jpg"></p>
+<h3 id="Tuple-Data"><a href="#Tuple-Data" class="headerlink" title="Tuple Data"></a>Tuple Data</h3><p><img data-src="/images/CMU1544564/Lec03/56.jpg" alt="56.jpg"></p>
+<h3 id="Record-ids-—-Unique-identifier"><a href="#Record-ids-—-Unique-identifier" class="headerlink" title="Record ids — Unique identifier"></a>Record ids — Unique identifier</h3><p>(这一页slide被我提前了)</p>
+<p>Record ids缩写成RID, 常见的指是<code>page id + offset / slot</code>，即和这个tuple存储的位置相关。既然它是唯一的，而且可以确定一个tuple，因此RID可以作为index(索引)的key。</p>
+<p><img data-src="/images/CMU1544564/Lec03/61.jpg" alt="61.jpg"></p>
+<h3 id="Denormalized-Tuple-Data"><a href="#Denormalized-Tuple-Data" class="headerlink" title="Denormalized Tuple Data"></a>Denormalized Tuple Data</h3><p>这部分也是实现相关，也和数据库的Normal Form, Functional Dependency有关。</p>
+<p><img data-src="/images/CMU1544564/Lec03/57.jpg" alt="57.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/58.jpg" alt="58.jpg"></p>
+<ul>
+<li>注意上图中<code>bar</code>的三个<code>c</code>值不一样，即<code>c1</code>, <code>c2</code>, <code>c3</code></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec03/59.jpg" alt="59.jpg"></p>
+<ul>
+<li>注意上图中<code>bar</code>的三个<code>c</code>值不一样，即<code>c1</code>, <code>c2</code>, <code>c3</code></li>
+<li>如上图的prejoin之后:<ul>
+<li>read会更快，因为两个表格已经被存储在一个page上</li>
+<li>update会复杂一些，因为tuple所占空间更大，而且原来的fixed-sized tuple变成variable-sized tuple，处理起来更麻烦。</li>
+</ul>
+</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec03/60.jpg" alt="60.jpg"></p>
+<h1 id="Conclusion-结论"><a href="#Conclusion-结论" class="headerlink" title="Conclusion 结论"></a>Conclusion 结论</h1><p><img data-src="/images/CMU1544564/Lec03/62.jpg" alt="62.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec03/63.jpg" alt="63.jpg"></p>
+</be><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/" title="[CMU-15445]Lec03">https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Slotted-Page/" rel="tag"><i class="fa fa-tag"></i> Slotted Page</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/11/DBMS-PostgreSQL-PageLayout/" rel="prev" title="[DBMS][PostgreSQL]Page Layout 页面布局">
+      <i class="fa fa-chevron-left"></i> [DBMS][PostgreSQL]Page Layout 页面布局
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/12/SQL-Leetcode-196-delete-duplicate-emails/" rel="next" title="[Leetcode-SQL] 196.delete.duplicate.emails">
+      [Leetcode-SQL] 196.delete.duplicate.emails <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Disk-Oriented-Architecture"><span class="nav-number">1.</span> <span class="nav-text">Disk-Oriented Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Storage-Hierarchy"><span class="nav-number">1.1.</span> <span class="nav-text">Storage Hierarchy</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NVM"><span class="nav-number">1.1.1.</span> <span class="nav-text">NVM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Acess-Time"><span class="nav-number">1.2.</span> <span class="nav-text">Acess Time</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#System-Design-Goals-in-Disk-oriented-databases"><span class="nav-number">1.3.</span> <span class="nav-text">System Design Goals (in Disk-oriented databases)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo"><span class="nav-number">1.3.1.</span> <span class="nav-text">Demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Why-not-use-the-OS"><span class="nav-number">1.4.</span> <span class="nav-text">Why not use the OS?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mmap"><span class="nav-number">1.4.1.</span> <span class="nav-text">mmap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo-1"><span class="nav-number">1.4.2.</span> <span class="nav-text">Demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#答案"><span class="nav-number">1.4.3.</span> <span class="nav-text">答案</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Database-Storage"><span class="nav-number">2.</span> <span class="nav-text">Database Storage</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#File-Storage"><span class="nav-number">2.1.</span> <span class="nav-text">File Storage</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Storage-Manager"><span class="nav-number">2.1.1.</span> <span class="nav-text">Storage Manager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Database-Pages"><span class="nav-number">2.1.2.</span> <span class="nav-text">Database Pages</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Database-Heap"><span class="nav-number">2.1.3.</span> <span class="nav-text">Database Heap</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linked-List"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">Linked List</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Page-Directory"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">Page Directory</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Page-Layout"><span class="nav-number">2.2.</span> <span class="nav-text">Page Layout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tuple-oriented"><span class="nav-number">2.2.1.</span> <span class="nav-text">Tuple-oriented</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Strawman-idea"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Strawman idea</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Slotted-Pages"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Slotted Pages</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Log-Structured-File-Organization"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">Log-Structured File Organization</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tuple-Layout"><span class="nav-number">2.3.</span> <span class="nav-text">Tuple Layout</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Tuple-Header"><span class="nav-number">2.3.1.</span> <span class="nav-text">Tuple Header</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tuple-Data"><span class="nav-number">2.3.2.</span> <span class="nav-text">Tuple Data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Record-ids-—-Unique-identifier"><span class="nav-number">2.3.3.</span> <span class="nav-text">Record ids — Unique identifier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Denormalized-Tuple-Data"><span class="nav-number">2.3.4.</span> <span class="nav-text">Denormalized Tuple Data</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion-结论"><span class="nav-number">3.</span> <span class="nav-text">Conclusion 结论</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

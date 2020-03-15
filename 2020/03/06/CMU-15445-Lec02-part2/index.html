@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Advanced SQL 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级的S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec02_part2">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Advanced SQL 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级的S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/29.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/30.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/32.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/34.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/35.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/36.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/37.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/39.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/40.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/41.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/42.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/44.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/45.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/46.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/47.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/50.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/51.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/53.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/55.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/57.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/59.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/60.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/62.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/63.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/65.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/66.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/68.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/69.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/70.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/71.jpg">
+<meta property="article:published_time" content="2020-03-06T20:35:09.000Z">
+<meta property="article:modified_time" content="2020-03-08T20:36:10.694Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Window Function">
+<meta property="article:tag" content="Recursion">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/29.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec02_part2 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">13</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">51</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec02_part2
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-06 21:35:09" itemprop="dateCreated datePublished" datetime="2020-03-06T21:35:09+01:00">2020-03-06</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-08 21:36:10" itemprop="dateModified" datetime="2020-03-08T21:36:10+01:00">2020-03-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/06/CMU-15445-Lec02-part2/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec02_part2" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Advanced SQL 高级SQL</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAyLWFkdmFuY2Vkc3FsLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/02-advancedsql.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/02-advancedsql.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDItYWR2YW5jZWRzcWwucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/02-advancedsql.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/02-advancedsql.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapters 3-5</p>
+<p>这节课，我们会了解高级的SQL句法。(但是实际上这门课对SQL的要求很低，大量其他的SQL练习依旧可以在我的博客中找到)</p>
+<p>如果大家的目的是为了学习SQL，我建议使用PostgreSQL，它出自于学术界，整体行为相对MySQL和SQLite更合理。另外TUM和CMU在SQL教学上都采用PostgreSQL。</p>
+<p>我将这次笔记分成前后两个部分，这是第二部分。</p>
+<!-- 对应的练习　TODO:我的博客 -->
+<a id="more"></a>
+<h1 id="OUTPUT-REDIRECTION"><a href="#OUTPUT-REDIRECTION" class="headerlink" title="OUTPUT REDIRECTION"></a>OUTPUT REDIRECTION</h1><p><img data-src="/images/CMU1544564/Lec02/29.jpg" alt="29.jpg"></p>
+<ul>
+<li><code>INTO</code> 相当于 <code>create table</code> on the fly (指该SQL查询执行的过程中)</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec02/30.jpg" alt="30.jpg"></p>
+<p><br></p>
+<h1 id="OUTPUT-CONTROL"><a href="#OUTPUT-CONTROL" class="headerlink" title="OUTPUT CONTROL"></a>OUTPUT CONTROL</h1><h2 id="ORDER-BY"><a href="#ORDER-BY" class="headerlink" title="ORDER BY"></a><code>ORDER BY</code></h2><p><img data-src="/images/CMU1544564/Lec02/32.jpg" alt="32.jpg"></p>
+<h2 id="LIMIT-OFFSET"><a href="#LIMIT-OFFSET" class="headerlink" title="LIMIT OFFSET"></a><code>LIMIT</code> <code>OFFSET</code></h2><p><img data-src="/images/CMU1544564/Lec02/34.jpg" alt="34.jpg"></p>
+<ul>
+<li><code>LIMIT 10</code>: 得到前$[1, 10]$个tuple</li>
+<li><code>LIMIT 20 OFFSET 10</code>: 得到前$[10 + 1, 10 + 20]$个tuple, 即前$[11, 30]$个tuple, 共20个tuple。</li>
+</ul>
+<p>这里需要注意：<code>LIMIT</code>能保证给出对应的tuple数量，但是不能保证运行<strong>同一条</strong>带<code>LIMIT</code>而不带<code>ORDER BY</code>的SQL多次，总能得到同样的结果。</p>
+<p><strong>注意<code>LIMIT</code>并不是SQL Standard，但是有SQL Standard的等价语句去做同一件事情。<code>LIMIT</code>也被大部分DBMSs所采用。</strong></p>
+<!-- TODO: -->
+<p><br></p>
+<h1 id="NESTED-QUERIES"><a href="#NESTED-QUERIES" class="headerlink" title="NESTED QUERIES"></a>NESTED QUERIES</h1><p>我在我的博客中所有 <a href="https://cakebytheoceanluo.github.io/categories/SQL/">中级SQL</a> 的文章都和Nested Query有关，你可以获得大量的练习。</p>
+<p><img data-src="/images/CMU1544564/Lec02/35.jpg" alt="35.jpg"></p>
+<h2 id="例子：-Get-the-names-of-students-in-‘15-445’"><a href="#例子：-Get-the-names-of-students-in-‘15-445’" class="headerlink" title="例子： Get the names of students in ‘15-445’"></a>例子： Get the names of students in ‘15-445’</h2><p><img data-src="/images/CMU1544564/Lec02/36.jpg" alt="36.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/37.jpg" alt="37.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/39.jpg" alt="39.jpg"></p>
+<p>我们一步一步地用Nested Query完成了这个例子。</p>
+<p>实际上它会被处理成一个Join: </p>
+<ul>
+<li>Outer Query有<code>sid</code>这个字段, 传递给Inner Query</li>
+<li>Inner Query接受Outer Query的<code>sid</code>字段，然后在<code>enrolled</code>这个表格里面检查。</li>
+<li>很显然，我们发现Outer Query 和 Inner Query有着某种依赖，我们称这样的为 Dependent Join.</li>
+<li>数据库如何高效处理这种　Dependent Join：　见一篇论文解读　<a href="https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/">[Paper]BTW 2015 | Unnesting Arbitrary Queries</a></li>
+</ul>
+<h3 id="ALL-ANY-IN-EXISTS"><a href="#ALL-ANY-IN-EXISTS" class="headerlink" title="ALL, ANY, IN, EXISTS"></a><code>ALL</code>, <code>ANY</code>, <code>IN</code>, <code>EXISTS</code></h3><p><img data-src="/images/CMU1544564/Lec02/40.jpg" alt="40.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/41.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/42.jpg" alt="42.jpg"></p>
+<p><br></p>
+<h2 id="例子：-Student-record-with-the-highest-id-that-is-enrolled-in-at-least-one-course"><a href="#例子：-Student-record-with-the-highest-id-that-is-enrolled-in-at-least-one-course" class="headerlink" title="例子： Student record with the highest id that is enrolled in at least one course"></a>例子： Student record with the highest id that is enrolled in at least one course</h2><p><img data-src="/images/CMU1544564/Lec02/44.jpg" alt="44.jpg"></p>
+<ul>
+<li>MySQL (v5.7 with strict mode) 指　<code>set session sql_mode = 'ansi';</code> (我们在这次课的上一部分笔记提到过)</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec02/45.jpg" alt="45.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/46.jpg" alt="46.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/47.jpg" alt="47.jpg"></p>
+<p>上面课件这条SQL有句法错误</p>
+<!-- 
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">sid</span>, <span class="keyword">name</span> <span class="keyword">FROM</span> student</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">sid</span> =&gt; <span class="keyword">ALL</span>(</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">sid</span> <span class="keyword">FROM</span> enrolled</span><br><span class="line">)</span><br><span class="line"><span class="string">``</span><span class="string">` --&gt;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">![48.jpg](/images/CMU1544564/Lec02/48.jpg)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">![49.jpg](/images/CMU1544564/Lec02/49.jpg)</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">另外一种使用`</span>=<span class="string">`解法:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">`</span><span class="string">``</span><span class="keyword">sql</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">sid</span>, <span class="keyword">name</span> <span class="keyword">FROM</span> student</span><br><span class="line"><span class="keyword">WHERE</span> <span class="keyword">sid</span> = (</span><br><span class="line">    <span class="keyword">SELECT</span> <span class="keyword">MAX</span>(<span class="keyword">sid</span>) <span class="keyword">FROM</span> enrolled</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<p><br></p>
+<h2 id="例子：Find-all-courses-that-has-no-students-enrolled"><a href="#例子：Find-all-courses-that-has-no-students-enrolled" class="headerlink" title="例子：Find all courses that has no students enrolled"></a>例子：Find all courses that has no students enrolled</h2><p>这个例子实际上是在问　关系代数中的 <span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvUmVsYXRpb25hbF9hbGdlYnJhI0FudGlqb2luXyglRTIlOTYlQjc=" title="https://en.wikipedia.org/wiki/Relational_algebra#Antijoin_(%E2%96%B7">Anti Join<i class="fa fa-external-link"></i></span>)。它对应的SQL实现是<code>NOT EXISTS</code>和<code>NOT INT</code></p>
+<p><img data-src="/images/CMU1544564/Lec02/50.jpg" alt="50.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/51.jpg" alt="51.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/53.jpg" alt="53.jpg"></p>
+<p>另外一种使用<code>NOT IN</code>解法:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> course</span><br><span class="line"><span class="keyword">WHERE</span> cid <span class="keyword">NOT</span> <span class="keyword">IN</span>(</span><br><span class="line">    <span class="keyword">SELECT</span> cid <span class="keyword">FROM</span> enrolled</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h1 id="WINDOW-FUNCTIONS-窗口函数"><a href="#WINDOW-FUNCTIONS-窗口函数" class="headerlink" title="WINDOW FUNCTIONS 窗口函数"></a>WINDOW FUNCTIONS 窗口函数</h1><!-- TODO: 见我的高级SQL + FDE + LEETCODE 居多练习 FDE -->
+<p>窗口函数是我们在OLAP中非常有力的助手。它很像 aggregation聚合函数，在其之上结合了 sliding window，　并且不聚合结果。大家可以很快从具体的例子找到手感，另外建议使用PostgreSQL去使用窗口函数。</p>
+<p>在窗口函数中，我们称之前的<code>group</code>为<code>frame</code>，即在<code>PARTITION BY</code>之后有同一个特征的tuple集合：</p>
+<p><img data-src="/images/CMU1544564/Lec02/55.jpg" alt="55.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/57.jpg" alt="57.jpg"></p>
+<ul>
+<li>上页中我们将整个表格看做一个frame　(因为没有<code>PARTITION BY</code>)</li>
+</ul>
+<p><br></p>
+<p><img data-src="/images/CMU1544564/Lec02/59.jpg" alt="59.jpg"></p>
+<ul>
+<li>上页中我们将每一个<code>cid</code>看做一个frame</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec02/60.jpg" alt="60.jpg"></p>
+<h2 id="例子：-Find-the-student-with-the-highest-grade-for-each-course"><a href="#例子：-Find-the-student-with-the-highest-grade-for-each-course" class="headerlink" title="例子： Find the student with the highest grade for each course"></a>例子： Find the student with the highest grade for each course</h2><p><img data-src="/images/CMU1544564/Lec02/62.jpg" alt="62.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/63.jpg" alt="63.jpg"></p>
+<p>中间过程：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> (</span><br><span class="line">    <span class="keyword">SELECT</span> *,</span><br><span class="line">        <span class="keyword">RANK</span>() <span class="keyword">OVER</span> (<span class="keyword">PARTITION</span> <span class="keyword">BY</span> cid</span><br><span class="line">        <span class="keyword">ORDER</span> <span class="keyword">BY</span> grade <span class="keyword">ASC</span>) <span class="keyword">AS</span> <span class="keyword">rank</span></span><br><span class="line">    <span class="keyword">FROM</span> enrolled) <span class="keyword">AS</span> ranking;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  sid  |  cid   | grade | rank </span><br><span class="line"><span class="comment">-------+--------+-------+------</span></span><br><span class="line"> 53655 | 15-445 | B     |    1</span><br><span class="line"> 53666 | 15-445 | C     |    2</span><br><span class="line"> 53688 | 15-721 | A     |    1</span><br><span class="line"> 53666 | 15-721 | C     |    2</span><br><span class="line"> 53666 | 15-826 | B     |    1</span><br><span class="line">(5 rows)</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h3 id="如果没有-ORDER-BY"><a href="#如果没有-ORDER-BY" class="headerlink" title="如果没有 ORDER BY"></a>如果没有 <code>ORDER BY</code></h3><p>如果没有 <code>ORDER BY</code>，即frame内没有排序，<strong>人人都是一个名次，人人都是第一名</strong>：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">testdb=# SELECT *, RANK() OVER (PARTITION BY cid) AS rank FROM enrolled;</span><br><span class="line"></span><br><span class="line">  sid  |  cid   | grade | rank </span><br><span class="line">-------+--------+-------+------</span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-445</span> | C     |    <span class="number">1</span></span><br><span class="line"> <span class="number">53655</span> | <span class="number">15</span><span class="number">-445</span> | B     |    <span class="number">1</span></span><br><span class="line"> <span class="number">53688</span> | <span class="number">15</span><span class="number">-721</span> | A     |    <span class="number">1</span></span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-721</span> | C     |    <span class="number">1</span></span><br><span class="line"> <span class="number">53666</span> | <span class="number">15</span><span class="number">-826</span> | B     |    <span class="number">1</span></span><br><span class="line">(<span class="number">5</span> rows)</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="COMMON-TABLE-EXPRESSIONS-CTEs"><a href="#COMMON-TABLE-EXPRESSIONS-CTEs" class="headerlink" title="COMMON TABLE EXPRESSIONS (CTEs)"></a>COMMON TABLE EXPRESSIONS (CTEs)</h1><p>实际上CTE中的<code>with</code>从句非常类似Nested Query，也就是一个暂时的辅助表格(anxiliary statement):</p>
+<p><img data-src="/images/CMU1544564/Lec02/65.jpg" alt="65.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/66.jpg" alt="66.jpg"></p>
+<h2 id="例子-Find-student-record-with-the-highest-id-that-is-enrolled-in-at-least-one-course"><a href="#例子-Find-student-record-with-the-highest-id-that-is-enrolled-in-at-least-one-course" class="headerlink" title="例子: Find student record with the highest id that is enrolled in at least one course"></a>例子: Find student record with the highest id that is enrolled in at least one course</h2><p><img data-src="/images/CMU1544564/Lec02/68.jpg" alt="68.jpg"></p>
+<p><br></p>
+<h1 id="RECURSION-递归"><a href="#RECURSION-递归" class="headerlink" title="RECURSION 递归"></a>RECURSION 递归</h1><p>CTE的能力比Nested Query更大，它可以完成　SQL 中的递归语句。　我个人觉得这个很重要，因为如果我们的数据集是一个图的抽象，我们需要用递归的语句去完成图论中的算法，或者去遍历这个图。更多的练习可以在我的　<a href="https://cakebytheoceanluo.github.io/categories/SQL/">高级SQL-递归</a> 中找到。</p>
+<p><img data-src="/images/CMU1544564/Lec02/69.jpg" alt="69.jpg"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> <span class="keyword">source</span>(counter) <span class="keyword">as</span> (</span><br><span class="line">    (<span class="keyword">select</span> <span class="number">1</span>) </span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span> </span><br><span class="line">    (<span class="keyword">select</span> counter + <span class="number">1</span> </span><br><span class="line">     <span class="keyword">from</span> <span class="keyword">source</span> </span><br><span class="line">     <span class="keyword">where</span> counter &lt; <span class="number">10</span>)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * </span><br><span class="line"><span class="keyword">from</span> <span class="keyword">source</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> counter </span><br><span class="line"><span class="comment">---------</span></span><br><span class="line">       1</span><br><span class="line">       2</span><br><span class="line">       3</span><br><span class="line">       4</span><br><span class="line">       5</span><br><span class="line">       6</span><br><span class="line">       7</span><br><span class="line">       8</span><br><span class="line">       9</span><br><span class="line">      10</span><br><span class="line">(10 rows)</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<p>另外PostgreSQL中有库函数 <code>GENERATE_SERIES</code> ：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">testdb=# select GENERATE_SERIES(<span class="number">1</span>, <span class="number">10</span>) as counter;</span><br><span class="line"></span><br><span class="line"> counter </span><br><span class="line">---------</span><br><span class="line">       <span class="number">1</span></span><br><span class="line">       <span class="number">2</span></span><br><span class="line">       <span class="number">3</span></span><br><span class="line">       <span class="number">4</span></span><br><span class="line">       <span class="number">5</span></span><br><span class="line">       <span class="number">6</span></span><br><span class="line">       <span class="number">7</span></span><br><span class="line">       <span class="number">8</span></span><br><span class="line">       <span class="number">9</span></span><br><span class="line">      <span class="number">10</span></span><br><span class="line">(<span class="number">10</span> rows)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="UNION-ALL-vs-UNION"><a href="#UNION-ALL-vs-UNION" class="headerlink" title="UNION ALL vs UNION"></a><code>UNION ALL</code> vs <code>UNION</code></h2><ul>
+<li><code>UNION ALL</code> 采用包语义 (Bag Semantics)，它不会消除重复 (duplicates)。</li>
+<li><code>UNION</code> 采用集合语义 (Set Semantics)，它会消除重复。</li>
+</ul>
+<p><code>UNION ALL</code> 可能会导致<strong>不能终止</strong>:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">testdb=# set statement_timeout = '10s';</span><br><span class="line">SET</span><br><span class="line"></span><br><span class="line">testdb=# \timing</span><br><span class="line">Timing is on.</span><br><span class="line"></span><br><span class="line">testdb=# with recursive source(counter) as ((select <span class="number">1</span>) <span class="keyword">union</span> all (select counter + <span class="number">1</span> from source)) select * from source;</span><br><span class="line">ERROR:  canceling statement due to statement timeout</span><br><span class="line">Time: <span class="number">10223.416</span> ms (<span class="number">00</span>:<span class="number">10.223</span>)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>set statement_timeout = '10s';</code> 设置每个SQL的 timeout, 即最长允许运行时间</li>
+<li><code>\timing</code> 打开计时器，能对每个SQL的运行时间进行计时。</li>
+</ul>
+<p><br></p>
+<h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p><img data-src="/images/CMU1544564/Lec02/70.jpg" alt="70.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec02/71.jpg" alt="71.jpg"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/" title="[CMU-15445]Lec02_part2">https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/Window-Function/" rel="tag"><i class="fa fa-tag"></i> Window Function</a>
+              <a href="/tags/Recursion/" rel="tag"><i class="fa fa-tag"></i> Recursion</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/06/CMU-15445-Lec02-part1/" rel="prev" title="[CMU-15445]Lec02_part1">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec02_part1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/07/CMU-15445-HomeWork1-19Fall/" rel="next" title="[CMU-15445]HomeWork1_19Fall">
+      [CMU-15445]HomeWork1_19Fall <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#OUTPUT-REDIRECTION"><span class="nav-number">1.</span> <span class="nav-text">OUTPUT REDIRECTION</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#OUTPUT-CONTROL"><span class="nav-number">2.</span> <span class="nav-text">OUTPUT CONTROL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#ORDER-BY"><span class="nav-number">2.1.</span> <span class="nav-text">ORDER BY</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LIMIT-OFFSET"><span class="nav-number">2.2.</span> <span class="nav-text">LIMIT OFFSET</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NESTED-QUERIES"><span class="nav-number">3.</span> <span class="nav-text">NESTED QUERIES</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例子：-Get-the-names-of-students-in-‘15-445’"><span class="nav-number">3.1.</span> <span class="nav-text">例子： Get the names of students in ‘15-445’</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ALL-ANY-IN-EXISTS"><span class="nav-number">3.1.1.</span> <span class="nav-text">ALL, ANY, IN, EXISTS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子：-Student-record-with-the-highest-id-that-is-enrolled-in-at-least-one-course"><span class="nav-number">3.2.</span> <span class="nav-text">例子： Student record with the highest id that is enrolled in at least one course</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例子：-Find-the-student-with-the-highest-grade-for-each-course"><span class="nav-number">3.3.</span> <span class="nav-text">例子： Find the student with the highest grade for each course</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如果没有-ORDER-BY"><span class="nav-number">3.3.1.</span> <span class="nav-text">如果没有 ORDER BY</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#COMMON-TABLE-EXPRESSIONS-CTEs"><span class="nav-number">4.</span> <span class="nav-text">COMMON TABLE EXPRESSIONS (CTEs)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例子-Find-student-record-with-the-highest-id-that-is-enrolled-in-at-least-one-course"><span class="nav-number">4.1.</span> <span class="nav-text">例子: Find student record with the highest id that is enrolled in at least one course</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RECURSION-递归"><span class="nav-number">5.</span> <span class="nav-text">RECURSION 递归</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UNION-ALL-vs-UNION"><span class="nav-number">5.1.</span> <span class="nav-text">UNION ALL vs UNION</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">6.</span> <span class="nav-text">结论</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">223k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:23</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part2/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
