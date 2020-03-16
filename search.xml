@@ -26,7 +26,7 @@
 <h3 id="Demo-失去精度"><a href="#Demo-失去精度" class="headerlink" title="Demo - 失去精度"></a>Demo - 失去精度</h3><p><img data-src="/images/CMU1544564/Lec04/16.jpg" alt="16.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec04/17.jpg" alt="17.jpg"></p>
 <h2 id="Fixed-Precision-Numbers"><a href="#Fixed-Precision-Numbers" class="headerlink" title="Fixed Precision Numbers"></a>Fixed Precision Numbers</h2><p><img data-src="/images/CMU1544564/Lec04/18.jpg" alt="18.jpg"></p>
-<p>TODO: 课上demolink here</p>
+<p>更多关于这个Demo实验，见这个文章<a href="https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/">[DBMS] Postgres 精度问题 precision_numbers</a></p>
 <p><img data-src="/images/CMU1544564/Lec04/19.jpg" alt="19.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec04/20.jpg" alt="20.jpg"></p>
 <ul>
@@ -176,7 +176,7 @@
   <entry>
     <title>[DBMS]Postgres精度问题precision_numbers</title>
     <url>/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/</url>
-    <content><![CDATA[<p>这篇文章服务于<span class="exturl" data-url="VE9ETzo=" title="TODO:">[CMU-15445]Lec04<i class="fa fa-external-link"></i></span></p>
+    <content><![CDATA[<p>这篇文章服务于<a href="https://cakebytheoceanluo.github.io/2020/03/16/CMU-15445-Lec04/">[CMU-15445]Lec04</a></p>
 <p>数据库中给小数(分数)有两种类型</p>
 <ul>
 <li>Variable Precision Numbers: 可变精度数字，可能有会rounding error</li>
@@ -196,8 +196,8 @@
 </ul>
 <p>So the number 23.5141 has a precision of 6 and a scale of 4. Integers can be considered to have a scale of zero.</p>
 <p>以上引用自: <span class="exturl" data-url="aHR0cHM6Ly93d3cucG9zdGdyZXNxbC5vcmcvZG9jcy85LjEvZGF0YXR5cGUtbnVtZXJpYy5odG1s" title="https://www.postgresql.org/docs/9.1/datatype-numeric.html">https://www.postgresql.org/docs/9.1/datatype-numeric.html<i class="fa fa-external-link"></i></span></p>
-<hr>
 <a id="more"></a>
+<hr>
 <h1 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h1><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec04/data_csv.png" alt="num_range"></p>
 <p>上图为CMU-15445-Lec04课上的截图，内容是<code>data.csv</code>。实际上这只是一个随机生成的文件:</p>
 <ul>
@@ -296,7 +296,8 @@
 <h2 id="IMDb-数据集"><a href="#IMDb-数据集" class="headerlink" title="IMDb 数据集"></a>IMDb 数据集</h2><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">iconv -f latin1 -t utf-8 actorsTrimmed.list &gt; actorsUtf8.list </span><br><span class="line"></span><br><span class="line">sed -r -e <span class="string">'s/\t+/|/g'</span> -e <span class="string">'s/((\s*)|(\{.*\})|(\[.*\])|(&lt;.*&gt;)|\(.*[a-zA-Z].*\))*$//g'</span> actorsUtf8.list | awk -F <span class="string">'|'</span>  <span class="string">'{if($1 != "") { actor = $1 }; if ($2) print actor "|" $2 }'</span> &gt; actors.csv</span><br></pre></td></tr></tbody></table></figure>
 <figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line"># 这里testdb应该是另外一个新建的 没有载入数据的数据库</span><br><span class="line">$ psql testdb # 然后我们就进入这个testdb，可以对这些表格进行操作了。</span><br><span class="line"></span><br><span class="line">testdb=# create table playedin_text (actor_name <span class="built_in">text</span> <span class="keyword">not</span> null, movie_name <span class="built_in">text</span> <span class="keyword">not</span> null);</span><br><span class="line"></span><br><span class="line">testdb=# \copy playedin_text from actors.csv delimiter <span class="string">'|'</span>;</span><br><span class="line"></span><br><span class="line">testdb=# create index on playedin (actor); </span><br><span class="line"></span><br><span class="line">testdb=# create index on playedin (movie);</span><br></pre></td></tr></tbody></table></figure>
 <figure class="highlight c"><table><tbody><tr><td class="code"><pre><span class="line">testdb=# \d+</span><br><span class="line">                          List of relations</span><br><span class="line"> Schema |     Name      |   Type   | Owner |    Size    | Description </span><br><span class="line">--------+---------------+----------+-------+------------+-------------</span><br><span class="line"> <span class="keyword">public</span> | actors        | table    | jigao | <span class="number">98</span> MB      | </span><br><span class="line"> <span class="keyword">public</span> | actors_id_seq | sequence | jigao | <span class="number">8192</span> bytes | </span><br><span class="line"> <span class="keyword">public</span> | movies        | table    | jigao | <span class="number">66</span> MB      | </span><br><span class="line"> <span class="keyword">public</span> | movies_id_seq | sequence | jigao | <span class="number">8192</span> bytes | </span><br><span class="line"> <span class="keyword">public</span> | playedin      | table    | jigao | <span class="number">599</span> MB     | </span><br><span class="line"> <span class="keyword">public</span> | playedin_text | table    | jigao | <span class="number">1183</span> MB    | </span><br><span class="line">(<span class="number">6</span> rows)</span><br><span class="line"></span><br><span class="line">testdb=# \d actors</span><br><span class="line">                            Table <span class="string">"public.actors"</span></span><br><span class="line"> Column |  Type   | Collation | Nullable |              Default               </span><br><span class="line">--------+---------+-----------+----------+------------------------------------</span><br><span class="line"> id     | integer |           | not null | nextval('actors_id_seq'::regclass)</span><br><span class="line"> name   | <span class="built_in">text</span>    |           | <span class="keyword">not</span> null | </span><br><span class="line">Indexes:</span><br><span class="line">    <span class="string">"actors_pkey"</span> PRIMARY KEY, btree (id)</span><br><span class="line">Referenced by:</span><br><span class="line">    TABLE <span class="string">"playedin"</span> CONSTRAINT <span class="string">"playedin_actor_fkey"</span> <span class="function">FOREIGN <span class="title">KEY</span> <span class="params">(actor)</span> REFERENCES <span class="title">actors</span><span class="params">(id)</span></span></span><br></pre></td></tr></tbody></table></figure>
-<h2 id="CMU-15445-分数数据集-Mock"><a href="#CMU-15445-分数数据集-Mock" class="headerlink" title="CMU-15445 分数数据集 (Mock)"></a>CMU-15445 分数数据集 (Mock)</h2><p>TODO:  Link 文章</p>
+<h2 id="CMU-15445-分数数据集-Mock"><a href="#CMU-15445-分数数据集-Mock" class="headerlink" title="CMU-15445 分数数据集 (Mock)"></a>CMU-15445 分数数据集 (Mock)</h2><p>更多关于这个数据集，见这个实验<a href="https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/">[DBMS] Postgres 精度问题 precision_numbers</a></p>
+<p>这个实验服务于<a href="https://cakebytheoceanluo.github.io/2020/03/16/CMU-15445-Lec04/">[CMU-15445]Lec04</a></p>
 <h3 id="数据集faker"><a href="#数据集faker" class="headerlink" title="数据集faker"></a>数据集faker</h3><p>我用python写了一个类似的数据集faker:</p>
 <figure class="highlight python"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python3</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">from</span> decimal <span class="keyword">import</span> Decimal</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10000000</span>):</span><br><span class="line">    print(<span class="string">f'<span class="subst">{float(Decimal(random.randrange(<span class="number">0</span>, <span class="number">100000000</span>) / <span class="number">1000000</span>))}</span>,<span class="subst">{float(Decimal(random.randrange(<span class="number">0</span>, <span class="number">100000000</span>) / <span class="number">1000000</span>))}</span>'</span>)</span><br></pre></td></tr></tbody></table></figure>
 <h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><p>下载: <a href="https://cakebytheoceanluo.github.io/download/CMU15445/lec04_float_faker.py">lec04_float_faker.py</a></p>
@@ -2792,8 +2793,8 @@
       <tags>
         <tag>SQL</tag>
         <tag>SQLite</tag>
-        <tag>DBMS</tag>
         <tag>PostgreSQL</tag>
+        <tag>DBMS</tag>
         <tag>MySQL</tag>
       </tags>
   </entry>
