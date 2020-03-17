@@ -164,6 +164,7 @@
       <categories>
         <category>CMU-15445</category>
         <category>Storage</category>
+        <category>Disk Management</category>
       </categories>
       <tags>
         <tag>N-ary Storage Model</tag>
@@ -1242,7 +1243,7 @@
 <p><br></p>
 <ul>
 <li>或者</li>
-<li>使用direct I/O: <code>O_DIRECT</code> = disable page cache in OS for reading/writing file, 可以避免使用操作系统文件缓存区，直接将文件读取到数据库(比如buffer pool缓存区)的address space。这样性能也会更好。因为省去从操作系统文件缓存区复制进数据库address space这一步。</li>
+<li>使用direct I/O: <code>O_DIRECT</code> = disable page cache in OS for reading/writing file, 可以避免使用操作系统文件缓存区，直接将文件读取到数据库(比如buffer pool缓存区)的address space。这样性能也会更好。因为省去从操作系统文件缓存区复制进数据库address space这一步。<code>mmap</code>可以产生内存文件，把磁盘文件的内容map到内存的地址空间。</li>
 </ul>
 <!-- TODO: link Lec05 -->
 <p><code>mmap</code>是一个非常重要的进程通信方式(if <code>shared</code>)，同时也是高性能文件操作的方法。我们以后会仔细讲讲。</p>
@@ -1264,7 +1265,7 @@
 </blockquote>
 <p>上面这句话来自于<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzIwMDg1NDU2LzgwNDk0MDg=" title="https://stackoverflow.com/a/20085456/8049408">Can sbrk(2) or mmap(2) block? - oakad’s answer<i class="fa fa-external-link"></i></span></p>
 <p>page Fault时具体发生的事情，完全类似<code>syscall</code>发生的事情一样:<br>当前程序会从ser mode TRAP进入 kernel mode，这时进程一直被blocked (CPU stalled), 直到对应新的page被加载进入kernel space而且程序回到user mode为止。</p>
-<h3 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h3><p>我们已知<code>mmap</code>会被blocked, 这个阻断时间中，数据库上面也做不了，只能等待新的page加载结束。这会带来性能下降问题。</p>
+<h3 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h3><p>我们已知<code>mmap</code>会被blocked, 这个阻断时间中，数据库上面也做不了，只能等待新的page加载结束。这会带来性能下降问题。另外如果有多个并发写，需要同步机制，系统也提供一些同步指令<code>madvise</code>, <code>mlock</code>, <code>msync</code>。但是操作系统只是一个通用方案，达不到性能最优。</p>
 <p>另外操作系统不能将一个page立即写回硬盘，这一点会在事务Logging中使正确性不能被保证。</p>
 <p>由于<strong>性能问题</strong>和<strong>正确性问题</strong>，<code>mmap</code>比较少在数据库中被采用。</p>
 <p><img data-src="/images/CMU1544564/Lec03/24.jpg" alt="24.jpg"></p>
@@ -1274,7 +1275,8 @@
 <h1 id="Database-Storage"><a href="#Database-Storage" class="headerlink" title="Database Storage"></a>Database Storage</h1><p><img data-src="/images/CMU1544564/Lec03/27.jpg" alt="27.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec03/28.jpg" alt="28.jpg"></p>
 <h2 id="File-Storage"><a href="#File-Storage" class="headerlink" title="File Storage"></a>File Storage</h2><p><img data-src="/images/CMU1544564/Lec03/29.jpg" alt="29.jpg"></p>
-<h3 id="Storage-Manager"><a href="#Storage-Manager" class="headerlink" title="Storage Manager"></a>Storage Manager</h3><p>storage manager能够理解解释interpret对应的数据库文件，将数据库文件represent成一个page的集合。它也记录下page的读与写操作，另外page上剩下的存储空间大小也会被记录下来。</p>
+<h3 id="Storage-Manager"><a href="#Storage-Manager" class="headerlink" title="Storage Manager"></a>Storage Manager</h3><p>下面一个问题，DBMS如何将数据库的数据放到磁盘文件上？ 这里有个选择，DBMS是否要用操作系统的文件系统，还是拿一块raw storage自己管理。现在一般的选择是还是使用操作系统文件系统，毕竟方便。既然用文件系统，那么DBMS就需要把数据库数据存成一个或多个文件。每个文件有多个page组成。page其实就是固定大小的数据块，那为什么要有这层抽象？这个和我们使用的存储的磁盘有关，它除了慢，还有个特点是对顺序读写比较友好，因为随机读需要磁头不断的机械移动的。所以操作系统的文件系统和磁盘间的I/O，需要<strong>尽量批量读</strong>，读写数据的最小单位称为数据块block，一般是4KiB，因为4KiB比较经济。而数据库的page是基于文件系统的，所以设计成4KiB的倍数会比较合理。<sup><a href="#fn1">1</a></sup></p>
+<p>storage manager能够理解解释interpret对应的数据库文件，将数据库文件represent成一个page的集合。它也记录下page的读与写操作，另外page上剩下的存储空间大小也会被记录下来。</p>
 <p><img data-src="/images/CMU1544564/Lec03/30.jpg" alt="30.jpg"></p>
 <h3 id="Database-Pages"><a href="#Database-Pages" class="headerlink" title="Database Pages"></a>Database Pages</h3><blockquote>
 <p>Self-contained:= all the information needed to read each page is on the page itself.</p>
@@ -1294,7 +1296,7 @@
 <p><img data-src="/images/CMU1544564/Lec03/31.jpg" alt="31.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec03/32.jpg" alt="32.jpg"></p>
 <h3 id="Database-Heap"><a href="#Database-Heap" class="headerlink" title="Database Heap"></a>Database Heap</h3><p><img data-src="/images/CMU1544564/Lec03/33.jpg" alt="33.jpg"></p>
-<p>上图说，我们有多种途径去对硬盘上的page位置进行管理，heap file是其中的一种途径，我们重点看一下heap file。</p>
+<p>上图说，我们有多种途径去对硬盘上的page位置进行管理，heap file是其中的一种途径，我们重点看一下heap file。<strong>heap file就是用来放page的文件，当然我们可以通过文件名+offset，访问某个特定的page。</strong><sup><a href="#fn1">1</a></sup>  heap file也有两种实现方式: linked list, page directory。</p>
 <blockquote>
 <p>A <strong>heap file</strong> is an unordered collection of pages where tuples that are stored in random order.</p>
 </blockquote>
@@ -1313,7 +1315,7 @@
 <p><br><br><br></p>
 <h2 id="Page-Layout"><a href="#Page-Layout" class="headerlink" title="Page Layout"></a>Page Layout</h2><p><img data-src="/images/CMU1544564/Lec03/38.jpg" alt="38.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec03/39.jpg" alt="39.jpg"></p>
-<h3 id="Tuple-oriented"><a href="#Tuple-oriented" class="headerlink" title="Tuple-oriented"></a>Tuple-oriented</h3><h4 id="Strawman-idea"><a href="#Strawman-idea" class="headerlink" title="Strawman idea"></a>Strawman idea</h4><p>Strawman idea只是一个反面教材，并不是一种好的实现。</p>
+<h3 id="Tuple-oriented"><a href="#Tuple-oriented" class="headerlink" title="Tuple-oriented"></a>Tuple-oriented</h3><h4 id="Strawman-idea"><a href="#Strawman-idea" class="headerlink" title="Strawman idea"></a>Strawman idea</h4><p>Strawman idea只是一个<strong>反面教材，并不是一种好的实现</strong>。</p>
 <p><img data-src="/images/CMU1544564/Lec03/41.jpg" alt="41.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec03/42.jpg" alt="42.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec03/43.jpg" alt="43.jpg"></p>
@@ -1359,7 +1361,7 @@
 </ul>
 <p>缺点:</p>
 <ul>
-<li>数据读写较慢，需要依靠log生成tuple</li>
+<li>数据读写较慢，需要依靠log生成tuple (这个生成过程叫replay)</li>
 <li>数据分散，且难以缓存(data ends up spread out wide and hard to cache.)</li>
 </ul>
 <p><br><br><br></p>
@@ -1370,6 +1372,7 @@
 <p>Record ids缩写成RID, 常见的指是<code>page id + offset / slot</code>，即和这个tuple存储的位置相关。既然它是唯一的，而且可以确定一个tuple，因此RID可以作为index(索引)的key。</p>
 <p><img data-src="/images/CMU1544564/Lec03/61.jpg" alt="61.jpg"></p>
 <h3 id="Denormalized-Tuple-Data"><a href="#Denormalized-Tuple-Data" class="headerlink" title="Denormalized Tuple Data"></a>Denormalized Tuple Data</h3><p>这部分也是实现相关，也和数据库的Normal Form, Functional Dependency有关。</p>
+<p>Denormalized，都知道关系模型有范式，冗余数据一定是会打破范式的，所以是<strong>de</strong>。<sup><a href="#fn1">1</a></sup></p>
 <p><img data-src="/images/CMU1544564/Lec03/57.jpg" alt="57.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec03/58.jpg" alt="58.jpg"></p>
 <ul>
@@ -1387,6 +1390,8 @@
 <p><img data-src="/images/CMU1544564/Lec03/60.jpg" alt="60.jpg"></p>
 <h1 id="Conclusion-结论"><a href="#Conclusion-结论" class="headerlink" title="Conclusion 结论"></a>Conclusion 结论</h1><p><img data-src="/images/CMU1544564/Lec03/62.jpg" alt="62.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec03/63.jpg" alt="63.jpg"></p>
+<p>引用:</p>
+<p><a name="fn1">1</a>: Database Storage - fxjwind: <span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZnhqd2luZC9wLzEwODE4ODE0Lmh0bWw=" title="https://www.cnblogs.com/fxjwind/p/10818814.html">https://www.cnblogs.com/fxjwind/p/10818814.html<i class="fa fa-external-link"></i></span></p>
 </be><script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -1409,6 +1414,7 @@
       <categories>
         <category>CMU-15445</category>
         <category>Storage</category>
+        <category>Disk Management</category>
       </categories>
       <tags>
         <tag>Slotted Page</tag>
@@ -1472,12 +1478,12 @@
           });
       </script>]]></content>
       <categories>
-        <category>DBMS</category>
         <category>Storage</category>
+        <category>DBMS</category>
       </categories>
       <tags>
-        <tag>PostgreSQL</tag>
         <tag>Slotted Page</tag>
+        <tag>PostgreSQL</tag>
       </tags>
   </entry>
   <entry>
