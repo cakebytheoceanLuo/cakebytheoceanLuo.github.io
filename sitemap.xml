@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/</loc>
+    
+    <lastmod>2020-03-17T16:03:25.529Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/</loc>
+    
+    <lastmod>2020-03-17T16:02:23.309Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/03/16/CMU-15445-Lec04/</loc>
+    
+    <lastmod>2020-03-17T15:59:43.636Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/</loc>
     
     <lastmod>2020-03-17T13:45:03.638Z</lastmod>
@@ -9,23 +30,9 @@
   </url>
   
   <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/03/16/CMU-15445-Lec04/</loc>
-    
-    <lastmod>2020-03-16T16:15:21.134Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
     
     <lastmod>2020-03-16T16:05:11.141Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/</loc>
-    
-    <lastmod>2020-03-16T13:22:00.478Z</lastmod>
     
   </url>
   
@@ -124,13 +131,6 @@
     <loc>https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/</loc>
     
     <lastmod>2020-03-12T17:27:17.750Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/</loc>
-    
-    <lastmod>2020-03-11T20:38:36.744Z</lastmod>
     
   </url>
   
