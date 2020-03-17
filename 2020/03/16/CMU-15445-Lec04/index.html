@@ -72,7 +72,7 @@
 <meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec04/53.jpg">
 <meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec04/54.jpg">
 <meta property="article:published_time" content="2020-03-16T13:08:44.000Z">
-<meta property="article:modified_time" content="2020-03-17T15:59:43.636Z">
+<meta property="article:modified_time" content="2020-03-17T16:28:12.248Z">
 <meta property="article:author" content="罗济高">
 <meta property="article:tag" content="N-ary Storage Model">
 <meta property="article:tag" content="Decomposition Storage Model">
@@ -189,17 +189,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">31</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">35</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">14</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">15</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">53</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">55</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -293,7 +293,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-17 16:59:43" itemprop="dateModified" datetime="2020-03-17T16:59:43+01:00">2020-03-17</time>
+                <time title="修改时间：2020-03-17 17:28:12" itemprop="dateModified" datetime="2020-03-17T17:28:12+01:00">2020-03-17</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -369,7 +369,7 @@
 <p><img data-src="/images/CMU1544564/Lec04/17.jpg" alt="17.jpg"></p>
 <h2 id="Fixed-Precision-Numbers-定点数"><a href="#Fixed-Precision-Numbers-定点数" class="headerlink" title="Fixed Precision Numbers 定点数"></a>Fixed Precision Numbers 定点数</h2><p>定点数就是小数点是固定的，所以我们用int分别存储小数点前后的数字就可以实现，定点数是可以做到精确计算的。但是局限也很明显，只能表示固定精度。<sup><a href="#fn1">1</a></sup></p>
 <p><img data-src="/images/CMU1544564/Lec04/18.jpg" alt="18.jpg"></p>
-<p>更多关于这个Demo实验，见这个文章<a href="https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/">[DBMS] Postgres 精度问题 precision_numbers</a></p>
+<p>更多关于这个Demo实验，见这个文章<a href="https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/">[DBMS]Postgres浮点数，定点数精度问题 precision_numbers</a></p>
 <p><img data-src="/images/CMU1544564/Lec04/19.jpg" alt="19.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec04/20.jpg" alt="20.jpg"></p>
 <ul>
@@ -576,7 +576,10 @@
     <a href="/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/" rel="prev" title="[DBMS]Postgres 浮点数，定点数 精度问题precision_numbers">
       <i class="fa fa-chevron-left"></i> [DBMS]Postgres 浮点数，定点数 精度问题precision_numbers
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/" rel="next" title="[DBMS][PostgreSQL]缓存区管理BufferPool">
+      [DBMS][PostgreSQL]缓存区管理BufferPool <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -659,20 +662,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-count">15</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-count">35</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -738,13 +741,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">240k</span>
+    <span title="站点总字数">254k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">3:39</span>
+    <span title="站点阅读时长">3:51</span>
 </div>
 
         

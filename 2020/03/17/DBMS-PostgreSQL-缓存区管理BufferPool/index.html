@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章服务于[CMU-15445]Lec05 我们沿用上一个实验的数据集和数据库:  上一个实验，见[DBMS]Postgres浮点数，定点数精度问题 precision_numbers 具体数据集，见[DBMS] PostgreSQL 导入数据集: CMU-15445 分数数据集 (Mock)  这个实验的目的是观察PostgreSQL:   buffer pool对Query性能的影响, 操">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[DBMS][PostgreSQL]缓存区管理BufferPool">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="这篇文章服务于[CMU-15445]Lec05 我们沿用上一个实验的数据集和数据库:  上一个实验，见[DBMS]Postgres浮点数，定点数精度问题 precision_numbers 具体数据集，见[DBMS] PostgreSQL 导入数据集: CMU-15445 分数数据集 (Mock)  这个实验的目的是观察PostgreSQL:   buffer pool对Query性能的影响, 操">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-17T18:46:09.000Z">
+<meta property="article:modified_time" content="2020-03-17T18:48:26.546Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="PostgreSQL">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[DBMS][PostgreSQL]缓存区管理BufferPool | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">35</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">15</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">55</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [DBMS][PostgreSQL]缓存区管理BufferPool
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-17 19:46:09 / 修改时间：19:48:26" itemprop="dateCreated datePublished" datetime="2020-03-17T19:46:09+01:00">2020-03-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Buffer-Management/" itemprop="url" rel="index"><span itemprop="name">Buffer Management</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS][PostgreSQL]缓存区管理BufferPool" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章服务于<span class="exturl" data-url="VE9ETzo=" title="TODO:">[CMU-15445]Lec05<i class="fa fa-external-link"></i></span></p>
+<p>我们沿用上一个实验的数据集和数据库:</p>
+<ul>
+<li>上一个实验，见<a href="https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/">[DBMS]Postgres浮点数，定点数精度问题 precision_numbers</a></li>
+<li>具体数据集，见<a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/#CMU-15445-%E5%88%86%E6%95%B0%E6%95%B0%E6%8D%AE%E9%9B%86-Mock">[DBMS] PostgreSQL 导入数据集: CMU-15445 分数数据集 (Mock)</a></li>
+</ul>
+<p>这个实验的目的是观察PostgreSQL: </p>
+<ul>
+<li>buffer pool对Query性能的影响,</li>
+<li>操作系统文件缓存区对Query在page fault的影响，因为PostgreSQL不使用direct I/O</li>
+</ul>
+<a id="more"></a>
+<hr>
+<h1 id="清空操作系统-pagecache-dentries-and-inodes"><a href="#清空操作系统-pagecache-dentries-and-inodes" class="headerlink" title="清空操作系统 pagecache, dentries and inodes"></a>清空操作系统 pagecache, dentries and inodes</h1><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ free -h</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:            15G        9.8G        2.3G        1.9G        3.2G        3.3G</span><br><span class="line">Swap:          2.0G        1.4G        643M</span><br><span class="line">$ sync; <span class="built_in">echo</span> 3 | sudo tee /proc/sys/vm/drop_caches</span><br><span class="line">3</span><br><span class="line">$ free -h</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:            15G        9.9G        3.0G        1.8G        2.5G        3.3G</span><br><span class="line">Swap:          2.0G        1.4G        579M</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>free -h</code> 可以显示系统空闲以及占用的内存容量<blockquote>
+<pre><code>   free - Display amount of free and used memory in the system
+</code></pre></blockquote>
+</li>
+<li><code>sync</code> 可以将缓存的页写入硬盘<blockquote>
+<pre><code>   sync - Synchronize cached writes to persistent storage
+</code></pre></blockquote>
+</li>
+<li><code>echo 3 | sudo tee /proc/sys/vm/drop_caches</code> 释放 pagecache, dentries and inodes</li>
+<li>或者在<code>su</code>的权限下<code>echo 3 &gt; /proc/sys/vm/drop_caches</code></li>
+</ul>
+<p>从上面的输出中，我们可以发现，<code>buff/cache</code>在运行指令后减少了很多，说明这块被释放了一部分。</p>
+<p><br></p>
+<p>有关阅读：</p>
+<ul>
+<li>How do you empty the buffers and cache on a Linux system? - Stackoverflow: <span class="exturl" data-url="aHR0cHM6Ly91bml4LnN0YWNrZXhjaGFuZ2UuY29tL3F1ZXN0aW9ucy84NzkwOC9ob3ctZG8teW91LWVtcHR5LXRoZS1idWZmZXJzLWFuZC1jYWNoZS1vbi1hLWxpbnV4LXN5c3RlbQ==" title="https://unix.stackexchange.com/questions/87908/how-do-you-empty-the-buffers-and-cache-on-a-linux-system">https://unix.stackexchange.com/questions/87908/how-do-you-empty-the-buffers-and-cache-on-a-linux-system<i class="fa fa-external-link"></i></span></li>
+<li>How to Clear RAM Memory Cache, Buffer and Swap Space on Linux - TecMint: <span class="exturl" data-url="aHR0cHM6Ly93d3cudGVjbWludC5jb20vY2xlYXItcmFtLW1lbW9yeS1jYWNoZS1idWZmZXItYW5kLXN3YXAtc3BhY2Utb24tbGludXgv" title="https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/">https://www.tecmint.com/clear-ram-memory-cache-buffer-and-swap-space-on-linux/<i class="fa fa-external-link"></i></span></li>
+</ul>
+<h1 id="清空psql-buffer-pool-重启psql"><a href="#清空psql-buffer-pool-重启psql" class="headerlink" title="清空psql buffer pool - 重启psql"></a>清空psql buffer pool - 重启psql</h1><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo service postgresql restart</span><br></pre></td></tr></tbody></table></figure>
+<p>在重启PostgreSQL服务后，buffer pool会被清空。</p>
+<h1 id="实验-查看-page-hit-page-fault"><a href="#实验-查看-page-hit-page-fault" class="headerlink" title="实验 - 查看 page hit, page fault"></a>实验 - 查看 page hit, page fault</h1><p>在这时候我们已经做过了前面两步：</p>
+<ul>
+<li>操作系统没有我们需要的的page cache</li>
+<li>PostgreSQL的buffer pool是空的</li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">psql (<span class="number">12.2</span> (Ubuntu <span class="number">12.2</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>), server <span class="number">10.12</span> (Ubuntu <span class="number">10.12</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>))</span><br><span class="line">Type <span class="string">"help"</span> <span class="keyword">for</span> help.</span><br><span class="line"></span><br><span class="line">testdb=# \timing</span><br><span class="line">Timing is on.</span><br><span class="line">testdb=# <span class="built_in">set</span> max_parallel_workers_per_gather = <span class="number">0</span>;</span><br><span class="line">SET</span><br><span class="line">Time: <span class="number">7.740</span> ms</span><br><span class="line">testdb=# explain (analyze, buffers) select sum(a + b) from testreals;</span><br><span class="line">                                                         QUERY PLAN                                                          </span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> Aggregate  (cost=<span class="number">194247.66</span>.<span class="number">.194247</span><span class="number">.67</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">4</span>) (actual time=<span class="number">1817.296</span>.<span class="number">.1817</span><span class="number">.296</span> rows=<span class="number">1</span> loops=<span class="number">1</span>)</span><br><span class="line">   Buffers: shared <span class="built_in">read</span>=<span class="number">44248</span></span><br><span class="line">   -&gt;  Seq Scan on testreals  (cost=<span class="number">0.00</span>.<span class="number">.144247</span><span class="number">.77</span> rows=<span class="number">9999977</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">0.401</span>.<span class="number">.814</span><span class="number">.209</span> rows=<span class="number">10000000</span> loops=<span class="number">1</span>)</span><br><span class="line">         Buffers: shared <span class="built_in">read</span>=<span class="number">44248</span></span><br><span class="line"> Planning time: <span class="number">0.225</span> ms</span><br><span class="line"> Execution time: <span class="number">1817.316</span> ms</span><br><span class="line">(<span class="number">6</span> rows)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">1824.317</span> ms (<span class="number">00</span>:<span class="number">01.824</span>)</span><br><span class="line">testdb=# explain (analyze, buffers) select sum(a + b) from testreals;</span><br><span class="line">                                                         QUERY PLAN                                                          </span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> Aggregate  (cost=<span class="number">194247.66</span>.<span class="number">.194247</span><span class="number">.67</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">4</span>) (actual time=<span class="number">1772.469</span>.<span class="number">.1772</span><span class="number">.469</span> rows=<span class="number">1</span> loops=<span class="number">1</span>)</span><br><span class="line">   Buffers: shared hit=<span class="number">32</span> <span class="built_in">read</span>=<span class="number">44216</span></span><br><span class="line">   -&gt;  Seq Scan on testreals  (cost=<span class="number">0.00</span>.<span class="number">.144247</span><span class="number">.77</span> rows=<span class="number">9999977</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">0.032</span>.<span class="number">.765</span><span class="number">.356</span> rows=<span class="number">10000000</span> loops=<span class="number">1</span>)</span><br><span class="line">         Buffers: shared hit=<span class="number">32</span> <span class="built_in">read</span>=<span class="number">44216</span></span><br><span class="line"> Planning time: <span class="number">0.025</span> ms</span><br><span class="line"> Execution time: <span class="number">1772.488</span> ms</span><br><span class="line">(<span class="number">6</span> rows)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">1772.799</span> ms (<span class="number">00</span>:<span class="number">01.773</span>)</span><br><span class="line">testdb=# explain (analyze, buffers) select sum(a + b) from testreals;</span><br><span class="line">                                                         QUERY PLAN                                                          </span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> Aggregate  (cost=<span class="number">194247.66</span>.<span class="number">.194247</span><span class="number">.67</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">4</span>) (actual time=<span class="number">1673.223</span>.<span class="number">.1673</span><span class="number">.223</span> rows=<span class="number">1</span> loops=<span class="number">1</span>)</span><br><span class="line">   Buffers: shared hit=<span class="number">64</span> <span class="built_in">read</span>=<span class="number">44184</span></span><br><span class="line">   -&gt;  Seq Scan on testreals  (cost=<span class="number">0.00</span>.<span class="number">.144247</span><span class="number">.77</span> rows=<span class="number">9999977</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">0.030</span>.<span class="number">.719</span><span class="number">.406</span> rows=<span class="number">10000000</span> loops=<span class="number">1</span>)</span><br><span class="line">         Buffers: shared hit=<span class="number">64</span> <span class="built_in">read</span>=<span class="number">44184</span></span><br><span class="line"> Planning time: <span class="number">0.025</span> ms</span><br><span class="line"> Execution time: <span class="number">1673.243</span> ms</span><br><span class="line">(<span class="number">6</span> rows)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">1673.562</span> ms (<span class="number">00</span>:<span class="number">01.674</span>)</span><br><span class="line">testdb=# explain (analyze, buffers) select sum(a + b) from testreals;</span><br><span class="line">                                                         QUERY PLAN                                                          </span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> Aggregate  (cost=<span class="number">194247.66</span>.<span class="number">.194247</span><span class="number">.67</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">4</span>) (actual time=<span class="number">1657.359</span>.<span class="number">.1657</span><span class="number">.359</span> rows=<span class="number">1</span> loops=<span class="number">1</span>)</span><br><span class="line">   Buffers: shared hit=<span class="number">96</span> <span class="built_in">read</span>=<span class="number">44152</span></span><br><span class="line">   -&gt;  Seq Scan on testreals  (cost=<span class="number">0.00</span>.<span class="number">.144247</span><span class="number">.77</span> rows=<span class="number">9999977</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">0.034</span>.<span class="number">.711</span><span class="number">.246</span> rows=<span class="number">10000000</span> loops=<span class="number">1</span>)</span><br><span class="line">         Buffers: shared hit=<span class="number">96</span> <span class="built_in">read</span>=<span class="number">44152</span></span><br><span class="line"> Planning time: <span class="number">0.025</span> ms</span><br><span class="line"> Execution time: <span class="number">1657.378</span> ms</span><br><span class="line">(<span class="number">6</span> rows)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">1657.683</span> ms (<span class="number">00</span>:<span class="number">01.658</span>)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>explain (analyze, buffers) select sum(a + b) from testreals;</code>中<ul>
+<li><code>explain</code>: 给出query plan</li>
+<li><code>analyze</code>: 执行query</li>
+<li><code>buffers</code>: 给出buffer pool信息</li>
+</ul>
+</li>
+<li>然后我前后执行4次同一个query:<ul>
+<li>PostgreSQL有一个共用的share buffer pool, 然后每一个query也有一个自己的buffer pool。query的专属buffer pool的大小，会随着执行次数而增加，默认是每次增加32个位置。</li>
+<li>第一次: <code>Buffers: shared read=44248</code> 因为buffer pool是空的，每一次都是page fault。同时操作系统file page cache也是空的，所有page都需要从硬盘先加载到操作系统file page cache, 在从这里复制进数据库buffer pool。<code>shared read</code>指的就是page fault, 是那些不在buffer pool中，需要从硬盘或从操作系统file cache中读取的page。</li>
+<li><strong>我们也可以发现这个表格一共对应<code>44248</code>个page。</strong></li>
+<li>第二次: <code>Buffers: shared hit=32 read=44216</code> Query的buffer pool是大小是32， 已增加32个位置。</li>
+<li>第三次: <code>Buffers: shared hit=64 read=44184</code> Query的buffer pool是大小是64， 已增加32个位置。</li>
+<li>第四次: <code>Buffers: shared hit=96 read=44152</code> Query的buffer pool是大小是94， 已增加32个位置。</li>
+</ul>
+</li>
+</ul>
+<h1 id="实验-扩大buffer-pool-size"><a href="#实验-扩大buffer-pool-size" class="headerlink" title="实验 - 扩大buffer pool size"></a>实验 - 扩大buffer pool size</h1><p>下面我们发现最大的buffer pool size是<code>128MB</code>：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">testdb=# show shared_buffers;</span><br><span class="line"> shared_buffers </span><br><span class="line">----------------</span><br><span class="line"> <span class="number">128</span>MB</span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">0.196</span> ms</span><br></pre></td></tr></tbody></table></figure>
+<p>但是我们对应的表格的所有page大概是<code>345MB</code>, 每一个page是<code>8KiB</code>:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">testdb=# select (<span class="number">44248</span> * <span class="number">8</span>) / <span class="number">1024</span>;</span><br><span class="line"> ?column? </span><br><span class="line">----------</span><br><span class="line">      <span class="number">345</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">0.381</span> ms</span><br></pre></td></tr></tbody></table></figure>
+<p>因此这个默认的buffer pool size不足以容纳我们这个表格。正因为这个原因，我们的query需要的page数总大于buffer size一次性所能容纳的数量，一定会出现page fault。</p>
+<h2 id="更改PostgresSQL配置文件中的shared-buffers"><a href="#更改PostgresSQL配置文件中的shared-buffers" class="headerlink" title="更改PostgresSQL配置文件中的shared_buffers"></a>更改PostgresSQL配置文件中的<code>shared_buffers</code></h2><p>我们用自己喜欢的文本编辑器去打开<code>/etc/postgresql/10/main/postgresql.conf</code>文件:</p>
+<ul>
+<li>注意我postgresql的版本是<code>10</code></li>
+<li>具体的配置文件位置和postgresql安装位置和安装版本有关</li>
+</ul>
+<p>找到下面对应的<code>shared_buffers</code>, 更改数值为<code>360MB</code>:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="comment">#------------------------------------------------------------------------------                                                                                          </span></span><br><span class="line"><span class="comment"># RESOURCE USAGE (except WAL)                                                                                                                                            </span></span><br><span class="line"><span class="comment">#------------------------------------------------------------------------------                                                                                          </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># - Memory -                                                                                                                                                             </span></span><br><span class="line"></span><br><span class="line">shared_buffers = 128MB                  <span class="comment"># min 128kB  </span></span><br><span class="line">......</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<p>保存完以后我们打开<code>psql</code>看看是否更改成功。如果像下面例子中，看见<code>360MB</code>，而不是之前的<code>128MB</code>,即更改成功：</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">psql (<span class="number">12.2</span> (Ubuntu <span class="number">12.2</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>), server <span class="number">10.12</span> (Ubuntu <span class="number">10.12</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>))</span><br><span class="line">Type <span class="string">"help"</span> <span class="keyword">for</span> help.</span><br><span class="line"></span><br><span class="line">testdb=# show shared_buffers;</span><br><span class="line"> shared_buffers </span><br><span class="line">----------------</span><br><span class="line"> <span class="number">360</span>MB</span><br><span class="line">(<span class="number">1</span> row)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="重新之前实验-冷启动"><a href="#重新之前实验-冷启动" class="headerlink" title="重新之前实验 - 冷启动"></a>重新之前实验 - 冷启动</h2><p>我们依然执行下面两个命令， 去清空操作系统file page cache和数据库的buffer pool:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sync; <span class="built_in">echo</span> 3 | sudo tee /proc/sys/vm/drop_caches</span><br><span class="line">$ sudo service postgresql restart</span><br></pre></td></tr></tbody></table></figure>
+<p>这样操作以后我们的数据库buffer pool被清空，操作系统page cache里面也没也对应的page, 所以我们称之为<strong>冷启动</strong>。</p>
+<p><br></p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">psql (<span class="number">12.2</span> (Ubuntu <span class="number">12.2</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>), server <span class="number">10.12</span> (Ubuntu <span class="number">10.12</span><span class="number">-2.</span>pgdg18<span class="number">.04</span>+<span class="number">1</span>))</span><br><span class="line">Type <span class="string">"help"</span> <span class="keyword">for</span> help.</span><br><span class="line"></span><br><span class="line">testdb=# \timing</span><br><span class="line">Timing is on.</span><br><span class="line"></span><br><span class="line">testdb=# <span class="built_in">set</span> max_parallel_workers_per_gather = <span class="number">0</span>;</span><br><span class="line">SET</span><br><span class="line">Time: <span class="number">9.680</span> ms</span><br><span class="line"></span><br><span class="line">testdb=# CREATE EXTENSION pg_prewarm;</span><br><span class="line">CREATE EXTENSION</span><br><span class="line">Time: <span class="number">12.151</span> ms</span><br><span class="line"></span><br><span class="line">testdb=# select * from pg_prewarm('testreals');</span><br><span class="line"> pg_prewarm </span><br><span class="line">------------</span><br><span class="line">      <span class="number">44248</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">473.944</span> ms</span><br><span class="line"></span><br><span class="line">testdb=# explain (analyze, buffers) select sum(a + b) from testreals;</span><br><span class="line">                                                         QUERY PLAN                                                          </span><br><span class="line">-----------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> Aggregate  (cost=<span class="number">194247.66</span>.<span class="number">.194247</span><span class="number">.67</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">4</span>) (actual time=<span class="number">1628.475</span>.<span class="number">.1628</span><span class="number">.475</span> rows=<span class="number">1</span> loops=<span class="number">1</span>)</span><br><span class="line">   Buffers: shared hit=<span class="number">44248</span></span><br><span class="line">   -&gt;  Seq Scan on testreals  (cost=<span class="number">0.00</span>.<span class="number">.144247</span><span class="number">.77</span> rows=<span class="number">9999977</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">0.008</span>.<span class="number">.664</span><span class="number">.942</span> rows=<span class="number">10000000</span> loops=<span class="number">1</span>)</span><br><span class="line">         Buffers: shared hit=<span class="number">44248</span></span><br><span class="line"> Planning time: <span class="number">6.139</span> ms</span><br><span class="line"> Execution time: <span class="number">1628.495</span> ms</span><br><span class="line">(<span class="number">6</span> rows)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>select * from pg_prewarm('testreals');</code>或<code>select pg_prewarm('testreals');</code>是将这个表格的所有page都预加载进buffer pool。因为我们调整过shared buffer pool size, 现在我们的shared buffer pool足够容纳这个表格对应的所有page了。<strong>注意这个执行的返回值<code>44248</code>, 它就是这个表格所有对应page的数值。</strong></li>
+<li><code>CREATE EXTENSION pg_prewarm;</code>这个指令是运行上一条指令的前提。</li>
+<li>然后我们又见到这个query： <code>explain (analyze, buffers) select sum(a + b) from testreals;</code><ul>
+<li><code>Buffers: shared hit=44248</code> <strong>我们又发现<code>44248</code>这个数值，说明所有的page都是page hit，而不是page fault。</strong></li>
+</ul>
+</li>
+</ul>
+<p><br></p>
+<p>热启动好像无法在psql中直接展示，这里略过。 :lol:</p>
+<p><br></p>
+<p>推荐的阅读：</p>
+<p>PREWARMING POSTGRESQL I/O CACHES - Hans-Jürgen Schönig： <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3liZXJ0ZWMtcG9zdGdyZXNxbC5jb20vZW4vcHJld2FybWluZy1wb3N0Z3Jlc3FsLWktby1jYWNoZXMv" title="https://www.cybertec-postgresql.com/en/prewarming-postgresql-i-o-caches/">https://www.cybertec-postgresql.com/en/prewarming-postgresql-i-o-caches/<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/" title="[DBMS][PostgreSQL]缓存区管理BufferPool">https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-缓存区管理BufferPool/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/PostgreSQL/" rel="tag"><i class="fa fa-tag"></i> PostgreSQL</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/16/CMU-15445-Lec04/" rel="prev" title="[CMU-15445]Lec04">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec04
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/17/CMU-15445-Lec05/" rel="next" title="[CMU-15445]Lec05">
+      [CMU-15445]Lec05 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#清空操作系统-pagecache-dentries-and-inodes"><span class="nav-number">1.</span> <span class="nav-text">清空操作系统 pagecache, dentries and inodes</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#清空psql-buffer-pool-重启psql"><span class="nav-number">2.</span> <span class="nav-text">清空psql buffer pool - 重启psql</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验-查看-page-hit-page-fault"><span class="nav-number">3.</span> <span class="nav-text">实验 - 查看 page hit, page fault</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实验-扩大buffer-pool-size"><span class="nav-number">4.</span> <span class="nav-text">实验 - 扩大buffer pool size</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#更改PostgresSQL配置文件中的shared-buffers"><span class="nav-number">4.1.</span> <span class="nav-text">更改PostgresSQL配置文件中的shared_buffers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#重新之前实验-冷启动"><span class="nav-number">4.2.</span> <span class="nav-text">重新之前实验 - 冷启动</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">35</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">254k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:51</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
