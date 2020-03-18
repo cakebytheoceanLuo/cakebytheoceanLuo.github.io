@@ -1852,8 +1852,8 @@
         <category>PostgreSQL</category>
       </categories>
       <tags>
-        <tag>PostgreSQL</tag>
         <tag>Slotted Page</tag>
+        <tag>PostgreSQL</tag>
       </tags>
   </entry>
   <entry>
@@ -3187,8 +3187,8 @@
       <tags>
         <tag>SQL</tag>
         <tag>SQLite</tag>
-        <tag>DBMS</tag>
         <tag>PostgreSQL</tag>
+        <tag>DBMS</tag>
         <tag>MySQL</tag>
       </tags>
   </entry>
