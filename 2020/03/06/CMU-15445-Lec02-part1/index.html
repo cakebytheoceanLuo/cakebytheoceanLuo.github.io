@@ -22,12 +22,12 @@
     var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Advanced SQL 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级的S">
+  <meta name="description" content="Advanced SQL - 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[CMU-15445]Lec02_part1">
+<meta property="og:title" content="[CMU-15445]Lec02_part1 Advanced SQL - 高级SQL">
 <meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/index.html">
 <meta property="og:site_name" content="关于数据库的一切">
-<meta property="og:description" content="Advanced SQL 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级的S">
+<meta property="og:description" content="Advanced SQL - 高级SQL Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;02-advancedsql.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;02-advancedsql.pdfReading: Chapters 3-5 这节课，我们会了解高级">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/1.jpg">
 <meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/2.jpg">
@@ -55,7 +55,7 @@
 <meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/27.jpg">
 <meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec02/28.jpg">
 <meta property="article:published_time" content="2020-03-06T20:32:58.000Z">
-<meta property="article:modified_time" content="2020-03-08T16:46:37.516Z">
+<meta property="article:modified_time" content="2020-03-18T18:43:06.986Z">
 <meta property="article:author" content="罗济高">
 <meta property="article:tag" content="SQL">
 <meta property="article:tag" content="SQLite">
@@ -77,7 +77,7 @@
   };
 </script>
 
-  <title>[CMU-15445]Lec02_part1 | 关于数据库的一切</title>
+  <title>[CMU-15445]Lec02_part1 Advanced SQL - 高级SQL | 关于数据库的一切</title>
   
 
 
@@ -257,7 +257,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          [CMU-15445]Lec02_part1
+          [CMU-15445]Lec02_part1 Advanced SQL - 高级SQL
         </h2>
 
         <div class="post-meta">
@@ -274,7 +274,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-08 17:46:37" itemprop="dateModified" datetime="2020-03-08T17:46:37+01:00">2020-03-08</time>
+                <time title="修改时间：2020-03-18 19:43:06" itemprop="dateModified" datetime="2020-03-18T19:43:06+01:00">2020-03-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -291,7 +291,7 @@
             </span>
 
           
-            <span id="/2020/03/06/CMU-15445-Lec02-part1/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec02_part1" title="阅读次数">
+            <span id="/2020/03/06/CMU-15445-Lec02-part1/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec02_part1 Advanced SQL - 高级SQL" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -322,7 +322,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Advanced SQL 高级SQL</p>
+        <p>Advanced SQL - 高级SQL</p>
 <p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAyLWFkdmFuY2Vkc3FsLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/02-advancedsql.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/02-advancedsql.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDItYWR2YW5jZWRzcWwucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/02-advancedsql.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/02-advancedsql.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapters 3-5</p>
 <p>这节课，我们会了解高级的SQL句法。(但是实际上这门课对SQL的要求很低，大量其他的SQL练习依旧可以在我的博客中找到)</p>
 <p>如果大家的目的是为了学习SQL，我建议使用PostgreSQL，它出自于学术界，整体行为相对MySQL和SQLite更合理。另外TUM和CMU在SQL教学上都采用PostgreSQL。</p>
@@ -455,7 +455,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/" title="[CMU-15445]Lec02_part1">https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/</a>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/" title="[CMU-15445]Lec02_part1 Advanced SQL - 高级SQL">https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
@@ -504,12 +504,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/05/CMU-15445-Lec01/" rel="prev" title="[CMU-15445]Lec01">
-      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec01
+    <a href="/2020/03/05/CMU-15445-Lec01/" rel="prev" title="[CMU-15445]Lec01 The Relational Model - 关系代数">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec01 The Relational Model - 关系代数
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/06/CMU-15445-Lec02-part2/" rel="next" title="[CMU-15445]Lec02_part2">
-      [CMU-15445]Lec02_part2 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/06/CMU-15445-Lec02-part2/" rel="next" title="[CMU-15445]Lec02_part2 Advanced SQL - 高级SQL">
+      [CMU-15445]Lec02_part2 Advanced SQL - 高级SQL <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
