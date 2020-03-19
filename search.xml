@@ -282,10 +282,18 @@
 <p>另外还有一种Fibonacci Hashing, 推荐阅读: <span class="exturl" data-url="aHR0cHM6Ly9wcm9iYWJseWRhbmNlLmNvbS8yMDE4LzA2LzE2L2ZpYm9uYWNjaS1oYXNoaW5nLXRoZS1vcHRpbWl6YXRpb24tdGhhdC10aGUtd29ybGQtZm9yZ290LW9yLWEtYmV0dGVyLWFsdGVybmF0aXZlLXRvLWludGVnZXItbW9kdWxvLw==" title="https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/">https://probablydance.com/2018/06/16/fibonacci-hashing-the-optimization-that-the-world-forgot-or-a-better-alternative-to-integer-modulo/<i class="fa fa-external-link"></i></span></p>
 <p><br></p>
 <h1 id="Static-Hashing-Schemes"><a href="#Static-Hashing-Schemes" class="headerlink" title="Static Hashing Schemes"></a>Static Hashing Schemes</h1><p>Static Hashing Schemes正如staic所说，这种scheme下的hash table的容量是固定的。如果我们需要在hash的同时，发现容量不够，只能resize到更大的容量，这是我们需要将所有的key再重新hash进扩大容量的hash table。这种resize在static hashing scheme意味者rehashing，这个操作对性能来说是灾难级别的。很显然如果我们能一开始就知道<strong>合适的容量</strong>,　就能直接避免这部分的浪费时间。如何寻找合适的容量，我们可以进行cardinality estimation基数估计。这个部分后面会提到。<!-- TODO: --></p>
+<blockquote>
+<p>A static hashing scheme is one where the size of the hash table is fixed. This means that if the DBMS runs out of storage space in the hash table, then it has to rebuild it from scratch with a larger table. Typically the new hash table is twice the size of the original hash table.</p>
+</blockquote>
 <p><img data-src="/images/CMU1544564/Lec06/16.jpg" alt="16.jpg"></p>
 <h2 id="Linear-Probe-Hashing"><a href="#Linear-Probe-Hashing" class="headerlink" title="Linear Probe Hashing"></a>Linear Probe Hashing</h2><p>Linear Probe Hashing是open address hashing的一种。</p>
 <p>Linear Probing方式虽然简单，但并不是解决冲突的最好的策略，因为它会导致<strong>同类哈希的聚集(Primary Clustering)</strong>。这导致搜索哈希表时，冲突依然存在。如果我们要访问 Edward 的信息，因为 Edward 的社保号 111-00-1235 哈希为 1235，然而我们在 1235 位置找到的是 Bob，所以再搜索 1236，找到的却是 Danny，以此类推直到找到 Edward。<sup><a href="#fn2">2</a></sup></p>
 <p><img data-src="/images/CMU1544564/Lec06/17.jpg" alt="17.jpg"></p>
+<blockquote>
+<ul>
+<li>To see if value is present, go to slot using hash, and scan for the key. The scan stops if you find the desired key or you encounter an empty slot.</li>
+</ul>
+</blockquote>
 <h3 id="Insert"><a href="#Insert" class="headerlink" title="Insert"></a>Insert</h3><p>hash table存储不仅仅是<code>value</code>，而是<code>(key, value)</code>这一对。这是因为Linear Probe Hashing会遇到冲突，在查询时需要比较key来确定是否找到(key相等)或者只是一次冲突(key不相等)。</p>
 <p><img data-src="/images/CMU1544564/Lec06/18.jpg" alt="18.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec06/19.jpg" alt="19.jpg"></p>
@@ -355,6 +363,9 @@
 <p>实际实现上Linear Probe Hashing更为常见。</p>
 <p><br></p>
 <h2 id="Cuckoo-Hashing"><a href="#Cuckoo-Hashing" class="headerlink" title="Cuckoo Hashing"></a>Cuckoo Hashing</h2><p>Cuckoo Hashing使用多个hash table, 每个hash table拥有自己的hash function (hash function seed)。我们下面的例子是用两个表，当然也可以用三个来实现Cuckoo Hashing。</p>
+<blockquote>
+<p>The hash functions are the same algorithm (e.g., XXHash, CityHash); they generate different hashes for the same key by using different seed values.</p>
+</blockquote>
 <p>insert: </p>
 <ul>
 <li>总向有空位置(optimal position)的hash table插入。如果多个hash table都有空位置可以插入，随意选择其中的一个即可。</li>
@@ -380,6 +391,9 @@
 <p><img data-src="/images/CMU1544564/Lec06/49.jpg" alt="49.jpg"></p>
 <p><br></p>
 <p>在Cuckoo Hashing中<strong>有可能不终止</strong>，即进入一个死循环，永远找不到能插入的地方。这时候说明hash table容量太小，需要<code>resize</code>到更大的容量。</p>
+<blockquote>
+<p> If we find a cycle, then we can rebuild all of the hash tables with new hash function seeds (less common) or rebuild the hash tables using larger tables (more common).</p>
+</blockquote>
 <h1 id="Dynamic-Hashing-Schemes"><a href="#Dynamic-Hashing-Schemes" class="headerlink" title="Dynamic Hashing Schemes"></a>Dynamic Hashing Schemes</h1><p>Dynamic Hashing Schemes的特征就是在能持续容量增长，而不需要额外rehash。即resize的操作花销不大。</p>
 <p><img data-src="/images/CMU1544564/Lec06/50.jpg" alt="50.jpg"></p>
 <h2 id="Chained-Hashing"><a href="#Chained-Hashing" class="headerlink" title="Chained Hashing"></a>Chained Hashing</h2><p>Chained Hashing又称Hashing with Chaining。特征是每一个hash table中的条目都是一个linked list of bucket。如果bucket满了，那就再指向一个新的bucket。</p>
@@ -411,6 +425,9 @@
 <!-- TODO: TUM GDB 题目 -->
 <h2 id="Linear-Hashing"><a href="#Linear-Hashing" class="headerlink" title="Linear Hashing"></a>Linear Hashing</h2><p>Linear Hashing的目的是不在<code>resize</code>的时候用一个global latch，来提高性能。我们可以从下面例子中看出，在Linear Hashing中只需要去latch一个位置, 即<code>split pointer</code>所指的地方。</p>
 <p>作法是按照<em>顺序</em>去分裂bucket，而不是分裂特定满的bucket。顺序实际上只是bucket id顺序，有一个<code>split pointer</code>去跟踪下一个需要分裂的bucket。而且Linear Hashing使用多个hash function。</p>
+<blockquote>
+<p>Instead of immediately splitting a bucket when it overflows, this scheme maintains a split pointer that keeps track of the next bucket to split. No matter whether this pointer is pointing to the bucket that overflowed, the DBMS always splits. The overflow criterion is left up to the implementation</p>
+</blockquote>
 <p>具体描述和和Java实现，见一篇别人的博客: <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC8wYmYyNDAwNzg2ZjY=" title="https://www.jianshu.com/p/0bf2400786f6">https://www.jianshu.com/p/0bf2400786f6<i class="fa fa-external-link"></i></span></p>
 <p><img data-src="/images/CMU1544564/Lec06/64.jpg" alt="64.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec06/65.jpg" alt="65.jpg"></p>
@@ -457,6 +474,9 @@
 <p><img data-src="/images/CMU1544564/Lec06/83.jpg" alt="83.jpg"></p>
 <p><br></p>
 <p>当<code>split point</code>指向4的时候，即分裂完一轮了，当前 # bucket=8。把<code>split point</code>重置成0，<strong>开始下一轮</strong>，每轮的bucket数翻倍，所以hash函数中的取余的数也要翻倍。这样就实现了动态扩展。<sup><a href="#fn1">1</a></sup></p>
+<blockquote>
+<p>When pointer reaches last slot, delete original hash function and replace it with new hash function.</p>
+</blockquote>
 <p><br></p>
 <h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img data-src="/images/CMU1544564/Lec06/84.jpg" alt="84.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec06/85.jpg" alt="85.jpg"></p>
