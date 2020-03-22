@@ -211,9 +211,9 @@
     
       <category term="DBMS" scheme="https://cakebytheoceanluo.github.io/categories/DBMS/"/>
     
-      <category term="Buffer Management" scheme="https://cakebytheoceanluo.github.io/categories/Buffer-Management/"/>
-    
       <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/categories/PostgreSQL/"/>
+    
+      <category term="Buffer Management" scheme="https://cakebytheoceanluo.github.io/categories/Buffer-Management/"/>
     
     
       <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/tags/PostgreSQL/"/>
