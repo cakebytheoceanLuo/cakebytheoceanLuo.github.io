@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[SQL]中级SQL(5)</title>
+    <url>/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/</url>
+    <content><![CDATA[<h1 id="TPC-H-数据集"><a href="#TPC-H-数据集" class="headerlink" title="TPC-H 数据集"></a>TPC-H 数据集</h1><p>我们这一篇文章采用PostgreSQL的SQL语法。重点我们关注<code>select...from...where</code>这种读操作，分析query　(analytical query)。<br><code>TPC-H</code>数据集在　<span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbnRlcmZhY2UuaHRtbA==" title="https://hyper-db.de/interface.html">https://hyper-db.de/interface.html<i class="fa fa-external-link"></i></span>　可以直接使用。另外在这个网页不允许进行写操作:<code>insert</code>, <code>update</code>, <code>delete</code>之类的transactional query。当然<code>create table</code>和<code>drop table</code>也不被允许。</p>
+<p><strong>本地载入改数据集</strong>的方法见我的博客两篇文章:</p>
+<ul>
+<li><a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/">[DBMS] PostgreSQL 导入 TPC-H 数据集</a></li>
+<li><a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/">[DBMS] PostgreSQL 导入数据集</a></li>
+</ul>
+<a id="more"></a>
+<h1 id="中级SQL"><a href="#中级SQL" class="headerlink" title="中级SQL"></a>中级SQL</h1><p>这一篇文章其实目的是用简单的SQL去熟悉TPC-H这个数据集，因为这个数据集会在<strong>高级SQL</strong>部分一直被使用。</p>
+<ul>
+<li>有多少customer拥有order，而这个order的comment含有”packages”这个单词？</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> c_custkey)</span><br><span class="line"><span class="keyword">from</span> customer, orders</span><br><span class="line"><span class="keyword">where</span> c_custkey = o_custkey <span class="keyword">and</span> o_comment <span class="keyword">like</span> <span class="string">'%packages%'</span>;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> o_custkey)</span><br><span class="line"><span class="keyword">from</span> orders</span><br><span class="line"><span class="keyword">where</span> o_comment <span class="keyword">like</span> <span class="string">'%packages%'</span>;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>求<code>l_orderkey</code>的数字数量的平均值(<code>char_length()</code>函数)：<ul>
+<li><code>l_orderkey::text</code>和<code>l_orderkey || ''</code>都可以使int变成string<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span>(<span class="keyword">char_length</span>(l_orderkey || <span class="string">''</span>))</span><br><span class="line"><span class="keyword">from</span> lineitem;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span> (<span class="keyword">char_length</span>(l_orderkey::<span class="built_in">text</span>))</span><br><span class="line"><span class="keyword">from</span> lineitem ;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><p>求所有<code>customer</code>和所有<code>supplier</code>的名字：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> c_name</span><br><span class="line"><span class="keyword">from</span> customer</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> s_name</span><br><span class="line"><span class="keyword">from</span> supplier</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>读取10个customers对应的nation，用JSON的形式去表达<code>custkey, name, nation</code>：</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="string">'{" custkey ": '</span> || c_custkey || <span class="string">', " name ":" '</span> || c_name || <span class="string">'", " nation ":{" nationkey ": '</span> || n_nationkey || <span class="string">', " name ":" '</span> || n_name || <span class="string">' "}} '</span> <span class="keyword">as</span> custjson</span><br><span class="line"><span class="keyword">from</span> customer , nation</span><br><span class="line"><span class="keyword">where</span> c_nationkey = n_nationkey <span class="keyword">limit</span> <span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>输出：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">                                                  custjson                                                  </span><br><span class="line"><span class="comment">------------------------------------------------------------------------------------------------------------</span></span><br><span class="line"> {" custkey ": 86, " name ":" Customer#000000086", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 80, " name ":" Customer#000000080", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 76, " name ":" Customer#000000076", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 73, " name ":" Customer#000000073", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 48, " name ":" Customer#000000048", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 29, " name ":" Customer#000000029", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 144, " name ":" Customer#000000144", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line"> {" custkey ": 141, " name ":" Customer#000000141", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line"> {" custkey ": 106, " name ":" Customer#000000106", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line"> {" custkey ": 59, " name ":" Customer#000000059", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line">(10 rows)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>German Supplier在1995年发了多少lineitem?</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(lineitem)</span><br><span class="line"><span class="keyword">from</span> supplier, nation, lineitem</span><br><span class="line"><span class="keyword">where</span> n_name = <span class="string">'GERMANY'</span> <span class="keyword">and</span> n_nationkey = s_nationkey <span class="keyword">and</span> s_suppkey = l_suppkey <span class="keyword">and</span> <span class="keyword">extract</span>(<span class="keyword">year</span> <span class="keyword">from</span> l_shipdate) = <span class="number">1995</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(lineitem)</span><br><span class="line"><span class="keyword">from</span> supplier, nation, lineitem</span><br><span class="line"><span class="keyword">where</span> n_name = <span class="string">'GERMANY'</span> <span class="keyword">and</span> n_nationkey = s_nationkey <span class="keyword">and</span> s_suppkey = l_suppkey <span class="keyword">and</span> l_shipdate <span class="keyword">between</span> <span class="string">'1995-01-01'</span> <span class="keyword">and</span> <span class="string">'1995-12-31'</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>搜索EUROPE在FURNITURE　market segment中最高account balance的十个customers:</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> c_name, c_acctbal</span><br><span class="line"><span class="keyword">from</span> customer, nation, region</span><br><span class="line"><span class="keyword">where</span> r_name = <span class="string">'EUROPE'</span> <span class="keyword">and</span> r_regionkey = n_regionkey <span class="keyword">and</span> n_nationkey = c_nationkey <span class="keyword">and</span> c_mktsegment = <span class="string">'FURNITURE'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> c_acctbal <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">10</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>How many orders do customer have?</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> c_custkey, <span class="keyword">count</span>(o_orderkey) <span class="keyword">as</span> o_count</span><br><span class="line"><span class="keyword">from</span> customer <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> orders <span class="keyword">on</span> c_custkey = o_custkey</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> c_custkey</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> o_count <span class="keyword">desc</span>, c_custkey <span class="keyword">asc</span></span><br></pre></td></tr></tbody></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>sum(l_extendedprice * (1 - l_discount))</code>: revenue</li>
+<li>得到年份的例子：<code>extract(year from l_shipdate) = 1995</code></li>
+<li><code>c_mktsegment</code>: market segment</li>
+<li><code>c_acctbal</code>: account balance</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>SQL</category>
+      </categories>
+      <tags>
+        <tag>SQL</tag>
+        <tag>TPC-H</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[CMU-15445]Lec07 Tree Indexes Part I - 树索引 I</title>
     <url>/2020/03/19/CMU-15445-Lec07/</url>
     <content><![CDATA[<p>Tree Indexes Part I - 树索引 I</p>

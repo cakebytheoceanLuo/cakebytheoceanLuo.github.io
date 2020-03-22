@@ -22,22 +22,21 @@
     var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="引入我们的前提是下面几个变量：123int array[10];int *p;int var; 下面六种赋值之后，变量var的值是否相同？  var &#x3D; array[4]   var &#x3D; *(array + 4)  var &#x3D; 4[array]  p &#x3D; &amp;[array4]; var &#x3D; *p; var &#x3D; *(int *) ( (void *)array + 4 * (sizeof(in">
+  <meta name="description" content="TPC-H 数据集我们这一篇文章采用PostgreSQL的SQL语法。重点我们关注select...from...where这种读操作，分析query　(analytical query)。TPC-H数据集在　https:&#x2F;&#x2F;hyper-db.de&#x2F;interface.html　可以直接使用。另外在这个网页不允许进行写操作:insert, update, delete之类的transactiona">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C&#x2F;C++中指针&#x2F;数组的访问">
-<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/02/19/PL-C-pointer-access/index.html">
+<meta property="og:title" content="[SQL]中级SQL(5)">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/index.html">
 <meta property="og:site_name" content="关于数据库的一切">
-<meta property="og:description" content="引入我们的前提是下面几个变量：123int array[10];int *p;int var; 下面六种赋值之后，变量var的值是否相同？  var &#x3D; array[4]   var &#x3D; *(array + 4)  var &#x3D; 4[array]  p &#x3D; &amp;[array4]; var &#x3D; *p; var &#x3D; *(int *) ( (void *)array + 4 * (sizeof(in">
+<meta property="og:description" content="TPC-H 数据集我们这一篇文章采用PostgreSQL的SQL语法。重点我们关注select...from...where这种读操作，分析query　(analytical query)。TPC-H数据集在　https:&#x2F;&#x2F;hyper-db.de&#x2F;interface.html　可以直接使用。另外在这个网页不允许进行写操作:insert, update, delete之类的transactiona">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-02-19T19:14:20.000Z">
-<meta property="article:modified_time" content="2020-02-28T17:09:37.405Z">
+<meta property="article:published_time" content="2020-03-22T13:13:22.000Z">
+<meta property="article:modified_time" content="2020-03-22T13:15:03.293Z">
 <meta property="article:author" content="罗济高">
-<meta property="article:tag" content="C">
-<meta property="article:tag" content="C++">
-<meta property="article:tag" content="Pointer">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="TPC-H">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/02/19/PL-C-pointer-access/">
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/">
 
 
 <script id="page-configurations">
@@ -49,7 +48,7 @@
   };
 </script>
 
-  <title>C/C++中指针/数组的访问 | 关于数据库的一切</title>
+  <title>[SQL]中级SQL(5) | 关于数据库的一切</title>
   
 
 
@@ -216,7 +215,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/02/19/PL-C-pointer-access/">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.jpeg">
@@ -229,7 +228,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          C/C++中指针/数组的访问
+          [SQL]中级SQL(5)
         </h2>
 
         <div class="post-meta">
@@ -238,28 +237,22 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-02-19 20:14:20" itemprop="dateCreated datePublished" datetime="2020-02-19T20:14:20+01:00">2020-02-19</time>
+              <time title="创建时间：2020-03-22 14:13:22 / 修改时间：14:15:03" itemprop="dateCreated datePublished" datetime="2020-03-22T14:13:22+01:00">2020-03-22</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-02-28 18:09:37" itemprop="dateModified" datetime="2020-02-28T18:09:37+01:00">2020-02-28</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Programming-languages/" itemprop="url" rel="index"><span itemprop="name">Programming languages</span></a>
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
                 </span>
             </span>
 
           
-            <span id="/2020/02/19/PL-C-pointer-access/" class="post-meta-item leancloud_visitors" data-flag-title="C/C++中指针/数组的访问" title="阅读次数">
+            <span id="/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]中级SQL(5)" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -271,14 +264,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
+              <span>3.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>3 分钟</span>
             </span>
 
         </div>
@@ -290,34 +283,56 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我们的前提是下面几个变量：<br></p><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">int</span> *p;</span><br><span class="line"><span class="keyword">int</span> var;</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p>下面六种赋值之后，变量<code>var</code>的值是否相同？</p>
+        <h1 id="TPC-H-数据集"><a href="#TPC-H-数据集" class="headerlink" title="TPC-H 数据集"></a>TPC-H 数据集</h1><p>我们这一篇文章采用PostgreSQL的SQL语法。重点我们关注<code>select...from...where</code>这种读操作，分析query　(analytical query)。<br><code>TPC-H</code>数据集在　<span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbnRlcmZhY2UuaHRtbA==" title="https://hyper-db.de/interface.html">https://hyper-db.de/interface.html<i class="fa fa-external-link"></i></span>　可以直接使用。另外在这个网页不允许进行写操作:<code>insert</code>, <code>update</code>, <code>delete</code>之类的transactional query。当然<code>create table</code>和<code>drop table</code>也不被允许。</p>
+<p><strong>本地载入改数据集</strong>的方法见我的博客两篇文章:</p>
 <ul>
-<li><code>var = array[4]</code>  </li>
-<li><code>var = *(array + 4)</code> </li>
-<li><code>var = 4[array]</code> </li>
-<li><code>p = &amp;[array4]; var = *p;</code></li>
-<li><code>var = *(int *) ( (void *)array + 4 * (sizeof(int)))</code></li>
-<li><code>p = &amp;var; *p = *(array + 4);</code>  </li>
+<li><a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5TPC-H%E6%95%B0%E6%8D%AE%E9%9B%86/">[DBMS] PostgreSQL 导入 TPC-H 数据集</a></li>
+<li><a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/">[DBMS] PostgreSQL 导入数据集</a></li>
 </ul>
-<p>当然看到这里，如果你已经有非常自信的答案，你当然可以无视这一篇文章后面的部分。</p>
 <a id="more"></a>
-<p><br></p>
-<h1 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h1><p><strong>上面六种赋值之后，变量<code>var</code>的值相同。</strong></p>
-<p>我们来分析一下这个数组在程序的栈的布局　(这里<code>Address 10568</code>仅为<code>array</code>地址的例子)：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">+---------------------+-------------+---------+</span><br><span class="line">| Variable Name       | Address     | Value   | </span><br><span class="line">+---------------------+-------------+---------+</span><br><span class="line">| array               | 10568       | 0      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 1      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 2      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 3      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 4      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 5      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 6      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 7      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 8      |</span><br><span class="line">|                     |             +---------+</span><br><span class="line">|                     |             | 9      |</span><br><span class="line">+---------------------+-------------+---------+</span><br></pre></td></tr></tbody></table></figure>
-<p><code>var = array[4]</code>，　<code>var = *(array + 4)</code> ，　<code>var = 4[array]</code>, <code>p = &amp;[array4]; var = *p;</code> ：<br>这四种其实非常类似，都是已知<code>array</code>是一个<code>int*</code>，在<code>array</code>这个基地址(例子中的10568)上进行四个元素的偏移，因此能落在４号元素的地址上，再讲这个地址视作<code>int*</code>读出int内容。</p>
-<p><code>var = *(int *) ( (void *)array + 4 * (sizeof(int)))</code>：<br>这个写法虽然繁琐，但是非常像对应的汇编代码。<code>(void *)array</code>首先将<code>array</code>转成一个<code>void*</code>，也就是抹去了它<code>int*</code>的原身份。再对这个<code>void*</code>空类型指针进行偏移操作，注意这时候的<strong>偏移量</strong>不再是4，而是对应<strong>４个<code>int</code>对应的Byte量</strong>，即<code>4 * (sizeof(int)</code>。最后再将这个空类型指针转化成<code>int*</code>去读取数据。</p>
-<p><code>p = &amp;var; *p = *(array + 4);</code>：<br>利用了另外一个指针<code>p</code>，使这个指针指向变量<code>var</code>。因此可以使用<code>*p</code>对<code>var</code>进行赋值。</p>
-<p><br></p>
-<h1 id="另一例子"><a href="#另一例子" class="headerlink" title="另一例子"></a>另一例子</h1><p>我们可以练习，考虑一下这个程序的输出。</p>
-<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">10</span>];</span><br><span class="line"><span class="keyword">int</span> *p;</span><br><span class="line"><span class="keyword">int</span> var;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) <span class="built_in">array</span>[i]=i;</span><br><span class="line"></span><br><span class="line">var = <span class="built_in">array</span>[<span class="number">4</span>];</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%i\n"</span>, var);</span><br><span class="line"></span><br><span class="line">var = <span class="number">5</span>[<span class="built_in">array</span>];</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%i\n"</span>, var);</span><br><span class="line"></span><br><span class="line">var = *(<span class="built_in">array</span> + <span class="number">6</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%i\n"</span>, var);</span><br><span class="line"></span><br><span class="line">p = &amp;<span class="built_in">array</span>[<span class="number">7</span>];</span><br><span class="line">var = *p;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%i\n"</span>, var);</span><br><span class="line"></span><br><span class="line">p = <span class="built_in">array</span>;</span><br><span class="line">var = *p;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%i\n"</span>, var);</span><br><span class="line"></span><br><span class="line">p = &amp;var;</span><br><span class="line">*p = *(<span class="built_in">array</span> + <span class="number">3</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%i\n"</span>, var);</span><br></pre></td></tr></tbody></table></figure>
-<p>输出：<br></p><figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">4</span></span><br><span class="line"><span class="number">5</span></span><br><span class="line"><span class="number">6</span></span><br><span class="line"><span class="number">7</span></span><br><span class="line"><span class="number">0</span></span><br><span class="line"><span class="number">3</span></span><br></pre></td></tr></tbody></table></figure><p></p>
-<p>对应的代码：<br><a href="/download/code/pointer_access.c">点击下载</a></p>
-<p><br></p>
-<p>引用和推荐的阅读：</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzc4NDQzNzQvODA0OTQwOA==" title="https://stackoverflow.com/a/7844374/8049408">https://stackoverflow.com/a/7844374/8049408<i class="fa fa-external-link"></i></span></p>
-<p><span class="exturl" data-url="aHR0cHM6Ly93d3cudHV0b3JpYWxjdXAuY29tL2Nwcm9ncmFtbWluZy9hcnJheS1tZW1vcnktYWxsb2NhdGlvbi5odG0=" title="https://www.tutorialcup.com/cprogramming/array-memory-allocation.htm">https://www.tutorialcup.com/cprogramming/array-memory-allocation.htm<i class="fa fa-external-link"></i></span></p>
+<h1 id="中级SQL"><a href="#中级SQL" class="headerlink" title="中级SQL"></a>中级SQL</h1><p>这一篇文章其实目的是用简单的SQL去熟悉TPC-H这个数据集，因为这个数据集会在<strong>高级SQL</strong>部分一直被使用。</p>
+<ul>
+<li>有多少customer拥有order，而这个order的comment含有”packages”这个单词？</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> c_custkey)</span><br><span class="line"><span class="keyword">from</span> customer, orders</span><br><span class="line"><span class="keyword">where</span> c_custkey = o_custkey <span class="keyword">and</span> o_comment <span class="keyword">like</span> <span class="string">'%packages%'</span>;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> o_custkey)</span><br><span class="line"><span class="keyword">from</span> orders</span><br><span class="line"><span class="keyword">where</span> o_comment <span class="keyword">like</span> <span class="string">'%packages%'</span>;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>求<code>l_orderkey</code>的数字数量的平均值(<code>char_length()</code>函数)：<ul>
+<li><code>l_orderkey::text</code>和<code>l_orderkey || ''</code>都可以使int变成string<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span>(<span class="keyword">char_length</span>(l_orderkey || <span class="string">''</span>))</span><br><span class="line"><span class="keyword">from</span> lineitem;</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span> (<span class="keyword">char_length</span>(l_orderkey::<span class="built_in">text</span>))</span><br><span class="line"><span class="keyword">from</span> lineitem ;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><p>求所有<code>customer</code>和所有<code>supplier</code>的名字：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> c_name</span><br><span class="line"><span class="keyword">from</span> customer</span><br><span class="line"><span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line"><span class="keyword">select</span> s_name</span><br><span class="line"><span class="keyword">from</span> supplier</span><br></pre></td></tr></tbody></table></figure>
+</li>
+<li><p>读取10个customers对应的nation，用JSON的形式去表达<code>custkey, name, nation</code>：</p>
+</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="string">'{" custkey ": '</span> || c_custkey || <span class="string">', " name ":" '</span> || c_name || <span class="string">'", " nation ":{" nationkey ": '</span> || n_nationkey || <span class="string">', " name ":" '</span> || n_name || <span class="string">' "}} '</span> <span class="keyword">as</span> custjson</span><br><span class="line"><span class="keyword">from</span> customer , nation</span><br><span class="line"><span class="keyword">where</span> c_nationkey = n_nationkey <span class="keyword">limit</span> <span class="number">10</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>输出：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">                                                  custjson                                                  </span><br><span class="line"><span class="comment">------------------------------------------------------------------------------------------------------------</span></span><br><span class="line"> {" custkey ": 86, " name ":" Customer#000000086", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 80, " name ":" Customer#000000080", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 76, " name ":" Customer#000000076", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 73, " name ":" Customer#000000073", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 48, " name ":" Customer#000000048", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 29, " name ":" Customer#000000029", " nation ":{" nationkey ": 0, " name ":" ALGERIA "}} </span><br><span class="line"> {" custkey ": 144, " name ":" Customer#000000144", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line"> {" custkey ": 141, " name ":" Customer#000000141", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line"> {" custkey ": 106, " name ":" Customer#000000106", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line"> {" custkey ": 59, " name ":" Customer#000000059", " nation ":{" nationkey ": 1, " name ":" ARGENTINA "}} </span><br><span class="line">(10 rows)</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>German Supplier在1995年发了多少lineitem?</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(lineitem)</span><br><span class="line"><span class="keyword">from</span> supplier, nation, lineitem</span><br><span class="line"><span class="keyword">where</span> n_name = <span class="string">'GERMANY'</span> <span class="keyword">and</span> n_nationkey = s_nationkey <span class="keyword">and</span> s_suppkey = l_suppkey <span class="keyword">and</span> <span class="keyword">extract</span>(<span class="keyword">year</span> <span class="keyword">from</span> l_shipdate) = <span class="number">1995</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(lineitem)</span><br><span class="line"><span class="keyword">from</span> supplier, nation, lineitem</span><br><span class="line"><span class="keyword">where</span> n_name = <span class="string">'GERMANY'</span> <span class="keyword">and</span> n_nationkey = s_nationkey <span class="keyword">and</span> s_suppkey = l_suppkey <span class="keyword">and</span> l_shipdate <span class="keyword">between</span> <span class="string">'1995-01-01'</span> <span class="keyword">and</span> <span class="string">'1995-12-31'</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>搜索EUROPE在FURNITURE　market segment中最高account balance的十个customers:</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> c_name, c_acctbal</span><br><span class="line"><span class="keyword">from</span> customer, nation, region</span><br><span class="line"><span class="keyword">where</span> r_name = <span class="string">'EUROPE'</span> <span class="keyword">and</span> r_regionkey = n_regionkey <span class="keyword">and</span> n_nationkey = c_nationkey <span class="keyword">and</span> c_mktsegment = <span class="string">'FURNITURE'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> c_acctbal <span class="keyword">desc</span></span><br><span class="line"><span class="keyword">limit</span> <span class="number">10</span></span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>How many orders do customer have?</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> c_custkey, <span class="keyword">count</span>(o_orderkey) <span class="keyword">as</span> o_count</span><br><span class="line"><span class="keyword">from</span> customer <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> orders <span class="keyword">on</span> c_custkey = o_custkey</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> c_custkey</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> o_count <span class="keyword">desc</span>, c_custkey <span class="keyword">asc</span></span><br></pre></td></tr></tbody></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ul>
+<li><code>sum(l_extendedprice * (1 - l_discount))</code>: revenue</li>
+<li>得到年份的例子：<code>extract(year from l_shipdate) = 1995</code></li>
+<li><code>c_mktsegment</code>: market segment</li>
+<li><code>c_acctbal</code>: account balance</li>
+</ul>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -351,7 +366,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://cakebytheoceanluo.github.io/2020/02/19/PL-C-pointer-access/" title="C&#x2F;C++中指针&#x2F;数组的访问">https://cakebytheoceanluo.github.io/2020/02/19/PL-C-pointer-access/</a>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/" title="[SQL]中级SQL(5)">https://cakebytheoceanluo.github.io/2020/03/22/SQL-中级SQL-5/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
@@ -382,9 +397,8 @@
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/tags/C/" rel="tag"><i class="fa fa-tag"></i> C</a>
-              <a href="/tags/C/" rel="tag"><i class="fa fa-tag"></i> C++</a>
-              <a href="/tags/Pointer/" rel="tag"><i class="fa fa-tag"></i> Pointer</a>
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/TPC-H/" rel="tag"><i class="fa fa-tag"></i> TPC-H</a>
           </div>
 
         
@@ -398,13 +412,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/02/18/PL-C-pointer-declaration/" rel="prev" title="C/C++中指针类型声明: `*`的位置">
-      <i class="fa fa-chevron-left"></i> C/C++中指针类型声明: `*`的位置
+    <a href="/2020/03/19/CMU-15445-Lec07/" rel="prev" title="[CMU-15445]Lec07 Tree Indexes Part I - 树索引 I">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec07 Tree Indexes Part I - 树索引 I
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/02/22/SQL-%E5%9F%BA%E7%A1%80SQL/" rel="next" title="[SQL]基础SQL">
-      [SQL]基础SQL <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -471,7 +482,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#引入"><span class="nav-number">1.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#答案"><span class="nav-number">2.</span> <span class="nav-text">答案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#另一例子"><span class="nav-number">3.</span> <span class="nav-text">另一例子</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TPC-H-数据集"><span class="nav-number">1.</span> <span class="nav-text">TPC-H 数据集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#中级SQL"><span class="nav-number">2.</span> <span class="nav-text">中级SQL</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -773,7 +784,7 @@
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/02/19/PL-C-pointer-access/',]
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/',]
       });
       });
   </script>
