@@ -1,6 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[SQL]高级SQL-去关联(1)</title>
+    <url>/2020/03/24/SQL-%E9%AB%98%E7%BA%A7SQL-%E5%8E%BB%E5%85%B3%E8%81%94-1/</url>
+    <content><![CDATA[<p>我们在一篇论文解读文章<a href="https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/">[Paper]BTW 2015 | Unnesting Arbitrary Queries</a>中提到了去关联, 在这一篇文章中我们对这个主题进行<strong>练习</strong>。</p>
+<p>这个主题其实远比大家想象中的要实用: 对于1GiB大小左右的数据集，SQL查询如果拥有$O(n^2)$的时间复杂度，基本可以判断很慢，或者慢到无实际意义。往往我们使用的各种大名鼎鼎的开源数据库和商用数据库不一定支持Unnesting这个feature(具体的支持在各个数据库的Document中描述，在对应的论文中的Motivation部分也有简单提到)。这就意味着, 我们需要手动成为Query Optimizer去优化我们SQL的时间复杂度。 </p>
+<a id="more"></a>
+<h1 id="Correlated-Sub-Query-vs-Uncorrelated-Sub-Query"><a href="#Correlated-Sub-Query-vs-Uncorrelated-Sub-Query" class="headerlink" title="Correlated Sub-Query vs. Uncorrelated Sub-Query"></a>Correlated Sub-Query vs. Uncorrelated Sub-Query</h1><p>一般来说，correlated sub-query(关联子query)的时间复杂度会比uncorrelated sub-query(无关联子query)大。</p>
+<p>当然这部分的前提是：query optimizer(优化器)不对SQL的logical plan进行优化。<br>而一些优秀的数据库<span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbmRleC5odG1sIw==" title="https://hyper-db.de/index.html#">HyPer<i class="fa fa-external-link"></i></span>已经把这个问题用query optimizer解决了，它会主动去优化，比如可以<strong>去关联</strong>。</p>
+<p>更多的可以看这一篇论文<span class="exturl" data-url="aHR0cDovL3d3dy5idHctMjAxNS5kZS9yZXMvcHJvY2VlZGluZ3MvSGF1cHRiYW5kL1dpc3MvTmV1bWFubi1Vbm5lc3RpbmdfQXJiaXRyYXJ5X1F1ZXJpZS5wZGY=" title="http://www.btw-2015.de/res/proceedings/Hauptband/Wiss/Neumann-Unnesting_Arbitrary_Querie.pdf">Unnesting Arbitrary Queries, Thomas Neumann and Alfons Kemper, Technische Universitat München<i class="fa fa-external-link"></i></span></p>
+<h1 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h1><p>这篇文章中我们会使用如下的数据集:</p>
+<ul>
+<li><a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/#TUM-Uni%E6%95%B0%E6%8D%AE%E9%9B%86">TUM Uni 数据集</a></li>
+<li><a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/#TPC-H">TPC-H 数据集</a></li>
+</ul>
+<p>具体的数据集安装见上面的对应的链接。另外有一些SQL并不对应任何数据集, 只是在论文中逻辑性地被提出和使用，这样的SQL我会特别注明: <strong>不对应数据集</strong>。</p>
+<hr>
+<h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><h2 id="使用max代替exists-搜索出生日期比所有教授早的学生"><a href="#使用max代替exists-搜索出生日期比所有教授早的学生" class="headerlink" title="使用max代替exists: 搜索出生日期比所有教授早的学生"></a>使用<code>max</code>代替<code>exists</code>: 搜索出生日期比所有教授早的学生</h2><p>这个Query需要的属性值(gebdatum　出生日期)没有被写入数据集。<br>所以不能运行，但是我们可以看着理解意思。</p>
+<ul>
+<li>correlated sub-query</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> s.*</span><br><span class="line"><span class="keyword">from</span> studenten s</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">exists</span>(</span><br><span class="line">    <span class="keyword">select</span> p.*</span><br><span class="line">    <span class="keyword">from</span> professoren p</span><br><span class="line">    <span class="keyword">where</span> p.gebdatum &gt; s.gebdatumm</span><br><span class="line">          )</span><br></pre></td></tr></tbody></table></figure>
+<p>对每一个studenten s都需要看整个professoren表格。<br>这个情况很类似cross product(集合的叉乘)。这个subquery需要被执行<code>|studenten|</code>次。</p>
+<p>如果query optimizer(优化器)不对这个SQL的logical plan进行优化的话，那它的runtime complexity(时间复杂度)是<code>O(|studenten| * |professoren|)</code>，类推到<code>O(n^2)</code>。</p>
+<p><br></p>
+<ul>
+<li>uncorrelated Sub-query</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> s.*</span><br><span class="line"><span class="keyword">from</span> studenten s</span><br><span class="line"><span class="keyword">where</span> s.gebdatum &lt; (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">max</span>(gebdatum)</span><br><span class="line">    <span class="keyword">from</span> professoren p</span><br><span class="line">          )</span><br></pre></td></tr></tbody></table></figure>
+<p>这样这个subquery只需一次被materialized(materialization，物质化，实例化)，也就是只需要被执行一次得到这个<code>max</code>。然后在去看<code>studenten</code>中的每一个人去和这个<code>max</code>比较。这样肯定会更加有效率。它的runtime complexity是$O(|\mathrm{studenten}| ＋ |\mathrm{professoren}|)$，类推到 $O(n)$。</p>
+<p><br></p>
+<h2 id="使用join代替subquery-搜索出生日期比对应教授早的助手-助手需要在对应教授手下工作"><a href="#使用join代替subquery-搜索出生日期比对应教授早的助手-助手需要在对应教授手下工作" class="headerlink" title="使用join代替subquery: 搜索出生日期比对应教授早的助手(助手需要在对应教授手下工作)"></a>使用join代替subquery: 搜索出生日期比对应教授早的助手(助手需要在对应教授手下工作)</h2><ul>
+<li>correlated sub-query:</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> a.*</span><br><span class="line"><span class="keyword">from</span> assistenten a</span><br><span class="line"><span class="keyword">where</span> <span class="keyword">exists</span>(</span><br><span class="line">    <span class="keyword">select</span> p.*</span><br><span class="line">    <span class="keyword">from</span> professoren p</span><br><span class="line">    <span class="keyword">where</span> a.boss = p.persnr <span class="keyword">and</span> p.gebdatum &gt; a.gebdatum</span><br><span class="line">          )</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>unnested query(去嵌套):</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> a.*</span><br><span class="line"><span class="keyword">from</span> assistenten a, professoren p</span><br><span class="line"><span class="keyword">where</span> a.boss = p.persnr <span class="keyword">and</span> p.gebdatum &gt; a.gebdatum</span><br></pre></td></tr></tbody></table></figure>
+<p>这时候我们直接用<code>join</code>来对原correlated sub-query去嵌套。采用<code>join</code>原因之一是：这时候不需要和所有professoren进行比较，只需要和对应的一个professor比较。</p>
+<p><br></p>
+<hr>
+<h1 id="普遍作法"><a href="#普遍作法" class="headerlink" title="普遍作法"></a>普遍作法</h1><p>我们这里给出一个普遍的作法，但是不百分之百和原论文的想法契合。具体作法最好参考原论文：</p>
+<p>下面这个很明显是一个关联的查询，子查询中需要外界<code>r1</code>的<code>attr1</code>, <code>attr2</code>。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> ...</span><br><span class="line"><span class="keyword">from</span> r1, </span><br><span class="line"><span class="keyword">where</span> ... </span><br><span class="line">(</span><br><span class="line">        <span class="keyword">select</span> ...</span><br><span class="line">        <span class="keyword">from</span> r2</span><br><span class="line">        <span class="keyword">where</span> r1.attr1 = ... <span class="keyword">and</span> r1.attr2 = ...</span><br><span class="line">)</span><br></pre></td></tr></tbody></table></figure>
+<p>那么我们就将这个子查询给抽离出来到<code>from</code>下面或者<code>with</code>里面，提前用不关联的方式物理化它的结果，而不是之后进行低效的笛卡尔积。<br>如果我们想用不关联的方式物理化子查询的结果，我们可以需要<code>r1</code>这个表格的另外一份复制品，但是实际上我们只需要<code>r1</code>中和join相关的字段值：</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> ...</span><br><span class="line"><span class="keyword">from</span> r1, </span><br><span class="line">       (</span><br><span class="line">        <span class="keyword">select</span> d.attr1, d.attr2 <span class="comment">-- 有可能还有其他聚合函数</span></span><br><span class="line">        <span class="keyword">from</span> r2,</span><br><span class="line">             (<span class="keyword">select</span> <span class="keyword">distinct</span> r1.attr1, r1.attr2 <span class="keyword">from</span> r1) <span class="keyword">as</span> d</span><br><span class="line">        <span class="keyword">where</span> d.attr1 = ... <span class="keyword">and</span> d.attr2 = ...</span><br><span class="line">        <span class="keyword">group</span> <span class="keyword">by</span> d.attr1, d.attr2</span><br><span class="line">        ) <span class="keyword">as</span> precomputed</span><br><span class="line"><span class="keyword">where</span> ... </span><br><span class="line">        precomputed.attr1 = r1.attr1 <span class="keyword">and</span></span><br><span class="line">        precomputed.attr2 = r1.attr1</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h1 id="TPC-H例子一-1"><a href="#TPC-H例子一-1" class="headerlink" title="TPC-H例子一 1"></a>TPC-H例子一 <sup><a href="#fn1">1</a></sup></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span>(l_extendedprice)</span><br><span class="line"><span class="keyword">from</span> lineitem l1</span><br><span class="line"><span class="keyword">where</span> l_extendedprice =</span><br><span class="line">   (<span class="keyword">select</span> <span class="keyword">min</span>(l_extendedprice)</span><br><span class="line">    <span class="keyword">from</span> lineitem l2</span><br><span class="line">    <span class="keyword">where</span> l1.l_orderkey = l2.l_orderkey);</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">avg</span>(l_extendedprice)</span><br><span class="line"><span class="keyword">from</span> lineitem l1,</span><br><span class="line">    (<span class="keyword">select</span> <span class="keyword">min</span>(l_extendedprice) m, l_orderkey</span><br><span class="line">    <span class="keyword">from</span> lineitem</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> l_orderkey) l2</span><br><span class="line"><span class="keyword">where</span> l1.l_orderkey = l2.l_orderkey</span><br><span class="line"><span class="keyword">and</span> l_extendedprice = l2.m;</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>这里我们只需要对<code>l2</code>进行一次求值。</li>
+</ul>
+<p><br></p>
+<h1 id="TPC-H例子二-1"><a href="#TPC-H例子二-1" class="headerlink" title="TPC-H例子二 1"></a>TPC-H例子二 <sup><a href="#fn1">1</a></sup></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> c1.c_name</span><br><span class="line"><span class="keyword">from</span> customer c1</span><br><span class="line"><span class="keyword">where</span> c1.c_mktsegment = <span class="string">'AUTOMOBILE'</span> </span><br><span class="line">      <span class="keyword">or</span> c1.c_acctbal &gt;</span><br><span class="line">                        (<span class="keyword">select</span> <span class="keyword">avg</span>(c2.c_acctbal)</span><br><span class="line">                        <span class="keyword">from</span> customer c2</span><br><span class="line">                        <span class="keyword">where</span> c2.c_mktsegment = c1.c_mktsegment);</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> c1.c_name</span><br><span class="line"><span class="keyword">from</span> customer c1, (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(c.c_acctbal) <span class="keyword">as</span> <span class="keyword">avg</span>, c_mktsegment</span><br><span class="line">    <span class="keyword">from</span> customer c</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> c_mktsegment</span><br><span class="line">    ) <span class="keyword">as</span> c2</span><br><span class="line"><span class="keyword">where</span> (c1.c_mktsegment = <span class="string">'AUTOMOBILE'</span></span><br><span class="line">      <span class="keyword">or</span> c1.c_acctbal &gt; c2.avg)</span><br><span class="line">      <span class="keyword">and</span> c1.c_mktsegment = c2.c_mktsegment</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> c2 <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(c.c_acctbal) <span class="keyword">as</span> <span class="keyword">avg</span>, c_mktsegment</span><br><span class="line">    <span class="keyword">from</span> customer c</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> c_mktsegment</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> c1.c_name</span><br><span class="line"><span class="keyword">from</span> customer c1, c2</span><br><span class="line"><span class="keyword">where</span> (c1.c_mktsegment = <span class="string">'AUTOMOBILE'</span></span><br><span class="line">      <span class="keyword">or</span> c1.c_acctbal &gt; c2.avg)</span><br><span class="line">      <span class="keyword">and</span> c1.c_mktsegment = c2.c_mktsegment</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h1 id="TPC-H-Q17-例子"><a href="#TPC-H-Q17-例子" class="headerlink" title="TPC-H Q17 例子"></a>TPC-H Q17 例子</h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">-- TPC-H Query 17</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">        <span class="keyword">sum</span>(l_extendedprice) / <span class="number">7.0</span> <span class="keyword">as</span> avg_yearly</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">        lineitem,</span><br><span class="line">        part</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">        p_partkey = l_partkey</span><br><span class="line">        <span class="keyword">and</span> p_brand = <span class="string">'Brand#23'</span></span><br><span class="line">        <span class="keyword">and</span> p_container = <span class="string">'MED BOX'</span></span><br><span class="line">        <span class="keyword">and</span> l_quantity &lt; (</span><br><span class="line">                <span class="keyword">select</span></span><br><span class="line">                        <span class="number">0.2</span> * <span class="keyword">avg</span>(l_quantity)</span><br><span class="line">                <span class="keyword">from</span></span><br><span class="line">                        lineitem</span><br><span class="line">                <span class="keyword">where</span></span><br><span class="line">                        l_partkey = p_partkey</span><br><span class="line">        )</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h2><p>很清晰，关联(nested, correlated)的部分如下：<br></p><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">...</span><br><span class="line">from</span><br><span class="line">        lineitem,</span><br><span class="line">        part</span><br><span class="line">...</span><br><span class="line">        and l_quantity &lt; (</span><br><span class="line">                <span class="keyword">select</span></span><br><span class="line">                        <span class="number">0.2</span> * <span class="keyword">avg</span>(l_quantity)</span><br><span class="line">                <span class="keyword">from</span></span><br><span class="line">                        lineitem</span><br><span class="line">                <span class="keyword">where</span></span><br><span class="line">                        l_partkey = p_partkey</span><br><span class="line">        )</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><code>p_partkey</code>是这个子查询(Sub-Query)中来自外查询的字段，也就是它造成了这个依赖(dependency)。</p>
+<p>我们用文字去描述一下这个关联部分:  </p>
+<ul>
+<li>对每一个子查询的<code>lineitem</code>的元组，需要它的<code>l_partkey</code>字段值依赖于外界<code>part</code>的对应<code>p_partkey</code>字段值。</li>
+<li>外依赖条件指：<code>l_partkey = p_partkey</code></li>
+<li>$D$是<code>part.p_partkey</code>对应字段值的集合。</li>
+</ul>
+<p>我们可以完全抽离这个关联部分到另外一个暂时的表格，再用<strong>外依赖条件</strong>和它regular join。</p>
+<h2 id="结果-2"><a href="#结果-2" class="headerlink" title="结果"></a>结果</h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span></span><br><span class="line">        <span class="keyword">sum</span> (l_extendedprice) / <span class="number">7.0</span> <span class="keyword">as</span> avg_yearly</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">        lineitem l,</span><br><span class="line">        part,</span><br><span class="line">        (</span><br><span class="line">            <span class="keyword">select</span></span><br><span class="line">                    <span class="number">0.2</span> * <span class="keyword">avg</span> (l_quantity) <span class="keyword">avg</span>, l_partkey</span><br><span class="line">            <span class="keyword">from</span></span><br><span class="line">                    lineitem</span><br><span class="line">            <span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line">                    l_partkey</span><br><span class="line">        ) quaprecomputednt</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">        p_partkey = l. l_partkey</span><br><span class="line">        <span class="keyword">and</span> p_brand = <span class="string">'Brand #23'</span></span><br><span class="line">        <span class="keyword">and</span> p_container = <span class="string">'MED BOX'</span></span><br><span class="line">        <span class="keyword">and</span> precomputed.l_partkey = p_partkey  <span class="comment">-- 使用外依赖条件的regular join</span></span><br><span class="line">        <span class="keyword">and</span> l_quantity &lt; precomputed.avg       <span class="comment">-- 去除原依赖</span></span><br></pre></td></tr></tbody></table></figure>
+<p>或</p>
+<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> precomputed <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span></span><br><span class="line">            <span class="number">0.2</span> * <span class="keyword">avg</span> (l_quantity) <span class="keyword">avg</span> , l_partkey</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">            lineitem</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span></span><br><span class="line">            l_partkey</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">        <span class="keyword">sum</span> (l_extendedprice) / <span class="number">7.0</span> <span class="keyword">as</span> avg_yearly</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">        lineitem l,</span><br><span class="line">        part,</span><br><span class="line">        precomputed</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">        p_partkey = l. l_partkey</span><br><span class="line">        <span class="keyword">and</span> p_brand = <span class="string">'Brand #23'</span></span><br><span class="line">        <span class="keyword">and</span> p_container = <span class="string">'MED BOX'</span></span><br><span class="line">        <span class="keyword">and</span> precomputed.l_partkey = p_partkey  <span class="comment">-- 使用外依赖条件的regular join</span></span><br><span class="line">        <span class="keyword">and</span> l_quantity &lt; precomputed.avg       <span class="comment">-- 去除原依赖</span></span><br></pre></td></tr></tbody></table></figure>
+<p>引用: </p>
+<p><a name="fn1">1</a>: TUM Foundation of Data Engineering Chap3.Advanced SQL: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2ZvdW5kYXRpb25zZGUvY2hhcHRlcjMucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/ws1920/foundationsde/chapter3.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/foundationsde/chapter3.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
+<p>2.<span class="exturl" data-url="aHR0cHM6Ly9kbC5naS5kZS9iaXRzdHJlYW0vaGFuZGxlLzIwLjUwMC4xMjExNi8yNDE4LzM4My5wZGY/c2VxdWVuY2U9MQ==" title="https://dl.gi.de/bitstream/handle/20.500.12116/2418/383.pdf?sequence=1">Unnesting Arbitrary Queries - Thomas Neumann and Alfons Kemper - (BTW 2015)<i class="fa fa-external-link"></i></span></p>
+<p>3.<a href="https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/">https://cakebytheoceanluo.github.io/2020/02/25/Paper-BTW-2015-Unnesting-Arbitrary-Queries/</a></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>SQL</category>
+        <category>Query Optimizer</category>
+      </categories>
+      <tags>
+        <tag>SQL</tag>
+        <tag>Query Optimizer</tag>
+        <tag>Subquery Optimization</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[SQL]中级SQL(5)</title>
     <url>/2020/03/22/SQL-%E4%B8%AD%E7%BA%A7SQL-5/</url>
     <content><![CDATA[<h1 id="TPC-H-数据集"><a href="#TPC-H-数据集" class="headerlink" title="TPC-H 数据集"></a>TPC-H 数据集</h1><p>我们这一篇文章采用PostgreSQL的SQL语法。重点我们关注<code>select...from...where</code>这种读操作，分析query　(analytical query)。<br><code>TPC-H</code>数据集在　<span class="exturl" data-url="aHR0cHM6Ly9oeXBlci1kYi5kZS9pbnRlcmZhY2UuaHRtbA==" title="https://hyper-db.de/interface.html">https://hyper-db.de/interface.html<i class="fa fa-external-link"></i></span>　可以直接使用。另外在这个网页不允许进行写操作:<code>insert</code>, <code>update</code>, <code>delete</code>之类的transactional query。当然<code>create table</code>和<code>drop table</code>也不被允许。</p>
@@ -280,8 +384,8 @@
         <category>Indexing</category>
       </categories>
       <tags>
-        <tag>B Tree</tag>
         <tag>Indexing</tag>
+        <tag>B Tree</tag>
         <tag>Clustered Index</tag>
         <tag>Variable Length Key</tag>
         <tag>Prefix Compression</tag>
@@ -955,8 +1059,8 @@
         <category>CMU-15445</category>
         <category>Storage</category>
         <category>DBMS</category>
-        <category>PostgreSQL</category>
         <category>Buffer Management</category>
+        <category>PostgreSQL</category>
       </categories>
       <tags>
         <tag>PostgreSQL</tag>
@@ -3792,10 +3896,10 @@
       </categories>
       <tags>
         <tag>SQL</tag>
-        <tag>SQLite</tag>
         <tag>DBMS</tag>
         <tag>PostgreSQL</tag>
         <tag>MySQL</tag>
+        <tag>SQLite</tag>
       </tags>
   </entry>
   <entry>
@@ -4034,19 +4138,19 @@
 <p><br><br><br></p>
 <hr>
 <h1 id="ADMINISTRIVIA"><a href="#ADMINISTRIVIA" class="headerlink" title="ADMINISTRIVIA"></a>ADMINISTRIVIA</h1><p>第一次课的时候提到这门课的结构等事项，我们移步到这一次笔记中：</p>
-<p><img data-src="/images/CMU1544564/lec01/6.jpg" alt="6.jpg"></p>
-<p><img data-src="/images/CMU1544564/lec01/8.jpg" alt="8.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/6.jpg" alt="6.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/8.jpg" alt="8.jpg"></p>
 <ul>
 <li>第六版：<span class="exturl" data-url="aHR0cHM6Ly9kYi1ib29rLmNvbS9kYjYvaW5kZXguaHRtbA==" title="https://db-book.com/db6/index.html">https://db-book.com/db6/index.html<i class="fa fa-external-link"></i></span></li>
 <li>第七版：<span class="exturl" data-url="aHR0cHM6Ly9kYi1ib29rLmNvbS9kYjcvaW5kZXguaHRtbA==" title="https://db-book.com/db7/index.html">https://db-book.com/db7/index.html<i class="fa fa-external-link"></i></span></li>
 <li>这一门课主要介绍的内容都是几十年前成熟的技术。所有两版书对我们学生都一样。</li>
 <li>这个书我推荐英文版的：　<span class="exturl" data-url="aHR0cHM6Ly9ib29rLmRvdWJhbi5jb20vc3ViamVjdC8yNjA0NTkzMS8=" title="https://book.douban.com/subject/26045931/">https://book.douban.com/subject/26045931/<i class="fa fa-external-link"></i></span>　高等教育出版社出版了影印版，适合国内喜欢实体纸质书的同学。</li>
 </ul>
-<p><img data-src="/images/CMU1544564/lec01/12.jpg" alt="12.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/12.jpg" alt="12.jpg"></p>
 <ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWI=" title="https://github.com/cmu-db/bustub">https://github.com/cmu-db/bustub<i class="fa fa-external-link"></i></span></li>
 </ul>
-<p><img data-src="/images/CMU1544564/lec01/15.jpg" alt="15.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec01/15.jpg" alt="15.jpg"></p>
 <ul>
 <li><span class="exturl" data-url="aHR0cHM6Ly9kYi5jcy5jbXUuZWR1Lw==" title="https://db.cs.cmu.edu/">https://db.cs.cmu.edu/<i class="fa fa-external-link"></i></span></li>
 <li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi90ZXJyaWVy" title="https://github.com/cmu-db/terrier">https://github.com/cmu-db/terrier<i class="fa fa-external-link"></i></span></li>
