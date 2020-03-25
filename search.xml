@@ -55,7 +55,7 @@
 <p><br></p>
 <h1 id="TPC-H例子二-1"><a href="#TPC-H例子二-1" class="headerlink" title="TPC-H例子二 1"></a>TPC-H例子二 <sup><a href="#fn1">1</a></sup></h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> c1.c_name</span><br><span class="line"><span class="keyword">from</span> customer c1</span><br><span class="line"><span class="keyword">where</span> c1.c_mktsegment = <span class="string">'AUTOMOBILE'</span> </span><br><span class="line">      <span class="keyword">or</span> c1.c_acctbal &gt;</span><br><span class="line">                        (<span class="keyword">select</span> <span class="keyword">avg</span>(c2.c_acctbal)</span><br><span class="line">                        <span class="keyword">from</span> customer c2</span><br><span class="line">                        <span class="keyword">where</span> c2.c_mktsegment = c1.c_mktsegment);</span><br></pre></td></tr></tbody></table></figure>
 <h2 id="结果-1"><a href="#结果-1" class="headerlink" title="结果"></a>结果</h2><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> c1.c_name</span><br><span class="line"><span class="keyword">from</span> customer c1, (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(c.c_acctbal) <span class="keyword">as</span> <span class="keyword">avg</span>, c_mktsegment</span><br><span class="line">    <span class="keyword">from</span> customer c</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> c_mktsegment</span><br><span class="line">    ) <span class="keyword">as</span> c2</span><br><span class="line"><span class="keyword">where</span> (c1.c_mktsegment = <span class="string">'AUTOMOBILE'</span></span><br><span class="line">      <span class="keyword">or</span> c1.c_acctbal &gt; c2.avg)</span><br><span class="line">      <span class="keyword">and</span> c1.c_mktsegment = c2.c_mktsegment</span><br></pre></td></tr></tbody></table></figure>
-<p><br></p>
+<p>或</p>
 <figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">with</span> c2 <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">avg</span>(c.c_acctbal) <span class="keyword">as</span> <span class="keyword">avg</span>, c_mktsegment</span><br><span class="line">    <span class="keyword">from</span> customer c</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> c_mktsegment</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> c1.c_name</span><br><span class="line"><span class="keyword">from</span> customer c1, c2</span><br><span class="line"><span class="keyword">where</span> (c1.c_mktsegment = <span class="string">'AUTOMOBILE'</span></span><br><span class="line">      <span class="keyword">or</span> c1.c_acctbal &gt; c2.avg)</span><br><span class="line">      <span class="keyword">and</span> c1.c_mktsegment = c2.c_mktsegment</span><br></pre></td></tr></tbody></table></figure>
 <p><br></p>
 <h1 id="TPC-H-Q17-例子"><a href="#TPC-H-Q17-例子" class="headerlink" title="TPC-H Q17 例子"></a>TPC-H Q17 例子</h1><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">-- TPC-H Query 17</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span></span><br><span class="line">        <span class="keyword">sum</span>(l_extendedprice) / <span class="number">7.0</span> <span class="keyword">as</span> avg_yearly</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">        lineitem,</span><br><span class="line">        part</span><br><span class="line"><span class="keyword">where</span></span><br><span class="line">        p_partkey = l_partkey</span><br><span class="line">        <span class="keyword">and</span> p_brand = <span class="string">'Brand#23'</span></span><br><span class="line">        <span class="keyword">and</span> p_container = <span class="string">'MED BOX'</span></span><br><span class="line">        <span class="keyword">and</span> l_quantity &lt; (</span><br><span class="line">                <span class="keyword">select</span></span><br><span class="line">                        <span class="number">0.2</span> * <span class="keyword">avg</span>(l_quantity)</span><br><span class="line">                <span class="keyword">from</span></span><br><span class="line">                        lineitem</span><br><span class="line">                <span class="keyword">where</span></span><br><span class="line">                        l_partkey = p_partkey</span><br><span class="line">        )</span><br></pre></td></tr></tbody></table></figure>
@@ -384,8 +384,8 @@
         <category>Indexing</category>
       </categories>
       <tags>
-        <tag>Indexing</tag>
         <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Clustered Index</tag>
         <tag>Variable Length Key</tag>
         <tag>Prefix Compression</tag>
@@ -3896,10 +3896,10 @@
       </categories>
       <tags>
         <tag>SQL</tag>
+        <tag>SQLite</tag>
         <tag>DBMS</tag>
         <tag>PostgreSQL</tag>
         <tag>MySQL</tag>
-        <tag>SQLite</tag>
       </tags>
   </entry>
   <entry>
