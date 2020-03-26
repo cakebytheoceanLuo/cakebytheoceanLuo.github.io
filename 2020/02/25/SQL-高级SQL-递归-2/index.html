@@ -29,14 +29,12 @@
 <meta property="og:site_name" content="关于数据库的一切">
 <meta property="og:description" content="在这篇文章高级SQL中我们会遇到递归查询。这篇文章我们使用一个公共交通数据集，最后我们还是对union和union all在图论的例子中进行练习和区分。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/SQL/dag.png">
 <meta property="article:published_time" content="2020-02-25T14:45:14.000Z">
-<meta property="article:modified_time" content="2020-03-10T22:52:15.373Z">
+<meta property="article:modified_time" content="2020-03-26T13:53:36.171Z">
 <meta property="article:author" content="罗济高">
 <meta property="article:tag" content="SQL">
 <meta property="article:tag" content="Recursion">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/SQL/dag.png">
 
 <link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-2/">
 
@@ -148,17 +146,17 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">53</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">54</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">19</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">20</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">60</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">61</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -249,7 +247,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-10 23:52:15" itemprop="dateModified" datetime="2020-03-10T23:52:15+01:00">2020-03-10</time>
+                <time title="修改时间：2020-03-26 14:53:36" itemprop="dateModified" datetime="2020-03-26T14:53:36+01:00">2020-03-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,7 +272,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>7k</span>
+              <span>6.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -345,13 +343,6 @@
 <h3 id="求从Garching-Forschungszentrum能到达的所有地方-可到达性-st-connectivity-："><a href="#求从Garching-Forschungszentrum能到达的所有地方-可到达性-st-connectivity-：" class="headerlink" title="求从Garching, Forschungszentrum能到达的所有地方(可到达性(st-connectivity))："></a>求从<code>Garching, Forschungszentrum</code>能到达的所有地方(可到达性(st-connectivity))：</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> closure <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> von, nach</span><br><span class="line">    <span class="keyword">from</span> fahrplan</span><br><span class="line">    <span class="keyword">union</span> <span class="comment">-- Set(集合)</span></span><br><span class="line">    <span class="keyword">select</span> c.von, f.nach</span><br><span class="line">    <span class="keyword">from</span> closure c, fahrplan f</span><br><span class="line">    <span class="keyword">where</span> c.nach = f.von</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> von, nach</span><br><span class="line"><span class="keyword">from</span> closure</span><br><span class="line"><span class="keyword">where</span> von = <span class="string">'Garching, Forschungszentrum'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> nach</span><br></pre></td></tr></tbody></table></figure>
 <p>这里只能是<code>union</code>，不能是<code>union all</code>。<br>比如有<code>A-&gt;B, B-&gt;A</code>在<code>union all</code>的情况下，不会终止。</p>
 <h3 id="求从Garching从两个方向能到达的所有地方："><a href="#求从Garching从两个方向能到达的所有地方：" class="headerlink" title="求从Garching从两个方向能到达的所有地方："></a>求从<code>Garching</code>从两个方向能到达的所有地方：</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> closure <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> von, nach</span><br><span class="line">    <span class="keyword">from</span> fahrplan</span><br><span class="line">    <span class="keyword">union</span> <span class="comment">-- Set(集合)</span></span><br><span class="line">    <span class="keyword">select</span> f.von , c.nach</span><br><span class="line">    <span class="keyword">from</span> fahrplan f, closure c</span><br><span class="line">    <span class="keyword">where</span> f.nach = c.von</span><br><span class="line">) , connected_graph <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> von, nach</span><br><span class="line">    <span class="keyword">from</span> fahrplan</span><br><span class="line">    <span class="keyword">union</span> <span class="comment">-- Set(集合)</span></span><br><span class="line">    <span class="keyword">select</span> c.von , cg.nach</span><br><span class="line">    <span class="keyword">from</span> closure c , connected_graph cg</span><br><span class="line">    <span class="keyword">where</span> c.nach = cg.von</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> *</span><br><span class="line"><span class="keyword">from</span> connected_graph</span><br><span class="line"><span class="keyword">where</span> von = <span class="string">'Garching'</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> von;</span><br></pre></td></tr></tbody></table></figure>
-<p>再来一个图论的例子：</p>
-<p><img data-src="/images/SQL/dag.png" alt="dag.png"></p>
-<p>如果我们无视图中的箭头，那么这个图是一个有向无环图(DAG, directed acyclic graph)。</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> graph (von , nach) <span class="keyword">as</span> (</span><br><span class="line">    <span class="comment">-- Basic relation</span></span><br><span class="line">    <span class="keyword">values</span> (<span class="string">'a'</span>, <span class="string">'b'</span>),</span><br><span class="line">           (<span class="string">'b'</span>, <span class="string">'c'</span>),</span><br><span class="line">           (<span class="string">'c'</span> ,<span class="string">'d'</span>),</span><br><span class="line">           (<span class="string">'b'</span>, <span class="string">'e'</span>),</span><br><span class="line">           (<span class="string">'f'</span>, <span class="string">'c'</span>),</span><br><span class="line">           (<span class="string">'x'</span>, <span class="string">'y'</span>) <span class="comment">-- 第二个联通部分</span></span><br><span class="line">), un_dir_graph (von, nach) <span class="keyword">as</span> (</span><br><span class="line">    <span class="comment">-- 无向图</span></span><br><span class="line">    (<span class="keyword">select</span> von, nach</span><br><span class="line">    <span class="keyword">from</span> graph)</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    (<span class="keyword">select</span> nach, von</span><br><span class="line">    <span class="keyword">from</span> graph)</span><br><span class="line">), closure (von, nach) <span class="keyword">as</span> (</span><br><span class="line">    (<span class="keyword">select</span> von, nach</span><br><span class="line">    <span class="keyword">from</span> un_dir_graph)</span><br><span class="line">    <span class="keyword">union</span> <span class="comment">-- Set(集合)</span></span><br><span class="line">    (<span class="keyword">select</span> c.von, g.nach</span><br><span class="line">    <span class="keyword">from</span> closure c, graph g</span><br><span class="line">    <span class="keyword">where</span> c.nach = g.von)</span><br><span class="line">), connected_graph (von ,nach) <span class="keyword">as</span> (</span><br><span class="line">    (<span class="keyword">select</span> nach , von</span><br><span class="line">    <span class="keyword">from</span> closure)</span><br><span class="line">    <span class="keyword">union</span> <span class="comment">-- Set(集合)</span></span><br><span class="line">    (<span class="keyword">select</span> c.von , cg.nach</span><br><span class="line">    <span class="keyword">from</span> closure c, connected_graph cg</span><br><span class="line">    <span class="keyword">where</span> c.nach = cg.von)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> nach</span><br><span class="line"><span class="keyword">from</span> connected_graph</span><br><span class="line"><span class="keyword">where</span> von = <span class="string">'b'</span> <span class="comment">-- Garching</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> nach;</span><br></pre></td></tr></tbody></table></figure>
-<p>很容易发现<code>closure</code>是一个对称的关系(symmetric relation): </p>
-<script type="math/tex; mode=display">\exists (a , b) \in R \Rightarrow (b, a) \in R</script><p>这时候我们用<code>UNION ALL</code>是肯定不会终止的，因为<code>UNION ALL</code>采用包语义(Bag Semantics)，它不会消除重复(duplicates)。<br>而<code>UNION</code>采用集合语义(Set Semantics)，它会消除重复。</p>
-<!-- 该文章遵循[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh)，要求署名、非商业 、保持一致。在满足[创作共用版权协议 CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.zh) 的基础上可以转载，但请以超链接形式注明出处。文章仅代表作者的知识和看法，如有不同观点，可以回复并讨论。 -->
 <p>引用：</p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi8/bGFuZz1kZQ==" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/?lang=de<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvYm9va0RCTVNlaW5mL2ZvbGllbi9wZGYvS2FwaXRlbDQucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de">https://db.in.tum.de/teaching/bookDBMSeinf/folien/pdf/Kapitel4.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
@@ -524,20 +515,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-count">61</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-count">20</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-count">54</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -603,13 +594,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">281k</span>
+    <span title="站点总字数">284k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:16</span>
+    <span title="站点阅读时长">4:18</span>
 </div>
 
         
