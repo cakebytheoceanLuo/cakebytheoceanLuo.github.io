@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">61</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">62</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,143 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/" class="post-title-link" itemprop="url">[DBMS]Postgres 浮点数，定点数 精度问题precision_numbers</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-16 14:06:32" itemprop="dateCreated datePublished" datetime="2020-03-16T14:06:32+01:00">2020-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-17 19:48:20" itemprop="dateModified" datetime="2020-03-17T19:48:20+01:00">2020-03-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Disk-Management/" itemprop="url" rel="index"><span itemprop="name">Disk Management</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS]Postgres 浮点数，定点数 精度问题precision_numbers" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这篇文章服务于<a href="https://cakebytheoceanluo.github.io/2020/03/16/CMU-15445-Lec04/">[CMU-15445]Lec04</a></p>
+<p>数据库中给小数(分数)有两种类型</p>
+<ul>
+<li>Variable Precision Numbers: 可变精度数字，可能有会rounding error</li>
+<li>Fixed Precision Numbers: 定精度数字，在给定的精度下没有误差</li>
+</ul>
+<p>我们今天来看一看PostgreSQL中的这两种类型和它们可能产生的误差。</p>
+<p>PostgreSQL中具体对应的数据类型是:</p>
+<ul>
+<li>Variable Precision Numbers: <code>REAL</code></li>
+<li>Fixed Precision Numbers: <code>DECIMAL(precision, scale), NUMERIC(precision, scale)</code></li>
+</ul>
+<hr>
+<p><code>DECIMAL(precision, scale)</code>:</p>
+<ul>
+<li><code>precision</code>: The <code>precision</code> must be positive. The <code>precision</code> of a <em>numeric</em> is the total count of significant digits in the whole number, that is, the number of digits to both sides of the decimal point.</li>
+<li><code>scale</code>: The <code>scale</code> must be zero or positive.   The <code>scale</code> of a <em>numeric</em> is the count of decimal digits in the fractional part, to the right of the decimal point</li>
+</ul>
+<p>So the number 23.5141 has a precision of 6 and a scale of 4. Integers can be considered to have a scale of zero.</p>
+<p>以上引用自: <span class="exturl" data-url="aHR0cHM6Ly93d3cucG9zdGdyZXNxbC5vcmcvZG9jcy85LjEvZGF0YXR5cGUtbnVtZXJpYy5odG1s" title="https://www.postgresql.org/docs/9.1/datatype-numeric.html">https://www.postgresql.org/docs/9.1/datatype-numeric.html<i class="fa fa-external-link"></i></span></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1195,115 +1332,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/12/SQL-Leetcode-595-big-countries/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/12/SQL-Leetcode-595-big-countries/" class="post-title-link" itemprop="url">[Leetcode-SQL] 595.big.countries</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-12 22:22:53 / 修改时间：22:26:21" itemprop="dateCreated datePublished" datetime="2020-03-12T22:22:53+01:00">2020-03-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/12/SQL-Leetcode-595-big-countries/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 595.big.countries" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.2k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>595.Big Countries</p>
-<p>SQL Schema:</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> World (<span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), continent <span class="built_in">varchar</span>(<span class="number">255</span>), area <span class="built_in">int</span>, population <span class="built_in">int</span>, gdp <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> World</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Afghanistan'</span>, <span class="string">'Asia'</span>, <span class="string">'652230'</span>, <span class="string">'25500100'</span>, <span class="string">'20343000000'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Albania'</span>, <span class="string">'Europe'</span>, <span class="string">'28748'</span>, <span class="string">'2831741'</span>, <span class="string">'12960000000'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Algeria'</span>, <span class="string">'Africa'</span>, <span class="string">'2381741'</span>, <span class="string">'37100000'</span>, <span class="string">'188681000000'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Andorra'</span>, <span class="string">'Europe'</span>, <span class="string">'468'</span>, <span class="string">'78115'</span>, <span class="string">'3712000000'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Angola'</span>, <span class="string">'Africa'</span>, <span class="string">'1246700'</span>, <span class="string">'20609294'</span>, <span class="string">'100990000000'</span>)</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> World;</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> World (<span class="keyword">name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), continent <span class="built_in">varchar</span>(<span class="number">255</span>), area <span class="built_in">int</span>, population <span class="built_in">int</span>, gdp <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Afghanistan'</span>, <span class="string">'Asia'</span>, <span class="string">'652230'</span>, <span class="string">'25500100'</span>, <span class="string">'20343000000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Albania'</span>, <span class="string">'Europe'</span>, <span class="string">'28748'</span>, <span class="string">'2831741'</span>, <span class="string">'12960000000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Algeria'</span>, <span class="string">'Africa'</span>, <span class="string">'2381741'</span>, <span class="string">'37100000'</span>, <span class="string">'188681000000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Andorra'</span>, <span class="string">'Europe'</span>, <span class="string">'468'</span>, <span class="string">'78115'</span>, <span class="string">'3712000000'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> World (<span class="keyword">name</span>, continent, area, population, gdp) <span class="keyword">values</span> (<span class="string">'Angola'</span>, <span class="string">'Africa'</span>, <span class="string">'1246700'</span>, <span class="string">'20609294'</span>, <span class="string">'100990000000'</span>);</span><br></pre></td></tr></tbody></table></figure>
-<p>There is a table <code>World</code></p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">-----------------+------------+------------+--------------+---------------+</span></span><br><span class="line">| name            | continent  | area       | population   | gdp           |</span><br><span class="line">+<span class="comment">-----------------+------------+------------+--------------+---------------+</span></span><br><span class="line">| Afghanistan     | Asia       | 652230     | 25500100     | 20343000      |</span><br><span class="line">| Albania         | Europe     | 28748      | 2831741      | 12960000      |</span><br><span class="line">| Algeria         | Africa     | 2381741    | 37100000     | 188681000     |</span><br><span class="line">| Andorra         | Europe     | 468        | 78115        | 3712000       |</span><br><span class="line">| Angola          | Africa     | 1246700    | 20609294     | 100990000     |</span><br><span class="line">+<span class="comment">-----------------+------------+------------+--------------+---------------+</span></span><br></pre></td></tr></tbody></table></figure>
-<p>A country is big if it has an area of bigger than 3 million square km or a population of more than 25 million.</p>
-<p>Write a SQL solution to output big countries’ name, population and area.</p>
-<p>For example, according to the above table, we should output:</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">--------------+-------------+--------------+</span></span><br><span class="line">| name         | population  | area         |</span><br><span class="line">+<span class="comment">--------------+-------------+--------------+</span></span><br><span class="line">| Afghanistan  | 25500100    | 652230       |</span><br><span class="line">| Algeria      | 37100000    | 2381741      |</span><br><span class="line">+<span class="comment">--------------+-------------+--------------+</span></span><br></pre></td></tr></tbody></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/12/SQL-Leetcode-595-big-countries/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1376,7 +1404,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-count">62</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1455,13 +1483,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">284k</span>
+    <span title="站点总字数">287k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:18</span>
+    <span title="站点阅读时长">4:21</span>
 </div>
 
         

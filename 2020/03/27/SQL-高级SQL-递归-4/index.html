@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="图论在这篇文章高级 SQL 中我们会遇到递归查询图论的题目。我们使用的数据集(图)都在文章中的SQL中。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[SQL]高级SQL-递归(4)">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/27/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-4/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="图论在这篇文章高级 SQL 中我们会遇到递归查询图论的题目。我们使用的数据集(图)都在文章中的SQL中。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/SQL/graph1.png">
+<meta property="article:published_time" content="2020-03-27T17:57:47.000Z">
+<meta property="article:modified_time" content="2020-03-27T17:59:07.661Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Recursion">
+<meta property="article:tag" content="Graph">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/SQL/graph1.png">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/27/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[SQL]高级SQL-递归(4) | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">54</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">20</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">62</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/27/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [SQL]高级SQL-递归(4)
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-27 18:57:47 / 修改时间：18:59:07" itemprop="dateCreated datePublished" datetime="2020-03-27T18:57:47+01:00">2020-03-27</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Graph/" itemprop="url" rel="index"><span itemprop="name">Graph</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/27/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-4/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]高级SQL-递归(4)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="图论"><a href="#图论" class="headerlink" title="图论"></a>图论</h1><p>在这篇文章高级 SQL 中我们会遇到递归查询图论的题目。我们使用的数据集(图)都在文章中的SQL中。</p>
+<a id="more"></a>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p><img data-src="/images/SQL/graph1.png" alt="graph1.png"></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> singleDirection (a ,b) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> *</span><br><span class="line">    <span class="keyword">from</span>(<span class="keyword">values</span> (<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">1</span>, <span class="number">3</span>),</span><br><span class="line">                (<span class="number">3</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">5</span>),</span><br><span class="line">                (<span class="number">5</span>, <span class="number">6</span>),</span><br><span class="line">                (<span class="number">4</span>, <span class="number">6</span>)) <span class="keyword">as</span> graph</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> singleDirection;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="寻找传递闭包-Transitive-closure-，即这个图中节点的联通节点-Connectivity"><a href="#寻找传递闭包-Transitive-closure-，即这个图中节点的联通节点-Connectivity" class="headerlink" title="寻找传递闭包(Transitive closure)，即这个图中节点的联通节点(Connectivity):"></a>寻找传递闭包(Transitive closure)，即这个图中节点的联通节点(Connectivity):</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> singleDirection (a ,b) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> *</span><br><span class="line">    <span class="keyword">from</span>(<span class="keyword">values</span> (<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">1</span>, <span class="number">3</span>),</span><br><span class="line">                (<span class="number">3</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">5</span>),</span><br><span class="line">                (<span class="number">5</span>, <span class="number">6</span>),</span><br><span class="line">                (<span class="number">4</span>, <span class="number">6</span>)) <span class="keyword">as</span> graph</span><br><span class="line">    ), undirectedGraph <span class="keyword">as</span> (</span><br><span class="line">        <span class="keyword">select</span> *</span><br><span class="line">        <span class="keyword">from</span> singleDirection</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">        <span class="keyword">select</span> b, a</span><br><span class="line">        <span class="keyword">from</span> singleDirection</span><br><span class="line">    ), transitive_closure (a, b) <span class="keyword">as</span> (</span><br><span class="line">        <span class="keyword">select</span> *</span><br><span class="line">        <span class="keyword">from</span> undirectedGraph</span><br><span class="line">        <span class="keyword">union</span></span><br><span class="line">        <span class="keyword">select</span> a.a, b.b</span><br><span class="line">        <span class="keyword">from</span> undirectedGraph b, transitive_closure a</span><br><span class="line">        <span class="keyword">where</span> a.b = b.a</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> transitive_closure</span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span> a, b;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="6和1是联通-connected-reachable-的吗"><a href="#6和1是联通-connected-reachable-的吗" class="headerlink" title="6和1是联通(connected, reachable)的吗?"></a>6和1是联通(connected, reachable)的吗?</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> singleDirection (a ,b) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> *</span><br><span class="line">    <span class="keyword">from</span>(<span class="keyword">values</span> (<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">1</span>, <span class="number">3</span>),</span><br><span class="line">                (<span class="number">3</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">5</span>),</span><br><span class="line">                (<span class="number">5</span>, <span class="number">6</span>),</span><br><span class="line">                (<span class="number">4</span>, <span class="number">6</span>)) <span class="keyword">as</span> graph</span><br><span class="line">    ), undirectedGraph <span class="keyword">as</span> (</span><br><span class="line">        <span class="keyword">select</span> *</span><br><span class="line">        <span class="keyword">from</span> singleDirection</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">        <span class="keyword">select</span> b, a</span><br><span class="line">        <span class="keyword">from</span> singleDirection</span><br><span class="line">    ), transitive_closure (a, b) <span class="keyword">as</span> (</span><br><span class="line">        <span class="keyword">select</span> *</span><br><span class="line">        <span class="keyword">from</span> undirectedGraph</span><br><span class="line">        <span class="keyword">union</span></span><br><span class="line">        <span class="keyword">select</span> a.a, b.b</span><br><span class="line">        <span class="keyword">from</span> undirectedGraph b, transitive_closure a</span><br><span class="line">        <span class="keyword">where</span> a.b = b.a</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> * </span><br><span class="line"><span class="keyword">from</span> transitive_closure </span><br><span class="line"><span class="keyword">where</span> a = <span class="number">6</span> <span class="keyword">and</span> b = <span class="number">1</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="求6和1的最短距离"><a href="#求6和1的最短距离" class="headerlink" title="求6和1的最短距离?"></a>求6和1的最短距离?</h3><p>这里我们在<code>transitive_closure</code>中使用了<code>union all</code>，为了避免对应出现的不终止的递归，我们必须加上对应的条件<code>dist &lt;= 4</code>。另外这个4是我们目测出来的一个参数，当然我们可以用一个更大更普遍的数字，比如图中边的总数，这样也能试递归终止。</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> singleDirection (a ,b) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> *</span><br><span class="line">    <span class="keyword">from</span>(<span class="keyword">values</span> (<span class="number">1</span>, <span class="number">2</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">1</span>, <span class="number">3</span>),</span><br><span class="line">                (<span class="number">3</span>, <span class="number">4</span>),</span><br><span class="line">                (<span class="number">2</span>, <span class="number">5</span>),</span><br><span class="line">                (<span class="number">5</span>, <span class="number">6</span>),</span><br><span class="line">                (<span class="number">4</span>, <span class="number">6</span>)) <span class="keyword">as</span> graph</span><br><span class="line">    ), undirectedGraph <span class="keyword">as</span> (</span><br><span class="line">        <span class="keyword">select</span> *</span><br><span class="line">        <span class="keyword">from</span> singleDirection</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">        <span class="keyword">select</span> b, a</span><br><span class="line">        <span class="keyword">from</span> singleDirection</span><br><span class="line">    ), transitive_closure (a, b, dist) <span class="keyword">as</span> (</span><br><span class="line">        <span class="keyword">select</span> a, b, <span class="number">1</span></span><br><span class="line">        <span class="keyword">from</span> undirectedGraph</span><br><span class="line">        <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">        <span class="keyword">select</span> a.a, b.b, dist + <span class="number">1</span></span><br><span class="line">        <span class="keyword">from</span> undirectedGraph b, transitive_closure a</span><br><span class="line">        <span class="keyword">where</span> a.b = b.a <span class="keyword">and</span> dist &lt;= <span class="number">4</span> <span class="comment">-- 或者　dist &lt;= 9，因为这个图里面一共9条边</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">min</span>(dist)</span><br><span class="line"><span class="keyword">from</span> transitive_closure</span><br><span class="line"><span class="keyword">where</span> a = <span class="number">6</span> <span class="keyword">and</span> b = <span class="number">1</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p><br><br><br><br><br></p>
+<h3 id="例子3"><a href="#例子3" class="headerlink" title="例子3"></a>例子3</h3><p>SQL Standard中是这样定义来<code>union all</code>的递归语句的:</p>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">workingTable = evaluateNonRecursive()</span><br><span class="line">output workingTable</span><br><span class="line"><span class="keyword">while</span> workingTable <span class="keyword">is</span> <span class="keyword">not</span> empty:</span><br><span class="line">  workingTable = evaluateRecursive(workingTable)</span><br><span class="line">  output workingTable</span><br></pre></td></tr></tbody></table></figure>
+<p>下面是一个表格，代表一个图:</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>b</td>
+</tr>
+<tr>
+<td>b</td>
+<td>c</td>
+</tr>
+<tr>
+<td>b</td>
+<td>d</td>
+</tr>
+<tr>
+<td>c</td>
+<td>e</td>
+</tr>
+<tr>
+<td>d</td>
+<td>e</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> edges (from_, to_) <span class="keyword">as</span> (</span><br><span class="line">   <span class="keyword">values</span></span><br><span class="line">          (<span class="string">'a'</span>, <span class="string">'b'</span>), (<span class="string">'b'</span>, <span class="string">'c'</span>), (<span class="string">'b'</span>, <span class="string">'d'</span>),</span><br><span class="line">          (<span class="string">'c'</span>, <span class="string">'e'</span>), (<span class="string">'d'</span>, <span class="string">'e'</span>)</span><br><span class="line">), discovered (node) <span class="keyword">as</span> (</span><br><span class="line">    (<span class="keyword">select</span> <span class="string">'a'</span>)</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    (<span class="keyword">select</span> edges.to_</span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">    edges, discovered</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">    discovered.node = edges.from_)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> discovered;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> node </span><br><span class="line"><span class="comment">------</span></span><br><span class="line"> a</span><br><span class="line"> b</span><br><span class="line"> d</span><br><span class="line"> c</span><br><span class="line"> e</span><br><span class="line"> e</span><br><span class="line">(6 rows)</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h4 id="求从a开始每一步能到达的节点"><a href="#求从a开始每一步能到达的节点" class="headerlink" title="求从a开始每一步能到达的节点"></a>求从<code>a</code>开始每一步能到达的节点</h4><p>应用SQL Standard中的Working Table表达:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> edges (from_, to_) <span class="keyword">as</span> (</span><br><span class="line">   <span class="keyword">values</span></span><br><span class="line">          (<span class="string">'a'</span>, <span class="string">'b'</span>), (<span class="string">'b'</span>, <span class="string">'c'</span>), (<span class="string">'b'</span>, <span class="string">'d'</span>),</span><br><span class="line">          (<span class="string">'c'</span>, <span class="string">'e'</span>), (<span class="string">'d'</span>, <span class="string">'e'</span>)</span><br><span class="line">), discovered (node, step) <span class="keyword">as</span> (</span><br><span class="line">    (<span class="keyword">select</span> <span class="string">'a'</span>, <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    (<span class="keyword">select</span> edges.to_, discovered.step + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">    edges, discovered</span><br><span class="line">    <span class="keyword">where</span></span><br><span class="line">    discovered.node = edges.from_)</span><br><span class="line">)</span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> discovered;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> node | step </span><br><span class="line"><span class="comment">------+------</span></span><br><span class="line"> a    |    0</span><br><span class="line"> b    |    1</span><br><span class="line"> d    |    2</span><br><span class="line"> c    |    2</span><br><span class="line"> e    |    3</span><br><span class="line"> e    |    3</span><br><span class="line">(6 rows)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">step | WorkingTable</span><br><span class="line">init | {a}</span><br><span class="line">1    | {b}</span><br><span class="line">2    | {c, d}</span><br><span class="line">3    | {e, e}</span><br><span class="line">4    | {}</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h4 id="图被更改-再求从a开始每一步能到达的节点"><a href="#图被更改-再求从a开始每一步能到达的节点" class="headerlink" title="图被更改, 再求从a开始每一步能到达的节点"></a>图被更改, 再求从<code>a</code>开始每一步能到达的节点</h4><p>图中我们多加了一个<code>('c', 'b')</code>的边。应用SQL Standard中的<code>WorkingTable</code>表达:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> edges (from_, to_) <span class="keyword">as</span> (</span><br><span class="line">   <span class="keyword">values</span></span><br><span class="line">          (<span class="string">'a'</span>, <span class="string">'b'</span>), (<span class="string">'b'</span>, <span class="string">'c'</span>), (<span class="string">'b'</span>, <span class="string">'d'</span>),</span><br><span class="line">          (<span class="string">'c'</span>, <span class="string">'e'</span>), (<span class="string">'d'</span>, <span class="string">'e'</span>), (<span class="string">'c'</span>, <span class="string">'b'</span>)</span><br><span class="line">), discovered (node, step) <span class="keyword">as</span> (</span><br><span class="line">    (<span class="keyword">select</span> <span class="string">'a'</span>, <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    (<span class="keyword">select</span> edges.to_, discovered.step + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> edges, discovered</span><br><span class="line">    <span class="keyword">where</span> discovered.node = edges.from_ <span class="keyword">and</span> step &lt; <span class="number">6</span></span><br><span class="line">    )</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> *</span><br><span class="line"><span class="keyword">from</span> discovered;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> node | step </span><br><span class="line"><span class="comment">------+------</span></span><br><span class="line"> a    |    0</span><br><span class="line"> b    |    1</span><br><span class="line"> c    |    2</span><br><span class="line"> d    |    2</span><br><span class="line"> e    |    3</span><br><span class="line"> e    |    3</span><br><span class="line"> b    |    3</span><br><span class="line"> c    |    4</span><br><span class="line"> d    |    4</span><br><span class="line"> e    |    5</span><br><span class="line"> e    |    5</span><br><span class="line"> b    |    5</span><br><span class="line"> c    |    6</span><br><span class="line"> d    |    6</span><br><span class="line">(14 rows)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">step | WorkingTable</span><br><span class="line">init | {a}</span><br><span class="line">1    | {b}</span><br><span class="line">2    | {c, d}</span><br><span class="line">3    | {e, e, b}</span><br><span class="line">4    | {c, d}</span><br><span class="line">5    | {e, e, b}</span><br><span class="line">6    | {c, d}</span><br></pre></td></tr></tbody></table></figure>
+<p>由于这条多加的边，让<code>union all</code>对应的循环一直不终止，即<code>WorkingTable</code>一直不为空。所有我在上面多加了<code>step &lt; 6</code>这个条件，强制６步以后终止。当然如果换用<code>union</code>可以让它终止。</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/27/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-4/" title="[SQL]高级SQL-递归(4)">https://cakebytheoceanluo.github.io/2020/03/27/SQL-高级SQL-递归-4/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/Recursion/" rel="tag"><i class="fa fa-tag"></i> Recursion</a>
+              <a href="/tags/Graph/" rel="tag"><i class="fa fa-tag"></i> Graph</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/26/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-3/" rel="prev" title="[SQL]高级SQL-递归(3)">
+      <i class="fa fa-chevron-left"></i> [SQL]高级SQL-递归(3)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#图论"><span class="nav-number">1.</span> <span class="nav-text">图论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例子"><span class="nav-number">1.1.</span> <span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#寻找传递闭包-Transitive-closure-，即这个图中节点的联通节点-Connectivity"><span class="nav-number">1.1.1.</span> <span class="nav-text">寻找传递闭包(Transitive closure)，即这个图中节点的联通节点(Connectivity):</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6和1是联通-connected-reachable-的吗"><span class="nav-number">1.1.2.</span> <span class="nav-text">6和1是联通(connected, reachable)的吗?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#求6和1的最短距离"><span class="nav-number">1.1.3.</span> <span class="nav-text">求6和1的最短距离?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#例子3"><span class="nav-number">1.1.4.</span> <span class="nav-text">例子3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#求从a开始每一步能到达的节点"><span class="nav-number">1.1.4.1.</span> <span class="nav-text">求从a开始每一步能到达的节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#图被更改-再求从a开始每一步能到达的节点"><span class="nav-number">1.1.4.2.</span> <span class="nav-text">图被更改, 再求从a开始每一步能到达的节点</span></a></li></ol></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">62</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">287k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:21</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/27/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-4/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
