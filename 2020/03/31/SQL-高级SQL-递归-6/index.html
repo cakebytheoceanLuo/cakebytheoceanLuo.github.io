@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Six Degrees of Kevin Bacon具体描述见: https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Six_Degrees_of_Kevin_Bacon Six Degrees of Kevin Bacon或”Bacon’s Law”是基于”six degrees of separation六度分离”，它假定地球上任何两个人相距六个或更少的熟人链接。 比如寻找任意演员和多">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[SQL]高级SQL-递归(6)">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Six Degrees of Kevin Bacon具体描述见: https:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Six_Degrees_of_Kevin_Bacon Six Degrees of Kevin Bacon或”Bacon’s Law”是基于”six degrees of separation六度分离”，它假定地球上任何两个人相距六个或更少的熟人链接。 比如寻找任意演员和多">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-31T20:57:49.000Z">
+<meta property="article:modified_time" content="2020-03-31T20:59:17.857Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="SQL">
+<meta property="article:tag" content="Recursion">
+<meta property="article:tag" content="PostgreSQL">
+<meta property="article:tag" content="Six Degrees of Kevin Bacon">
+<meta property="article:tag" content="BFS">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[SQL]高级SQL-递归(6) | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">56</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">20</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">64</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [SQL]高级SQL-递归(6)
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-31 22:57:49 / 修改时间：22:59:17" itemprop="dateCreated datePublished" datetime="2020-03-31T22:57:49+02:00">2020-03-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]高级SQL-递归(6)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Six-Degrees-of-Kevin-Bacon"><a href="#Six-Degrees-of-Kevin-Bacon" class="headerlink" title="Six Degrees of Kevin Bacon"></a>Six Degrees of Kevin Bacon</h1><p>具体描述见: <span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvU2l4X0RlZ3JlZXNfb2ZfS2V2aW5fQmFjb24=" title="https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon">https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon<i class="fa fa-external-link"></i></span></p>
+<p>Six Degrees of Kevin Bacon或”Bacon’s Law”是基于”six degrees of separation六度分离”，它假定地球上任何两个人相距六个或更少的熟人链接。 比如寻找任意演员和多产演员Kevin Bacon之间的最短路径。 它基于一个假设，即好莱坞电影界的任何人都可以通过其电影角色在六个步骤中将其与Kevin Bacon联系起来。这个概念也类似Fackbook提出的概念。当然在计算机或者算法角度，这是一个BFS广度优先的图问题。通过间接的6步可能会接触非常多人，产生非常大的数据。具体我们会在下面的练习中体验到。</p>
+<p>这里再附上Kevin Bacon的一些链接:</p>
+<ul>
+<li>个人网站(他直接用了six degree这个概念): www.sixdegrees.org</li>
+<li>豆瓣主页: <span class="exturl" data-url="aHR0cHM6Ly9tb3ZpZS5kb3ViYW4uY29tL2NlbGVicml0eS8xMDA5MjYwLw==" title="https://movie.douban.com/celebrity/1009260/">https://movie.douban.com/celebrity/1009260/<i class="fa fa-external-link"></i></span></li>
+</ul>
+<a id="more"></a>
+<h2 id="IMDb数据集"><a href="#IMDb数据集" class="headerlink" title="IMDb数据集"></a>IMDb数据集</h2><p>我们这次使用IMDb数据集，本地载入数据集的方式见我以前的一篇文章: <a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/#IMDb-%E6%95%B0%E6%8D%AE%E9%9B%86">[DBMS]PostgreSQL导入数据集 - IMDb 数据集</a></p>
+<p><br></p>
+<p>我们打开psql的计时器:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">imdb=# \timing</span><br><span class="line">Timing is on.</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="调整buffer-pool和cache大小"><a href="#调整buffer-pool和cache大小" class="headerlink" title="调整buffer pool和cache大小"></a>调整buffer pool和cache大小</h2><p>我们用自己喜欢的文本编辑器去打开<code>/etc/postgresql/10/main/postgresql.conf</code>文件:</p>
+<ul>
+<li>注意我<code>postgresql</code>的版本是<code>10</code></li>
+<li>具体的配置文件位置和<code>postgresql</code>安装位置和安装版本有关</li>
+</ul>
+<p>找到下面对应的<code>shared_buffers</code>建议更改数值为1024MB， <code>work_mem</code>建议更改为1024MB (我都改成比建议值大，这里大家按照自己机器的硬件配置来估计):</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="comment">#------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># RESOURCE USAGE (except WAL)</span></span><br><span class="line"><span class="comment">#------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># - Memory -</span></span><br><span class="line"></span><br><span class="line">shared_buffers = 2048MB                 <span class="comment"># min 128kB</span></span><br><span class="line">                                        <span class="comment"># (change requires restart)</span></span><br><span class="line"><span class="comment">#huge_pages = try                       # on, off, or try</span></span><br><span class="line">                                        <span class="comment"># (change requires restart)</span></span><br><span class="line"><span class="comment">#temp_buffers = 8MB                     # min 800kB </span></span><br><span class="line"><span class="comment">#max_prepared_transactions = 0          # zero disables the feature</span></span><br><span class="line">                                        <span class="comment"># (change requires restart)</span></span><br><span class="line"><span class="comment"># Caution: it is not advisable to set max_prepared_transactions nonzero unless</span></span><br><span class="line"><span class="comment"># you actively intend to use prepared transactions.</span></span><br><span class="line">work_mem = 8196MB                               <span class="comment"># min 64kB  </span></span><br><span class="line">......</span><br></pre></td></tr></tbody></table></figure>
+<p>更改好后保存，执行下面的指令，让psql重启来使配置生效:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo service postgresql restart</span><br></pre></td></tr></tbody></table></figure>
+<p><br></p>
+<h2 id="求Bacon-Kevin演过的电影数量"><a href="#求Bacon-Kevin演过的电影数量" class="headerlink" title="求Bacon, Kevin演过的电影数量"></a>求<code>Bacon, Kevin</code>演过的电影数量</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> movie_name)</span><br><span class="line"><span class="keyword">from</span> playedin_text</span><br><span class="line"><span class="keyword">where</span> actor_name = <span class="string">'Bacon, Kevin'</span>;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> count </span><br><span class="line"><span class="comment">-------</span></span><br><span class="line">   322</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">Time: 838.464 ms</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="找到Bacon-Number小于等于1的演员数量"><a href="#找到Bacon-Number小于等于1的演员数量" class="headerlink" title="找到Bacon Number小于等于1的演员数量"></a>找到Bacon Number小于等于1的演员数量</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> baconnr (<span class="keyword">id</span>, nr) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="string">'Bacon, Kevin'</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">    <span class="keyword">select</span> p2.actor_name, baconnr.nr + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> baconnr, playedin_text p1, playedin_text p2</span><br><span class="line">    <span class="keyword">where</span> baconnr.id = p1.actor_name <span class="keyword">and</span> </span><br><span class="line">          p1.movie_name = p2.movie_name <span class="keyword">and</span> </span><br><span class="line">          baconnr.nr &lt; <span class="number">1</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) </span><br><span class="line"><span class="keyword">from</span> baconnr;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> count </span><br><span class="line"><span class="comment">-------</span></span><br><span class="line"> 35893</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">Time: 5718.960 ms (00:05.719)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="找到Bacon-Number小于等于2的演员数量-一次尝试"><a href="#找到Bacon-Number小于等于2的演员数量-一次尝试" class="headerlink" title="找到Bacon Number小于等于2的演员数量 - 一次尝试"></a>找到Bacon Number小于等于2的演员数量 - 一次尝试</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> baconnr (<span class="keyword">id</span>, nr) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="string">'Bacon, Kevin'</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">union</span></span><br><span class="line">    <span class="keyword">select</span> p2.actor_name, baconnr.nr + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> baconnr, playedin_text p1, playedin_text p2</span><br><span class="line">    <span class="keyword">where</span> baconnr.id = p1.actor_name <span class="keyword">and</span> </span><br><span class="line">          p1.movie_name = p2.movie_name <span class="keyword">and</span> </span><br><span class="line">          baconnr.nr &lt; <span class="number">2</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(*) </span><br><span class="line"><span class="keyword">from</span> baconnr;</span><br></pre></td></tr></tbody></table></figure>
+<p>很可惜这条SQL在我的电脑上十分钟内无法终止。本质上这属于一个广度搜索，我们可能会重复接触到很多人，这使这条SQL在短时间内不能终止。</p>
+<h3 id="cardinality"><a href="#cardinality" class="headerlink" title="cardinality"></a>cardinality</h3><p>即Bacon Number等于1，但是存在重复</p>
+<p>the size of intermediate results</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(p2.actor_name)</span><br><span class="line"><span class="keyword">from</span> playedin_text p1, playedin_text p2</span><br><span class="line"><span class="keyword">where</span> p1.actor_name = <span class="string">'Bacon, Kevin'</span> <span class="keyword">and</span> p1.movie_name = p2.movie_name;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  count  </span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"> 1391638</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">Time: 11896.991 ms (00:11.897)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="找到Bacon-Number小于等于2的演员数量-除去重复"><a href="#找到Bacon-Number小于等于2的演员数量-除去重复" class="headerlink" title="找到Bacon Number小于等于2的演员数量 - 除去重复"></a>找到Bacon Number小于等于2的演员数量 - 除去重复</h2><p>使用<code>union all</code>和<code>select distinct</code>:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> baconnr (actor_name, nr) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="string">'Bacon, Kevin'</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">distinct</span> p2.actor_name, movies.nr + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">distinct</span> p1.movie_name, baconnr.nr</span><br><span class="line">          <span class="keyword">from</span> baconnr, playedin_text p1</span><br><span class="line">          <span class="keyword">where</span> baconnr.actor_name = p1.actor_name</span><br><span class="line">         ) movies,</span><br><span class="line">         playedin_text p2</span><br><span class="line">    <span class="keyword">where</span> movies.movie_name = p2.movie_name <span class="keyword">and</span> movies.nr &lt; <span class="number">2</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> actor_name)</span><br><span class="line"><span class="keyword">from</span> baconnr;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  count  </span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"> 1046450</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">Time: 27453.873 ms (00:27.454)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="找到Bacon-Number小于等于2的演员数量-除去重复-1"><a href="#找到Bacon-Number小于等于2的演员数量-除去重复-1" class="headerlink" title="找到Bacon Number小于等于2的演员数量 - 除去重复"></a>找到Bacon Number小于等于2的演员数量 - 除去重复</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> baconnr (actor_name, nr) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="string">'Bacon, Kevin'</span>, <span class="number">0</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">distinct</span> p2.actor_name, movies.nr + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span> (<span class="keyword">select</span> <span class="keyword">distinct</span> p1.movie_name, baconnr.nr</span><br><span class="line">          <span class="keyword">from</span> baconnr, playedin_text p1</span><br><span class="line">          <span class="keyword">where</span> baconnr.actor_name = p1.actor_name</span><br><span class="line">         ) movies,</span><br><span class="line">         playedin_text p2</span><br><span class="line">    <span class="keyword">where</span> movies.movie_name = p2.movie_name <span class="keyword">and</span> movies.nr &lt; <span class="number">3</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span>(<span class="keyword">distinct</span> actor_name)</span><br><span class="line"><span class="keyword">from</span> baconnr;</span><br></pre></td></tr></tbody></table></figure>
+<p><br><br><br><br><br></p>
+<h2 id="string-to-int"><a href="#string-to-int" class="headerlink" title="string to int"></a>string to int</h2><p>对string的操作是相对昂贵的，但是对int的操作是相对廉价的。我们新建对应的几个新的表格，使用int, 这样也可以降低表格的大小。</p>
+<ul>
+<li>table actors (id::integer, name::text)</li>
+<li>table movies (id::integer, name::text)</li>
+<li>table playedin (actor::integer, movies::integer)</li>
+</ul>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> movies (<span class="keyword">id</span> <span class="built_in">serial</span> primary <span class="keyword">key</span>, <span class="keyword">name</span> <span class="built_in">text</span> <span class="keyword">not</span> <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> actors (<span class="keyword">id</span> <span class="built_in">serial</span> primary <span class="keyword">key</span>, <span class="keyword">name</span> <span class="built_in">text</span> <span class="keyword">not</span> <span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> playedin (</span><br><span class="line">    movie <span class="built_in">integer</span> <span class="keyword">references</span> movies (<span class="keyword">id</span>),</span><br><span class="line">    actor <span class="built_in">integer</span> <span class="keyword">references</span> actors (<span class="keyword">id</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> actors (<span class="keyword">name</span>) <span class="keyword">select</span> <span class="keyword">distinct</span> actor_name <span class="keyword">from</span> playedin_text;</span><br><span class="line"></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> movies (<span class="keyword">name</span>) <span class="keyword">select</span> <span class="keyword">distinct</span> movie_name <span class="keyword">from</span> playedin_text;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- read from all</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> playedin (actor, movie)</span><br><span class="line"><span class="keyword">select</span> actors.id, movies.id</span><br><span class="line"><span class="keyword">from</span> actors, movies, playedin_text p</span><br><span class="line"><span class="keyword">where</span> p.actor_name = actors.name <span class="keyword">and</span> p.movie_name = movies.name;</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="找到Bacon-Number小于等于6的演员数量"><a href="#找到Bacon-Number小于等于6的演员数量" class="headerlink" title="找到Bacon Number小于等于6的演员数量"></a>找到Bacon Number小于等于6的演员数量</h2><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">with</span> <span class="keyword">recursive</span> baconnr (<span class="keyword">id</span>, nr) <span class="keyword">as</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">id</span> , <span class="number">0</span></span><br><span class="line">    <span class="keyword">from</span> actors</span><br><span class="line">    <span class="keyword">where</span> <span class="keyword">name</span> = <span class="string">'Bacon, Kevin'</span></span><br><span class="line">    <span class="keyword">union</span> <span class="keyword">all</span></span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">distinct</span> p2.actor, movies.nr + <span class="number">1</span></span><br><span class="line">    <span class="keyword">from</span></span><br><span class="line">    ( <span class="keyword">select</span> <span class="keyword">distinct</span> p1.movie, baconnr.nr</span><br><span class="line">    <span class="keyword">from</span> baconnr, playedin p1</span><br><span class="line">    <span class="keyword">where</span> baconnr.id = p1.actor) movies,</span><br><span class="line">    playedin p2</span><br><span class="line">    <span class="keyword">where</span> movies.movie = p2.movie <span class="keyword">and</span> movies.nr &lt; <span class="number">5</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">select</span> <span class="keyword">count</span> (<span class="keyword">distinct</span> <span class="keyword">id</span>)</span><br><span class="line"><span class="keyword">from</span> baconnr;</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">  count  </span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"> 1821293</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">Time: 175282.570 ms (02:55.283)</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>数据集(以及现实世界)中甚至有Bacon Number为7的演员，这里我们就不再继续了。大家如果能实验一下，了解主旨就很好。</p>
+<p><br><br><br><br><br></p>
+<h2 id="Optional-找到Bacon-Number小于等于6的演员数量-Query-Plan"><a href="#Optional-找到Bacon-Number小于等于6的演员数量-Query-Plan" class="headerlink" title="Optional: 找到Bacon Number小于等于6的演员数量 - Query Plan"></a>Optional: 找到Bacon Number小于等于6的演员数量 - Query Plan</h2><p>这部分是可选的，而不是必须的。这部分我附上了上一个SQL对应的Query Plan。</p>
+<ul>
+<li>我打开了多线程选项: <code>testdb=# set max_parallel_workers_per_gather = 4;</code>, 对应下面的Query Plan中的Workers。</li>
+<li>我使用了绝对大的buffer pool去容纳所有的page, 因此下面Query Plan只有<code>shared hit</code>， 而没有<code>shared read</code></li>
+</ul>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line">imdb=# explain (analyze, buffers) with recursive baconnr (id, nr) as (</span><br><span class="line">    select id , <span class="number">0</span></span><br><span class="line">    from actors</span><br><span class="line">    where name = 'Bacon, Kevin'</span><br><span class="line">    <span class="keyword">union</span> all</span><br><span class="line">    select distinct p2.actor, movies.nr + <span class="number">1</span></span><br><span class="line">    from</span><br><span class="line">    ( select distinct p1.movie, baconnr.nr</span><br><span class="line">    from baconnr, playedin p1</span><br><span class="line">    where baconnr.id = p1.actor) movies,</span><br><span class="line">    playedin p2</span><br><span class="line">    where movies.movie = p2.movie <span class="keyword">and</span> movies.nr &lt; <span class="number">5</span></span><br><span class="line">)</span><br><span class="line">select count (distinct id)</span><br><span class="line">from baconnr;</span><br><span class="line">                                                                                QUERY PLAN                                                                                </span><br><span class="line">--------------------------------------------------------------------------------------------------------------------------------------------------------------------------</span><br><span class="line"> Aggregate  (cost=<span class="number">3243681.47</span>.<span class="number">.3243681</span><span class="number">.48</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">181539.730</span>.<span class="number">.181539</span><span class="number">.730</span> rows=<span class="number">1</span> loops=<span class="number">1</span>)</span><br><span class="line">   Buffers: shared hit=<span class="number">72933155</span></span><br><span class="line">   CTE baconnr</span><br><span class="line">     -&gt;  Recursive Union  (cost=<span class="number">1000.00</span>.<span class="number">.3196845</span><span class="number">.00</span> rows=<span class="number">2081621</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">1.375</span>.<span class="number">.178161</span><span class="number">.180</span> rows=<span class="number">6480755</span> loops=<span class="number">1</span>)</span><br><span class="line">           Buffers: shared hit=<span class="number">72933155</span></span><br><span class="line">           -&gt;  Gather  (cost=<span class="number">1000.00</span>.<span class="number">.23770</span><span class="number">.35</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">1.366</span>.<span class="number">.65</span><span class="number">.451</span> rows=<span class="number">1</span> loops=<span class="number">1</span>)</span><br><span class="line">                 Workers Planned: <span class="number">2</span></span><br><span class="line">                 Workers Launched: <span class="number">2</span></span><br><span class="line">                 Buffers: shared hit=<span class="number">12501</span></span><br><span class="line">                 -&gt;  Parallel Seq Scan on actors  (cost=<span class="number">0.00</span>.<span class="number">.22770</span><span class="number">.25</span> rows=<span class="number">1</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">40.406</span>.<span class="number">.61</span><span class="number">.732</span> rows=<span class="number">0</span> loops=<span class="number">3</span>)</span><br><span class="line">                       Filter: (name = 'Bacon, Kevin'::text)</span><br><span class="line">                       Rows Removed by Filter: <span class="number">657232</span></span><br><span class="line">                       Buffers: shared hit=<span class="number">12501</span></span><br><span class="line">           -&gt;  HashAggregate  (cost=<span class="number">310542.20</span>.<span class="number">.313144</span><span class="number">.22</span> rows=<span class="number">208162</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">29230.371</span>.<span class="number">.29512</span><span class="number">.804</span> rows=<span class="number">1080126</span> loops=<span class="number">6</span>)</span><br><span class="line">                 Group Key: p2.actor, (baconnr_1.nr + <span class="number">1</span>)</span><br><span class="line">                 Buffers: shared hit=<span class="number">72920654</span></span><br><span class="line">                 -&gt;  Nested Loop  (cost=<span class="number">2384.03</span>.<span class="number">.309501</span><span class="number">.39</span> rows=<span class="number">208162</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">13040.311</span>.<span class="number">.25542</span><span class="number">.265</span> rows=<span class="number">10389484</span> loops=<span class="number">6</span>)</span><br><span class="line">                       Buffers: shared hit=<span class="number">72920654</span></span><br><span class="line">                       -&gt;  HashAggregate  (cost=<span class="number">2376.97</span>.<span class="number">.2383</span><span class="number">.06</span> rows=<span class="number">609</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">13039.878</span>.<span class="number">.13290</span><span class="number">.218</span> rows=<span class="number">570802</span> loops=<span class="number">6</span>)</span><br><span class="line">                             Group Key: p1.movie, baconnr_1.nr</span><br><span class="line">                             Buffers: shared hit=<span class="number">30919755</span></span><br><span class="line">                             -&gt;  Nested Loop  (cost=<span class="number">6.01</span>.<span class="number">.2373</span><span class="number">.92</span> rows=<span class="number">609</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">16.277</span>.<span class="number">.9987</span><span class="number">.675</span> rows=<span class="number">8778940</span> loops=<span class="number">6</span>)</span><br><span class="line">                                   Buffers: shared hit=<span class="number">30919755</span></span><br><span class="line">                                   -&gt;  WorkTable Scan on baconnr baconnr_1  (cost=<span class="number">0.00</span>.<span class="number">.0</span><span class="number">.22</span> rows=<span class="number">3</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">16.246</span>.<span class="number">.173</span><span class="number">.118</span> rows=<span class="number">776577</span> loops=<span class="number">6</span>)</span><br><span class="line">                                         Filter: (nr &lt; <span class="number">5</span>)</span><br><span class="line">                                         Rows Removed by Filter: <span class="number">303549</span></span><br><span class="line">                                   -&gt;  Bitmap Heap Scan on playedin p1  (cost=<span class="number">6.01</span>.<span class="number">.789</span><span class="number">.20</span> rows=<span class="number">203</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">0.006</span>.<span class="number">.0</span><span class="number">.010</span> rows=<span class="number">11</span> loops=<span class="number">4659462</span>)</span><br><span class="line">                                         Recheck Cond: (actor = baconnr_1.id)</span><br><span class="line">                                         Heap Blocks: exact=<span class="number">16784601</span></span><br><span class="line">                                         Buffers: shared hit=<span class="number">30919755</span></span><br><span class="line">                                         -&gt;  Bitmap Index Scan on playedin_actor_idx  (cost=<span class="number">0.00</span>.<span class="number">.5</span><span class="number">.96</span> rows=<span class="number">203</span> <span class="built_in">width</span>=<span class="number">0</span>) (actual time=<span class="number">0.004</span>.<span class="number">.0</span><span class="number">.004</span> rows=<span class="number">11</span> loops=<span class="number">4659462</span>)</span><br><span class="line">                                               Index Cond: (actor = baconnr_1.id)</span><br><span class="line">                                               Buffers: shared hit=<span class="number">14135154</span></span><br><span class="line">                       -&gt;  Bitmap Heap Scan on playedin p2  (cost=<span class="number">7.07</span>.<span class="number">.500</span><span class="number">.01</span> rows=<span class="number">342</span> <span class="built_in">width</span>=<span class="number">8</span>) (actual time=<span class="number">0.007</span>.<span class="number">.0</span><span class="number">.018</span> rows=<span class="number">18</span> loops=<span class="number">3424813</span>)</span><br><span class="line">                             Recheck Cond: (movie = p1.movie)</span><br><span class="line">                             Heap Blocks: exact=<span class="number">31546852</span></span><br><span class="line">                             Buffers: shared hit=<span class="number">42000899</span></span><br><span class="line">                             -&gt;  Bitmap Index Scan on playedin_movie_idx  (cost=<span class="number">0.00</span>.<span class="number">.6</span><span class="number">.98</span> rows=<span class="number">342</span> <span class="built_in">width</span>=<span class="number">0</span>) (actual time=<span class="number">0.005</span>.<span class="number">.0</span><span class="number">.005</span> rows=<span class="number">18</span> loops=<span class="number">3424813</span>)</span><br><span class="line">                                   Index Cond: (movie = p1.movie)</span><br><span class="line">                                   Buffers: shared hit=<span class="number">10454047</span></span><br><span class="line">   -&gt;  CTE Scan on baconnr  (cost=<span class="number">0.00</span>.<span class="number">.41632</span><span class="number">.42</span> rows=<span class="number">2081621</span> <span class="built_in">width</span>=<span class="number">4</span>) (actual time=<span class="number">1.379</span>.<span class="number">.179511</span><span class="number">.482</span> rows=<span class="number">6480755</span> loops=<span class="number">1</span>)</span><br><span class="line">         Buffers: shared hit=<span class="number">72933155</span></span><br><span class="line"> Planning time: <span class="number">0.260</span> ms</span><br><span class="line"> Execution time: <span class="number">181676.112</span> ms</span><br><span class="line">(<span class="number">44</span> rows)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">181676.868</span> ms (<span class="number">03</span>:<span class="number">01.677</span>)</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Optional-Buffer-Pool预加载"><a href="#Optional-Buffer-Pool预加载" class="headerlink" title="Optional: Buffer Pool预加载"></a>Optional: Buffer Pool预加载</h2><p>这部分是可选的，而不是必须的。这部分的具体解释见我的另一个实验 <a href="https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/">[DBMS][PostgreSQL] 缓存区管理 BufferPool</a></p>
+<p>我们可以通过如下的方式，在执行我们的SQL之前，将需要的page预加载进buffer pool:</p>
+<figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">imdb=# CREATE EXTENSION pg_prewarm;</span><br><span class="line">CREATE EXTENSION</span><br><span class="line"></span><br><span class="line">imdb=# select * from pg_prewarm('actors');</span><br><span class="line"> pg_prewarm </span><br><span class="line">------------</span><br><span class="line">      <span class="number">12501</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">71.137</span> ms</span><br><span class="line">imdb=# select * from pg_prewarm('movies');</span><br><span class="line"> pg_prewarm </span><br><span class="line">------------</span><br><span class="line">       <span class="number">8396</span></span><br><span class="line">(<span class="number">1</span> row)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">88.954</span> ms</span><br><span class="line">imdb=# select * from pg_prewarm('playedin');</span><br><span class="line"> pg_prewarm </span><br><span class="line">------------</span><br><span class="line">      <span class="number">76623</span></span><br><span class="line">(<span class="number">1</span> row)</span><br></pre></td></tr></tbody></table></figure><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/" title="[SQL]高级SQL-递归(6)">https://cakebytheoceanluo.github.io/2020/03/31/SQL-高级SQL-递归-6/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
+              <a href="/tags/Recursion/" rel="tag"><i class="fa fa-tag"></i> Recursion</a>
+              <a href="/tags/PostgreSQL/" rel="tag"><i class="fa fa-tag"></i> PostgreSQL</a>
+              <a href="/tags/Six-Degrees-of-Kevin-Bacon/" rel="tag"><i class="fa fa-tag"></i> Six Degrees of Kevin Bacon</a>
+              <a href="/tags/BFS/" rel="tag"><i class="fa fa-tag"></i> BFS</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/30/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-5/" rel="prev" title="[SQL]高级SQL-递归(5)">
+      <i class="fa fa-chevron-left"></i> [SQL]高级SQL-递归(5)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Six-Degrees-of-Kevin-Bacon"><span class="nav-number">1.</span> <span class="nav-text">Six Degrees of Kevin Bacon</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IMDb数据集"><span class="nav-number">1.1.</span> <span class="nav-text">IMDb数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调整buffer-pool和cache大小"><span class="nav-number">1.2.</span> <span class="nav-text">调整buffer pool和cache大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求Bacon-Kevin演过的电影数量"><span class="nav-number">1.3.</span> <span class="nav-text">求Bacon, Kevin演过的电影数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找到Bacon-Number小于等于1的演员数量"><span class="nav-number">1.4.</span> <span class="nav-text">找到Bacon Number小于等于1的演员数量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找到Bacon-Number小于等于2的演员数量-一次尝试"><span class="nav-number">1.5.</span> <span class="nav-text">找到Bacon Number小于等于2的演员数量 - 一次尝试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cardinality"><span class="nav-number">1.5.1.</span> <span class="nav-text">cardinality</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找到Bacon-Number小于等于2的演员数量-除去重复"><span class="nav-number">1.6.</span> <span class="nav-text">找到Bacon Number小于等于2的演员数量 - 除去重复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找到Bacon-Number小于等于2的演员数量-除去重复-1"><span class="nav-number">1.7.</span> <span class="nav-text">找到Bacon Number小于等于2的演员数量 - 除去重复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string-to-int"><span class="nav-number">1.8.</span> <span class="nav-text">string to int</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#找到Bacon-Number小于等于6的演员数量"><span class="nav-number">1.9.</span> <span class="nav-text">找到Bacon Number小于等于6的演员数量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结束语"><span class="nav-number">2.</span> <span class="nav-text">结束语</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Optional-找到Bacon-Number小于等于6的演员数量-Query-Plan"><span class="nav-number">2.1.</span> <span class="nav-text">Optional: 找到Bacon Number小于等于6的演员数量 - Query Plan</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optional-Buffer-Pool预加载"><span class="nav-number">2.2.</span> <span class="nav-text">Optional: Buffer Pool预加载</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">298k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">4:31</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/',]
+      });
+      });
+  </script>
+
+</body>
+</html>

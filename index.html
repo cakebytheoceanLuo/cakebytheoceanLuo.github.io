@@ -142,7 +142,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">54</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">56</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">63</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">64</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,116 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/" class="post-title-link" itemprop="url">[SQL]高级SQL-递归(6)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-31 22:57:49 / 修改时间：22:59:17" itemprop="dateCreated datePublished" datetime="2020-03-31T22:57:49+02:00">2020-03-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]高级SQL-递归(6)" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="Six-Degrees-of-Kevin-Bacon"><a href="#Six-Degrees-of-Kevin-Bacon" class="headerlink" title="Six Degrees of Kevin Bacon"></a>Six Degrees of Kevin Bacon</h1><p>具体描述见: <span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvU2l4X0RlZ3JlZXNfb2ZfS2V2aW5fQmFjb24=" title="https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon">https://en.wikipedia.org/wiki/Six_Degrees_of_Kevin_Bacon<i class="fa fa-external-link"></i></span></p>
+<p>Six Degrees of Kevin Bacon或”Bacon’s Law”是基于”six degrees of separation六度分离”，它假定地球上任何两个人相距六个或更少的熟人链接。 比如寻找任意演员和多产演员Kevin Bacon之间的最短路径。 它基于一个假设，即好莱坞电影界的任何人都可以通过其电影角色在六个步骤中将其与Kevin Bacon联系起来。这个概念也类似Fackbook提出的概念。当然在计算机或者算法角度，这是一个BFS广度优先的图问题。通过间接的6步可能会接触非常多人，产生非常大的数据。具体我们会在下面的练习中体验到。</p>
+<p>这里再附上Kevin Bacon的一些链接:</p>
+<ul>
+<li>个人网站(他直接用了six degree这个概念): www.sixdegrees.org</li>
+<li>豆瓣主页: <span class="exturl" data-url="aHR0cHM6Ly9tb3ZpZS5kb3ViYW4uY29tL2NlbGVicml0eS8xMDA5MjYwLw==" title="https://movie.douban.com/celebrity/1009260/">https://movie.douban.com/celebrity/1009260/<i class="fa fa-external-link"></i></span></li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/31/SQL-%E9%AB%98%E7%BA%A7SQL-%E9%80%92%E5%BD%92-6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1157,128 +1267,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/" class="post-title-link" itemprop="url">[DBMS][PostgreSQL]缓存区管理BufferPool</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-17 19:46:09 / 修改时间：20:15:05" itemprop="dateCreated datePublished" datetime="2020-03-17T19:46:09+01:00">2020-03-17</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Buffer-Management/" itemprop="url" rel="index"><span itemprop="name">Buffer Management</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS][PostgreSQL]缓存区管理BufferPool" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>6 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这篇文章服务于<a href="https://cakebytheoceanluo.github.io/2020/03/17/CMU-15445-Lec05/">[CMU-15445]Lec05</a></p>
-<p>我们沿用上一个实验的数据集和数据库:</p>
-<ul>
-<li>上一个实验，见<a href="https://cakebytheoceanluo.github.io/2020/03/16/DBMS-Postgres%E7%B2%BE%E5%BA%A6%E9%97%AE%E9%A2%98precision-numbers/">[DBMS]Postgres浮点数，定点数精度问题 precision_numbers</a></li>
-<li>具体数据集，见<a href="https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/#CMU-15445-%E5%88%86%E6%95%B0%E6%95%B0%E6%8D%AE%E9%9B%86-Mock">[DBMS] PostgreSQL 导入数据集: CMU-15445 分数数据集 (Mock)</a></li>
-</ul>
-<p>这个实验的目的是观察PostgreSQL: </p>
-<ul>
-<li>buffer pool对Query性能的影响,</li>
-<li>操作系统文件缓存区对Query在page fault的影响，因为PostgreSQL不使用direct I/O</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1351,7 +1339,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">64</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1364,7 +1352,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">54</span>
+        <span class="site-state-item-count">56</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1430,13 +1418,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">289k</span>
+    <span title="站点总字数">298k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:23</span>
+    <span title="站点阅读时长">4:31</span>
 </div>
 
         
