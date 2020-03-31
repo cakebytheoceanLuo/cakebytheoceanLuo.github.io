@@ -7,7 +7,7 @@
 <p>Six Degrees of Kevin Bacon或”Bacon’s Law”是基于”six degrees of separation六度分离”，它假定地球上任何两个人相距六个或更少的熟人链接。 比如寻找任意演员和多产演员Kevin Bacon之间的最短路径。 它基于一个假设，即好莱坞电影界的任何人都可以通过其电影角色在六个步骤中将其与Kevin Bacon联系起来。这个概念也类似Fackbook提出的概念。当然在计算机或者算法角度，这是一个BFS广度优先的图问题。通过间接的6步可能会接触非常多人，产生非常大的数据。具体我们会在下面的练习中体验到。</p>
 <p>这里再附上Kevin Bacon的一些链接:</p>
 <ul>
-<li>个人网站(他直接用了six degree这个概念): www.sixdegrees.org</li>
+<li>个人网站(他直接用了six degree这个概念): <span class="exturl" data-url="aHR0cHM6Ly93d3cuc2l4ZGVncmVlcy5vcmc=" title="https://www.sixdegrees.org">https://www.sixdegrees.org<i class="fa fa-external-link"></i></span></li>
 <li>豆瓣主页: <span class="exturl" data-url="aHR0cHM6Ly9tb3ZpZS5kb3ViYW4uY29tL2NlbGVicml0eS8xMDA5MjYwLw==" title="https://movie.douban.com/celebrity/1009260/">https://movie.douban.com/celebrity/1009260/<i class="fa fa-external-link"></i></span></li>
 </ul>
 <a id="more"></a>
@@ -51,7 +51,7 @@
 <figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">  count  </span><br><span class="line"><span class="comment">---------</span></span><br><span class="line"> 1821293</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">Time: 175282.570 ms (02:55.283)</span><br></pre></td></tr></tbody></table></figure>
 <h1 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h1><p>数据集(以及现实世界)中甚至有Bacon Number为7的演员，这里我们就不再继续了。大家如果能实验一下，了解主旨就很好。</p>
 <p><br><br><br><br><br></p>
-<h2 id="Optional-找到Bacon-Number小于等于6的演员数量-Query-Plan"><a href="#Optional-找到Bacon-Number小于等于6的演员数量-Query-Plan" class="headerlink" title="Optional: 找到Bacon Number小于等于6的演员数量 - Query Plan"></a>Optional: 找到Bacon Number小于等于6的演员数量 - Query Plan</h2><p>这部分是可选的，而不是必须的。这部分我附上了上一个SQL对应的Query Plan。</p>
+<h1 id="Optional"><a href="#Optional" class="headerlink" title="Optional"></a>Optional</h1><h2 id="Optional-找到Bacon-Number小于等于6的演员数量-Query-Plan"><a href="#Optional-找到Bacon-Number小于等于6的演员数量-Query-Plan" class="headerlink" title="Optional: 找到Bacon Number小于等于6的演员数量 - Query Plan"></a>Optional: 找到Bacon Number小于等于6的演员数量 - Query Plan</h2><p>这部分是可选的，而不是必须的。这部分我附上了上一个SQL对应的Query Plan。</p>
 <ul>
 <li>我打开了多线程选项: <code>testdb=# set max_parallel_workers_per_gather = 4;</code>, 对应下面的Query Plan中的Workers。</li>
 <li>我使用了绝对大的buffer pool去容纳所有的page, 因此下面Query Plan只有<code>shared hit</code>， 而没有<code>shared read</code></li>
