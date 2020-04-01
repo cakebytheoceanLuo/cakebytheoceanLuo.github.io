@@ -147,12 +147,12 @@
   </li>
         <li class="menu-item menu-item-categories">
 
-    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">20</span></a>
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">21</span></a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">64</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">65</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,114 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/13/SQL-Leetcode-620-not-boring-movies/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/13/SQL-Leetcode-620-not-boring-movies/" class="post-title-link" itemprop="url">[Leetcode-SQL] 620.not.boring.movies</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-13 19:44:03 / 修改时间：19:49:54" itemprop="dateCreated datePublished" datetime="2020-03-13T19:44:03+01:00">2020-03-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/13/SQL-Leetcode-620-not-boring-movies/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 620.not.boring.movies" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>627.Swap Salary</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> cinema (<span class="keyword">id</span> <span class="built_in">int</span>, movie <span class="built_in">varchar</span>(<span class="number">255</span>), description <span class="built_in">varchar</span>(<span class="number">255</span>), rating <span class="built_in">float</span>(<span class="number">2</span>, <span class="number">1</span>));</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> cinema</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'War'</span>, <span class="string">'great 3D'</span>, <span class="string">'8.9'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Science'</span>, <span class="string">'fiction'</span>, <span class="string">'8.5'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'irish'</span>, <span class="string">'boring'</span>, <span class="string">'6.2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Ice song'</span>, <span class="string">'Fantacy'</span>, <span class="string">'8.6'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'House card'</span>, <span class="string">'Interesting'</span>, <span class="string">'9.1'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> cinema;</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> cinema (<span class="keyword">id</span> <span class="built_in">int</span>, movie <span class="built_in">varchar</span>(<span class="number">255</span>), description <span class="built_in">varchar</span>(<span class="number">255</span>), rating <span class="built_in">decimal</span>(<span class="number">2</span>, <span class="number">1</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'War'</span>, <span class="string">'great 3D'</span>, <span class="string">'8.9'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Science'</span>, <span class="string">'fiction'</span>, <span class="string">'8.5'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'irish'</span>, <span class="string">'boring'</span>, <span class="string">'6.2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Ice song'</span>, <span class="string">'Fantacy'</span>, <span class="string">'8.6'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> cinema (<span class="keyword">id</span>, movie, description, rating) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'House card'</span>, <span class="string">'Interesting'</span>, <span class="string">'9.1'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>X city opened a new cinema, many people would like to go to this cinema. The cinema also gives out a poster indicating the movies’ ratings and descriptions.<br>Please write a SQL query to output movies with an odd numbered ID and a description that is not ‘boring’. Order the result by rating.</p>
+<p>For example, table <code>cinema</code>:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+-----------+--------------+-----------+</span></span><br><span class="line">|   id    | movie     |  description |  rating   |</span><br><span class="line">+<span class="comment">---------+-----------+--------------+-----------+</span></span><br><span class="line">|   1     | War       |   great 3D   |   8.9     |</span><br><span class="line">|   2     | Science   |   fiction    |   8.5     |</span><br><span class="line">|   3     | irish     |   boring     |   6.2     |</span><br><span class="line">|   4     | Ice song  |   Fantacy    |   8.6     |</span><br><span class="line">|   5     | House card|   Interesting|   9.1     |</span><br><span class="line">+<span class="comment">---------+-----------+--------------+-----------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>For the example above, the output should be:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+-----------+--------------+-----------+</span></span><br><span class="line">|   id    | movie     |  description |  rating   |</span><br><span class="line">+<span class="comment">---------+-----------+--------------+-----------+</span></span><br><span class="line">|   5     | House card|   Interesting|   9.1     |</span><br><span class="line">|   1     | War       |   great 3D   |   8.9     |</span><br><span class="line">+<span class="comment">---------+-----------+--------------+-----------+</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/13/SQL-Leetcode-620-not-boring-movies/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1195,117 +1303,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/" class="post-title-link" itemprop="url">[Leetcode-SQL] 185.department.top.three.salaries</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-10 15:09:14 / 修改时间：15:13:32" itemprop="dateCreated datePublished" datetime="2020-03-10T15:09:14+01:00">2020-03-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 185.department.top.three.salaries" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>185.Department Top Three Salaries</p>
-<p>SQL Schema:</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, DepartmentId <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Department (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Employee</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Janet'</span>, <span class="string">'69000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'Randy'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'Will'</span>, <span class="string">'70000'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Department</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'IT'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Sales'</span>)</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Employee;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Department;</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, DepartmentId <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> Department (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Janet'</span>, <span class="string">'69000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'Randy'</span>, <span class="string">'85000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, DepartmentId) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'Will'</span>, <span class="string">'70000'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'IT'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">Id</span>, <span class="keyword">Name</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Sales'</span>);</span><br></pre></td></tr></tbody></table></figure>
-<p>The <code>Employee</code> table holds all employees. Every employee has an Id, a salary, and there is also a column for the department Id.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br><span class="line">| Id | Name  | Salary | DepartmentId |</span><br><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br><span class="line">| 1  | Joe   | 85000  | 1            |</span><br><span class="line">| 2  | Henry | 80000  | 2            |</span><br><span class="line">| 3  | Sam   | 60000  | 2            |</span><br><span class="line">| 4  | Max   | 90000  | 1            |</span><br><span class="line">| 5  | Janet | 69000  | 1            |</span><br><span class="line">| 6  | Randy | 85000  | 1            |</span><br><span class="line">| 7  | Will  | 70000  | 1            |</span><br><span class="line">+<span class="comment">----+-------+--------+--------------+</span></span><br></pre></td></tr></tbody></table></figure>
-<p>The <code>Department</code> table holds all departments of the company.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+----------+</span></span><br><span class="line">| Id | Name     |</span><br><span class="line">+<span class="comment">----+----------+</span></span><br><span class="line">| 1  | IT       |</span><br><span class="line">| 2  | Sales    |</span><br><span class="line">+<span class="comment">----+----------+</span></span><br></pre></td></tr></tbody></table></figure>
-<p>Write a SQL query to find employees who earn the top three salaries in each of the department. For the above tables, your SQL query should return the following rows (order of rows does not matter).</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">------------+----------+--------+</span></span><br><span class="line">| Department | Employee | Salary |</span><br><span class="line">+<span class="comment">------------+----------+--------+</span></span><br><span class="line">| IT         | Max      | 90000  |</span><br><span class="line">| IT         | Randy    | 85000  |</span><br><span class="line">| IT         | Joe      | 85000  |</span><br><span class="line">| IT         | Will     | 70000  |</span><br><span class="line">| Sales      | Henry    | 80000  |</span><br><span class="line">| Sales      | Sam      | 60000  |</span><br><span class="line">+<span class="comment">------------+----------+--------+</span></span><br></pre></td></tr></tbody></table></figure>
-<p>Explanation:</p>
-<p>In IT department, Max earns the highest salary, both Randy and Joe earn the second highest salary, and Will earns the third highest salary. There are only two employees in the Sales department, Henry earns the highest salary while Sam earns the second highest salary.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/10/SQL-Leetcode-185-department-top-three-salaries/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1378,14 +1375,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">64</span>
+          <span class="site-state-item-count">65</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1457,13 +1454,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">298k</span>
+    <span title="站点总字数">301k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:31</span>
+    <span title="站点阅读时长">4:33</span>
 </div>
 
         
