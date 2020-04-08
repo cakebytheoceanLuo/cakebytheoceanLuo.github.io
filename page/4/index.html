@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">69</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">70</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,113 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/12/SQL-Leetcode-197-rising-temperature/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/12/SQL-Leetcode-197-rising-temperature/" class="post-title-link" itemprop="url">[Leetcode-SQL] 197.rising.temperature</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-12 20:09:58 / 修改时间：22:26:59" itemprop="dateCreated datePublished" datetime="2020-03-12T20:09:58+01:00">2020-03-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/12/SQL-Leetcode-197-rising-temperature/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 197.rising.temperature" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>197.Rising Temperature</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Weather (<span class="keyword">Id</span> <span class="built_in">int</span>, RecordDate <span class="built_in">date</span>, Temperature <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Weather;</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'2015-01-01'</span>, <span class="string">'10'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2015-01-02'</span>, <span class="string">'25'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'2015-01-03'</span>, <span class="string">'20'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'2015-01-04'</span>, <span class="string">'30'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Weather;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Weather (<span class="keyword">Id</span> <span class="built_in">int</span>, RecordDate <span class="built_in">date</span>, Temperature <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'2015-01-01'</span>, <span class="string">'10'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2015-01-02'</span>, <span class="string">'25'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'2015-01-03'</span>, <span class="string">'20'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Weather (<span class="keyword">Id</span>, RecordDate, Temperature) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'2015-01-04'</span>, <span class="string">'30'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>Given a <code>Weather</code> table, write a SQL query to find all dates’ Ids with higher temperature compared to its previous (yesterday’s) dates.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+------------------+------------------+</span></span><br><span class="line">| Id(INT) | RecordDate(DATE) | Temperature(INT) |</span><br><span class="line">+<span class="comment">---------+------------------+------------------+</span></span><br><span class="line">|       1 |       2015-01-01 |               10 |</span><br><span class="line">|       2 |       2015-01-02 |               25 |</span><br><span class="line">|       3 |       2015-01-03 |               20 |</span><br><span class="line">|       4 |       2015-01-04 |               30 |</span><br><span class="line">+<span class="comment">---------+------------------+------------------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>For example, return the following Ids for the above <code>Weather</code> table:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+</span></span><br><span class="line">| Id |</span><br><span class="line">+<span class="comment">----+</span></span><br><span class="line">|  2 |</span><br><span class="line">|  4 |</span><br><span class="line">+<span class="comment">----+</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/12/SQL-Leetcode-197-rising-temperature/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1196,119 +1303,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/09/SQL-Leetcode-180-consecutive-numbers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/09/SQL-Leetcode-180-consecutive-numbers/" class="post-title-link" itemprop="url">[Leetcode-SQL] 180.consecutive.numbers</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-09 12:05:23" itemprop="dateCreated datePublished" datetime="2020-03-09T12:05:23+01:00">2020-03-09</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-10 15:14:00" itemprop="dateModified" datetime="2020-03-10T15:14:00+01:00">2020-03-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/09/SQL-Leetcode-180-consecutive-numbers/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 180.consecutive.numbers" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>180.Consecutive Numbers</p>
-<p>SQL Schema:</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Num</span> <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> <span class="keyword">Logs</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'1'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'2'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'2'</span>)</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> <span class="keyword">Logs</span>;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Num</span> <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'1'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'2'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Logs</span> (<span class="keyword">Id</span>, <span class="keyword">Num</span>) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'2'</span>);</span><br></pre></td></tr></tbody></table></figure>
-<p>Write a SQL query to find all numbers that appear at least three times consecutively.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-----+</span></span><br><span class="line">| Id | Num |</span><br><span class="line">+<span class="comment">----+-----+</span></span><br><span class="line">| 1  |  1  |</span><br><span class="line">| 2  |  1  |</span><br><span class="line">| 3  |  1  |</span><br><span class="line">| 4  |  2  |</span><br><span class="line">| 5  |  1  |</span><br><span class="line">| 6  |  2  |</span><br><span class="line">| 7  |  2  |</span><br><span class="line">+<span class="comment">----+-----+</span></span><br></pre></td></tr></tbody></table></figure>
-<p>For example, given the above <code>Logs</code> table, 1 is the only number that appears consecutively for at least three times.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">-----------------+</span></span><br><span class="line">| ConsecutiveNums |</span><br><span class="line">+<span class="comment">-----------------+</span></span><br><span class="line">| 1               |</span><br><span class="line">+<span class="comment">-----------------+</span></span><br></pre></td></tr></tbody></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/09/SQL-Leetcode-180-consecutive-numbers/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1381,7 +1375,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-count">70</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1460,13 +1454,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">323k</span>
+    <span title="站点总字数">328k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:54</span>
+    <span title="站点阅读时长">4:58</span>
 </div>
 
         
