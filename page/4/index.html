@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">70</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">71</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,116 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/12/SQL-Leetcode-262-trips-and-users/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/12/SQL-Leetcode-262-trips-and-users/" class="post-title-link" itemprop="url">[Leetcode-SQL] 262.trips.and.users</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-12 20:13:14 / 修改时间：22:26:46" itemprop="dateCreated datePublished" datetime="2020-03-12T20:13:14+01:00">2020-03-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/12/SQL-Leetcode-262-trips-and-users/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 262.trips.and.users" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>262.Trips and Users</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Trips (<span class="keyword">Id</span> <span class="built_in">int</span>, Client_Id <span class="built_in">int</span>, Driver_Id <span class="built_in">int</span>, City_Id <span class="built_in">int</span>, <span class="keyword">Status</span> ENUM(<span class="string">'completed'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'cancelled_by_client'</span>), Request_at <span class="built_in">varchar</span>(<span class="number">50</span>))</span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> <span class="keyword">Users</span> (Users_Id <span class="built_in">int</span>, Banned <span class="built_in">varchar</span>(<span class="number">50</span>), <span class="keyword">Role</span> ENUM(<span class="string">'client'</span>, <span class="string">'driver'</span>, <span class="string">'partner'</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Trips</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'1'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'6'</span>, <span class="string">'cancelled_by_client'</span>, <span class="string">'2013-10-01'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'8'</span>, <span class="string">'2'</span>, <span class="string">'12'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'9'</span>, <span class="string">'3'</span>, <span class="string">'10'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'12'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-03'</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> <span class="keyword">Users</span></span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Yes'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'11'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'12'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'13'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> Trips;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">Users</span>;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TYPE</span> <span class="keyword">status</span> <span class="keyword">AS</span> ENUM(<span class="string">'completed'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'cancelled_by_client'</span>);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TYPE</span> <span class="keyword">role</span> <span class="keyword">AS</span> ENUM(<span class="string">'client'</span>, <span class="string">'driver'</span>, <span class="string">'partner'</span>);</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Trips (<span class="keyword">Id</span> <span class="built_in">int</span>, Client_Id <span class="built_in">int</span>, Driver_Id <span class="built_in">int</span>, City_Id <span class="built_in">int</span>, <span class="keyword">Status</span> <span class="keyword">status</span>, Request_at <span class="built_in">varchar</span>(<span class="number">50</span>));</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> <span class="keyword">Users</span> (Users_Id <span class="built_in">int</span>, Banned <span class="built_in">varchar</span>(<span class="number">50</span>), <span class="keyword">Role</span> <span class="keyword">role</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'1'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'6'</span>, <span class="string">'cancelled_by_client'</span>, <span class="string">'2013-10-01'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'1'</span>, <span class="string">'10'</span>, <span class="string">'1'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'6'</span>, <span class="string">'2'</span>, <span class="string">'11'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'7'</span>, <span class="string">'3'</span>, <span class="string">'12'</span>, <span class="string">'6'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-02'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'8'</span>, <span class="string">'2'</span>, <span class="string">'12'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'9'</span>, <span class="string">'3'</span>, <span class="string">'10'</span>, <span class="string">'12'</span>, <span class="string">'completed'</span>, <span class="string">'2013-10-03'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Trips (<span class="keyword">Id</span>, Client_Id, Driver_Id, City_Id, <span class="keyword">Status</span>, Request_at) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'4'</span>, <span class="string">'13'</span>, <span class="string">'12'</span>, <span class="string">'cancelled_by_driver'</span>, <span class="string">'2013-10-03'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Yes'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'No'</span>, <span class="string">'client'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'10'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'11'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'12'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">Users</span> (Users_Id, Banned, <span class="keyword">Role</span>) <span class="keyword">values</span> (<span class="string">'13'</span>, <span class="string">'No'</span>, <span class="string">'driver'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>The <code>Trips</code> table holds all taxi trips. Each trip has a unique Id, while Client_Id and Driver_Id are both foreign keys to the Users_Id at the Users table. Status is an ENUM type of (‘completed’, ‘cancelled_by_driver’, ‘cancelled_by_client’).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-----------+-----------+---------+--------------------+----------+</span></span><br><span class="line">| Id | Client_Id | Driver_Id | City_Id |        Status      |Request_at|</span><br><span class="line">+<span class="comment">----+-----------+-----------+---------+--------------------+----------+</span></span><br><span class="line">| 1  |     1     |    10     |    1    |     completed      |2013-10-01|</span><br><span class="line">| 2  |     2     |    11     |    1    | cancelled_by_driver|2013-10-01|</span><br><span class="line">| 3  |     3     |    12     |    6    |     completed      |2013-10-01|</span><br><span class="line">| 4  |     4     |    13     |    6    | cancelled_by_client|2013-10-01|</span><br><span class="line">| 5  |     1     |    10     |    1    |     completed      |2013-10-02|</span><br><span class="line">| 6  |     2     |    11     |    6    |     completed      |2013-10-02|</span><br><span class="line">| 7  |     3     |    12     |    6    |     completed      |2013-10-02|</span><br><span class="line">| 8  |     2     |    12     |    12   |     completed      |2013-10-03|</span><br><span class="line">| 9  |     3     |    10     |    12   |     completed      |2013-10-03| </span><br><span class="line">| 10 |     4     |    13     |    12   | cancelled_by_driver|2013-10-03|</span><br><span class="line">+<span class="comment">----+-----------+-----------+---------+--------------------+----------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>The Users table holds all users. Each user has an unique Users_Id, and Role is an ENUM type of (‘client’, ‘driver’, ‘partner’).</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----------+--------+--------+</span></span><br><span class="line">| Users_Id | Banned |  Role  |</span><br><span class="line">+<span class="comment">----------+--------+--------+</span></span><br><span class="line">|    1     |   No   | client |</span><br><span class="line">|    2     |   Yes  | client |</span><br><span class="line">|    3     |   No   | client |</span><br><span class="line">|    4     |   No   | client |</span><br><span class="line">|    10    |   No   | driver |</span><br><span class="line">|    11    |   No   | driver |</span><br><span class="line">|    12    |   No   | driver |</span><br><span class="line">|    13    |   No   | driver |</span><br><span class="line">+<span class="comment">----------+--------+--------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Write a SQL query to find the cancellation rate of requests made by unbanned users (both client and driver must be unbanned) between Oct 1, 2013 and Oct 3, 2013. The cancellation rate is computed by dividing the number of canceled (by client or driver) requests made by unbanned users by the total number of requests made by unbanned users.</p>
+<p>For the above tables, your SQL query should return the following rows with the cancellation rate being rounded to two decimal places.</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">------------+-------------------+</span></span><br><span class="line">|     Day    | Cancellation Rate |</span><br><span class="line">+<span class="comment">------------+-------------------+</span></span><br><span class="line">| 2013-10-01 |       0.33        |</span><br><span class="line">| 2013-10-02 |       0.00        |</span><br><span class="line">| 2013-10-03 |       0.50        |</span><br><span class="line">+<span class="comment">------------+-------------------+</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/12/SQL-Leetcode-262-trips-and-users/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1196,118 +1306,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/SQL-Leetcode-181-employees-earning-more-than-their-managers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/10/SQL-Leetcode-181-employees-earning-more-than-their-managers/" class="post-title-link" itemprop="url">[Leetcode-SQL] 181.employees.earning.more.than.their.managers</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-10 14:54:51 / 修改时间：15:13:56" itemprop="dateCreated datePublished" datetime="2020-03-10T14:54:51+01:00">2020-03-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/10/SQL-Leetcode-181-employees-earning-more-than-their-managers/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 181.employees.earning.more.than.their.managers" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>181.Employees Earning More Than Their Managers</p>
-<p>SQL Schema:</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, ManagerId <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Employee</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'70000'</span>, <span class="string">'3'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'4'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="string">'None'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="string">'None'</span>);</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Employee;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, <span class="keyword">Name</span> <span class="built_in">varchar</span>(<span class="number">255</span>), Salary <span class="built_in">int</span>, ManagerId <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Joe'</span>, <span class="string">'70000'</span>, <span class="string">'3'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Henry'</span>, <span class="string">'80000'</span>, <span class="string">'4'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Sam'</span>, <span class="string">'60000'</span>, <span class="literal">NULL</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, <span class="keyword">Name</span>, Salary, ManagerId) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Max'</span>, <span class="string">'90000'</span>, <span class="literal">NULL</span>);</span><br></pre></td></tr></tbody></table></figure>
-<p>The <code>Employee</code> table holds all employees including their managers. Every employee has an Id, and there is also a column for the manager Id.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+-------+--------+-----------+</span></span><br><span class="line">| Id | Name  | Salary | ManagerId |</span><br><span class="line">+<span class="comment">----+-------+--------+-----------+</span></span><br><span class="line">| 1  | Joe   | 70000  | 3         |</span><br><span class="line">| 2  | Henry | 80000  | 4         |</span><br><span class="line">| 3  | Sam   | 60000  | NULL      |</span><br><span class="line">| 4  | Max   | 90000  | NULL      |</span><br><span class="line">+<span class="comment">----+-------+--------+-----------+</span></span><br></pre></td></tr></tbody></table></figure>
-<p>Given the <code>Employee</code> table, write a SQL query that finds out employees who earn more than their managers. For the above table, Joe is the only employee who earns more than his manager.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----------+</span></span><br><span class="line">| Employee |</span><br><span class="line">+<span class="comment">----------+</span></span><br><span class="line">| Joe      |</span><br><span class="line">+<span class="comment">----------+</span></span><br></pre></td></tr></tbody></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/10/SQL-Leetcode-181-employees-earning-more-than-their-managers/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/3/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/5/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1375,7 +1378,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-count">71</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1454,13 +1457,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">328k</span>
+    <span title="站点总字数">332k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">4:58</span>
+    <span title="站点阅读时长">5:01</span>
 </div>
 
         
