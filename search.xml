@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>DSC-0</title>
+    <title>Database System Concepts-精读</title>
     <url>/2020/04/10/DSC-0/</url>
     <content><![CDATA[<h1 id="笔记文章链接"><a href="#笔记文章链接" class="headerlink" title="笔记文章链接"></a>笔记文章链接</h1><!-- - Chapter 11 Indexing and Hashing: -->
   <!-- - 11.6-7 Hashing: TODO: LINK -->
 <p>此区域持续更新</p>
 <hr>
+<a id="more"></a>
 <h1 id="笔记概要"><a href="#笔记概要" class="headerlink" title="笔记概要"></a>笔记概要</h1><p>此系列文章会不定时更新。<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8">😄</span></p>
 <p>我在这里分享我的读书笔记, 我使用是这本书第六版: Abraham Silberschatz, Henry F. Korth, S. Sudarshan: <strong>Database System Concepts</strong>, 6th Edition. McGraw-Hill Book Company 2010</p>
 <blockquote>
