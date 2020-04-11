@@ -3,7 +3,8 @@
   <entry>
     <title>Database System Concepts 精读 [11.6-11.7] Hashing</title>
     <url>/2020/04/11/DSC-11-6-11-7-Hashing/</url>
-    <content><![CDATA[<a id="more"></a>
+    <content><![CDATA[<p>[11.6-11.7] Hashing</p>
+<a id="more"></a>
 <h1 id="11-6-Static-Hashing"><a href="#11-6-Static-Hashing" class="headerlink" title="11.6 Static Hashing"></a>11.6 Static Hashing</h1><ul>
 <li>One disadvantage of <strong>sequential file organization</strong> is that we must access an index structure to locate data, or must use binary search, and that results in more I/O operations. 总之很慢 </li>
 <li>File organizations based on the technique of hashing allow us to avoid accessing an index structure. Hashing also provides a way of constructing indices.</li>
