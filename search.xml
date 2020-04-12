@@ -1,6 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Extendable Hashing 练习</title>
+    <url>/2020/04/12/Extendable-Hashing-Exercise/</url>
+    <content><![CDATA[<p>这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
+<a id="more"></a>
+<h1 id="TUM数据库课程练习课"><a href="#TUM数据库课程练习课" class="headerlink" title="TUM数据库课程练习课"></a>TUM数据库课程练习课</h1><p>在TUM的例子中global depth从1开始</p>
+<h2 id="例题一-1"><a href="#例题一-1" class="headerlink" title="例题一 1"></a>例题一 <sup><a href="#fn1">1</a></sup></h2><p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_1.png" alt="hash value"></p>
+<ul>
+<li>KundenNr 顾客号码</li>
+<li>Binär 二进制表达</li>
+<li>Umgekehrt Binär 倒置的二进制表达，<strong>这个是我们的hash key</strong></li>
+</ul>
+<p><br></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_2.png" alt="Init: global depth = 1."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_3.png" alt="Insert 010100 Müller, 100110 Meier."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_4.png" alt="Insert 011110 Schmidt."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_5.png" alt="Global depth = 2."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_6.png" alt="Local depth = 2."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_7.png" alt="Global depth = 3."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_8.png" alt="Insert 010010 Krause, 000101 Schulz, 101101 Kaufman."></p>
+<h2 id="例题二-2"><a href="#例题二-2" class="headerlink" title="例题二 2"></a>例题二 <sup><a href="#fn2">2</a></sup></h2><p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_1.png" alt="hash value"></p>
+<ul>
+<li>MatrNr 学号</li>
+<li>Binär 二进制表达</li>
+<li>Umgekehrt Binär 倒置的二进制表达，<strong>这个是我们的hash key</strong></li>
+</ul>
+<p><br></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_2.png" alt="Init: global depth = 1."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_3.png" alt="Insert 2 Müller, 8 Schmidt."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_4.png" alt="Insert 19 Fischer."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_5.png" alt="Global depth = 2."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_6.png" alt="Local depth = 2. Insert 16 Huber."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_7.png" alt="Global depth = 3."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_8.png" alt="Local depth = 3. Insert 20 Bauer."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_9.png" alt="Insert 34 Schneider."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_10.png" alt="Local depth = 3. Insert 30 Wagner."></p>
+<h2 id="例题三-3"><a href="#例题三-3" class="headerlink" title="例题三 3"></a>例题三 <sup><a href="#fn3">3</a></sup></h2><p>用在extendable hash table存储十亿人(10,000,000,000)的信息:</p>
+<ul>
+<li>税号: 10B，对每一个人都唯一，作为hash key</li>
+<li>其他信息: 名字，国家，城市，邮编，地址, 一共 100B</li>
+</ul>
+<p><br></p>
+<ul>
+<li>hash table的key是税号, value是PID(page id, 8B), 即对应一个bucket。Bucket所在的page页的大小是4KiB。我们假设每一个bucket对应的page的75%的容量被使用。</li>
+<li>hash bucket中保存每一个对应的TID (8B), 这个TID对应一个页上的位置，存储着这个人的其他信息。</li>
+<li>问: 存储这个hash table需要多少存储容量?</li>
+</ul>
+<p>答案:</p>
+<ul>
+<li>bucket/page的每一个条目是税号和这个人对应的TID。一个bucket中有: $n = \frac{4\mathrm{KiB}}{10 \mathrm{B} + 8 \mathrm{B}} = 170$个条目。</li>
+<li>需要的bucket/page数量: $p = \frac{10^{10}}{n} = 58 * 10^{6}$</li>
+<li>引用这些page至少需要的bit数量: $\lceil\log_2 p \rceil = 26$</li>
+<li>至少需要的bucket/page数量: $2^{26}$</li>
+<li>每一个bucket/page的PID引用都存储在hash table中: $8B * 2^{26} = 512 \mathrm{MiB}$ 即存储这个hash table需要的存储容量</li>
+</ul>
+<p><br></p>
+<ul>
+<li>注意: 100B其他信息存储在其他page中，我们不需要关心这些page。只需要关心这些page的PID， 大小是8B。</li>
+</ul>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_3_1.png" alt="图解."></p>
+<ul>
+<li>上图中只有bucket pointer存储在hash table中。左侧的index in Bits并不需要存储。</li>
+<li>上图中绿色和蓝色也不存储在hash table中。绿色只是形象化bucket pointer。蓝色是存储着18B(税号和TID)的bucket，即bucket pointer所指向的地方。</li>
+</ul>
+<!-- # CMU
+
+TODO:
+
+# P1T1
+
+TODO:link -->
+<h1 id="Database-System-Concepts-Practice-Exercise-4"><a href="#Database-System-Concepts-Practice-Exercise-4" class="headerlink" title="Database System Concepts - Practice Exercise 4"></a>Database System Concepts - Practice Exercise <sup><a href="#fn4">4</a></sup></h1><h2 id="11-6"><a href="#11-6" class="headerlink" title="11.6"></a>11.6</h2><p>Suppose that we are using extendable hashing on a file that contains records with the following search-key values: <code>2, 3, 5, 7, 11, 17, 19, 23, 29, 31</code></p>
+<p>Show the extendable hash structure for this file if the hash function is <code>h(x) = x mod 8</code> and buckets can hold three records</p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S1.png" alt="11.6."></p>
+<p>右侧同一个bucket中的hash value相同, 即余数相同。</p>
+<p><br></p>
+<h2 id="11-7"><a href="#11-7" class="headerlink" title="11.7"></a>11.7</h2><p>Show how the extendable hash structure of Practice Exercise 11.6 changes as the result of each of the following steps:</p>
+<ul>
+<li>a. Delete 11.</li>
+<li>b. Delete 31.</li>
+<li>c. Insert 1.</li>
+<li>d. Insert 15.</li>
+</ul>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S2.png" alt="11.6."></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S3.png" alt="11.6."></p>
+<h2 id="11-9"><a href="#11-9" class="headerlink" title="11.9"></a>11.9</h2><p>Give pseudocode for deletion of entries from an extendable hash structure, including details of when and how to coalesce buckets. Do not bother about reducing the size of the bucket address table.</p>
+<p>见另一篇文章, <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
+<h2 id="11-10"><a href="#11-10" class="headerlink" title="11.10"></a>11.10</h2><p>Suggest an efficient way to test if the <em>bucket address table</em> in extendable hashing can be reduced in size, by storing an extra count with the <em>bucket address table</em>. Give details of how the count should be maintained when buckets are split, coalesced, or deleted. </p>
+<p>(Note: Reducing the size of the <em>bucket address table</em> is an <strong>expensive</strong> operation, and subsequent inserts may cause the table to grow again. Therefore, it is best not to reduce the size as soon as it is possible to do so, but instead do it only if the number of index entries becomes small compared to the bucket-address-table size.)</p>
+<p><br></p>
+<p>Answer: </p>
+<p>If the hash table is currently using $i$ bits of the hash value, then maintain a count of buckets for which the length of common hash prefix is exactly $i$.</p>
+<p>Consider a bucket $j$ with length of common hash prefix $i_j$. If the bucket is being split, and $i_j$ is equal to $i$, then reset the count to 1. If the bucket is being split and $i_j$ is one less that $i$, then increase the count by 1. It the bucket if being coalesced, and $i_j$ is equal to $i$ then decrease the count by 1. If the count becomes 0, then the bucket address table can be reduced in size at that point.</p>
+<p>However, note that if the bucket address table is not reduced at that point, then the count has no significance afterwards. If we want to postpone the reduction, we have to keep an array of counts, i.e. a count for each value of common hash prefix. The array has to be updated in a similar fashion. The bucket address table can be reduced if the $i^{th}$ entry of the array is 0, where $i$ is the number of bits the table is using. Since bucket table reduction is an expensive operation, it is not always advisable to reduce the table. It should be reduced only when sufficient number of entries at the end of count array become 0.</p>
+<!-- # 实现
+
+TODO: link -->
+<hr>
+<p>引用:</p>
+<ul>
+<li><p><a name="fn1">1</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzA5LnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung09.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung09.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
+</li>
+<li><p><a name="fn2">2</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzEyLnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung12.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung12.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
+</li>
+<li><p><a name="fn3">3</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzEwLnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung10.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung10.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
+</li>
+<li><p><a name="fn4">4</a>: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI2L3ByYWN0aWNlLWV4ZXItZGlyL2luZGV4Lmh0bWw=" title="https://www.db-book.com/db6/practice-exer-dir/index.html">https://www.db-book.com/db6/practice-exer-dir/index.html<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI2L3ByYWN0aWNlLWV4ZXItZGlyLzExcy5wZGY=" title="https://www.db-book.com/db6/practice-exer-dir/11s.pdf">https://www.db-book.com/db6/practice-exer-dir/11s.pdf<i class="fa fa-external-link"></i></span></p>
+</li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>Access Methods</category>
+        <category>Hash Table</category>
+        <category>Indexing</category>
+        <category>Data Structure</category>
+      </categories>
+      <tags>
+        <tag>Dynamic Hashing Scheme</tag>
+        <tag>Extendible Hashing</tag>
+        <tag>Books</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Database System Concepts 精读 [11.6-11.7] Hashing</title>
     <url>/2020/04/11/DSC-11-6-11-7-Hashing/</url>
     <content><![CDATA[<p>[11.6-11.7] Hashing</p>
@@ -242,7 +382,11 @@
           });
       </script>]]></content>
       <categories>
+        <category>Access Methods</category>
+        <category>Hash Table</category>
+        <category>Indexing</category>
         <category>Database System Concepts</category>
+        <category>Data Structure</category>
       </categories>
       <tags>
         <tag>Hash Function</tag>
@@ -1440,9 +1584,11 @@
 <p><img data-src="/images/CMU1544564/Lec07/5.jpg" alt="5.jpg"></p>
 <ul>
 <li>从上图中:</li>
-<li>index的存在会带来:</li>
+<li>index的存在会带来:<ul>
 <li>Storage Overhead: index重复了一部分原表格内容，index这个数据结构要占一块存储。常常需要多个page，不能保证全部在内存上。</li>
 <li>Maintenance Overhead: 如果我们对原表格进行更新(写操作)，那么也需要对index进行同样的操作，<strong>让原表格和index同步</strong>。</li>
+</ul>
+</li>
 </ul>
 <p><img data-src="/images/CMU1544564/Lec07/6.jpg" alt="6.jpg"></p>
 <h1 id="B-Tree-Family"><a href="#B-Tree-Family" class="headerlink" title="B-Tree Family"></a>B-Tree Family</h1><p><img data-src="/images/CMU1544564/Lec07/7.jpg" alt="7.jpg"></p>
@@ -1450,6 +1596,9 @@
 <ul>
 <li>Efficient locking for concurrent operations on B-trees: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS8xMC4xMTQ1LzMxOTYyOC4zMTk2NjM=" title="https://dl.acm.org/doi/10.1145/319628.319663">https://dl.acm.org/doi/10.1145/319628.319663<i class="fa fa-external-link"></i></span></li>
 </ul>
+<blockquote>
+<p>Almost every modern DBMS that supports order-preserving indexes uses a B+ Tree. There is a specific data<br>structure called a B Tree, but people also use the term to generally refer to a class of data structures. Modern<br>B+ Tree implementations combine features from other BTree variants, such as the sibling pointers used in<br>the B link-Tree.</p>
+</blockquote>
 <h1 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+ Tree"></a>B+ Tree</h1><p><img data-src="/images/CMU1544564/Lec07/9.jpg" alt="9.jpg"></p>
 <ul>
 <li>Ubiquitous B-Tree: <span class="exturl" data-url="aHR0cHM6Ly9kbC5hY20ub3JnL2RvaS8xMC4xMTQ1LzM1Njc3MC4zNTY3NzY=" title="https://dl.acm.org/doi/10.1145/356770.356776">https://dl.acm.org/doi/10.1145/356770.356776<i class="fa fa-external-link"></i></span></li>
@@ -1491,8 +1640,8 @@
 </li>
 </ul>
 <h2 id="Insert"><a href="#Insert" class="headerlink" title="Insert"></a>Insert</h2><p><img data-src="/images/CMU1544564/Lec07/21.jpg" alt="21.jpg"></p>
-<p><img data-src="/images/CMU1544564/Lec07/22.jpg" alt="22.jpg"></p>
 <ul>
+<li>上图中的链接: Source: Chris Re: <span class="exturl" data-url="aHR0cHM6Ly93ZWIuc3RhbmZvcmQuZWR1L2NsYXNzL2NzMzQ2LzIwMTUvbm90ZXMvQmxpbmsucHB0eA==" title="https://web.stanford.edu/class/cs346/2015/notes/Blink.pptx">https://web.stanford.edu/class/cs346/2015/notes/Blink.pptx<i class="fa fa-external-link"></i></span><br><img data-src="/images/CMU1544564/Lec07/22.jpg" alt="22.jpg"></li>
 <li>上图中的链接: <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3MudXNmY2EuZWR1L35nYWxsZXMvdmlzdWFsaXphdGlvbi9CUGx1c1RyZWUuaHRtbA==" title="https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html">https://www.cs.usfca.edu/~galles/visualization/BPlusTree.html<i class="fa fa-external-link"></i></span></li>
 </ul>
 <p>我们使用一下作为Demo:<br><code>insert 4; insert 2; insert 6; insert 1; insert 5;</code><br>得到如下的树:</p>
@@ -1544,18 +1693,26 @@
 <li>index buffer page: 1 MiB</li>
 <li>table data buffer page: 8 KiB</li>
 </ul>
+<p><br></p>
+<blockquote>
+<ul>
+<li>The optimal node size for a B+Tree depends on the speed of the disk. The idea is to amortize the cost<br>of reading a node from disk into memory over as many key/value pairs as possible.</li>
+<li>The slower the disk, then the larger the idea node size.</li>
+<li>Some workloads may be more scan-heavy versus having more single key look-ups.</li>
+</ul>
+</blockquote>
 <h3 id="Merge-Threshold"><a href="#Merge-Threshold" class="headerlink" title="Merge Threshold"></a>Merge Threshold</h3><p><img data-src="/images/CMU1544564/Lec07/35.jpg" alt="35.jpg"></p>
 <ul>
 <li>如上图:</li>
-<li>如果一个node中元素少于<code>M/2 - 1</code>，即没有half-full, 发生underflow。我们可以让这个node保存存在，而不去merge它。然后每一段时间，批量处理B+ tree中所有这类的node。</li>
+<li>如果一个node中元素少于<code>M/2 - 1</code>，即没有half-full, 发生underflow。我们可以让这个node故意保留存在，而不去merge它。然后每一段时间，批量处理B+ tree中所有这类的node。</li>
 </ul>
 <h3 id="Variable-Length-Keys"><a href="#Variable-Length-Keys" class="headerlink" title="Variable Length Keys"></a>Variable Length Keys</h3><p><img data-src="/images/CMU1544564/Lec07/36.jpg" alt="36.jpg"></p>
 <ul>
 <li>如上图:</li>
-<li>Approach 1: Pointers　太慢</li>
-<li>Approach 2: Variable Length Nodes不适合fix size page</li>
+<li>Approach 1: Pointers　太慢 (very rarely used).</li>
+<li>Approach 2: Variable Length Nodes不适合fix size page (also rare).</li>
 <li>Approach 3: Padding 太浪费空间</li>
-<li>Approach 4: Key Map / Indirection 性能较好</li>
+<li>Approach 4: Key Map / Indirection 性能较好, 形式像slotted pages (the most common approach).</li>
 </ul>
 <h4 id="Key-Map-Indirection"><a href="#Key-Map-Indirection" class="headerlink" title="Key Map / Indirection"></a>Key Map / Indirection</h4><p>这个就和slotted page类似，将vaiable lenght key存在同一个page。</p>
 <p><img data-src="/images/CMU1544564/Lec07/38.jpg" alt="38.jpg"></p>
@@ -1570,11 +1727,20 @@
 <p><img data-src="/images/CMU1544564/Lec07/43.jpg" alt="43.jpg"></p>
 <h3 id="Intra-Node-Search"><a href="#Intra-Node-Search" class="headerlink" title="Intra-Node Search"></a>Intra-Node Search</h3><p>Intra-Node Search指在node中搜索，可以想象成在page中那些已经排序完的数据中搜索：</p>
 <h4 id="Linear"><a href="#Linear" class="headerlink" title="Linear"></a>Linear</h4><p><img data-src="/images/CMU1544564/Lec07/44.jpg" alt="44.jpg"></p>
+<blockquote>
+<p>Linear: Scan the key/value entries in the node from beginning to end. Stop when you find the key that<br>you are looking for. This does not require the key/value entries to be pre-sorted.</p>
+</blockquote>
 <h4 id="Binary-Search"><a href="#Binary-Search" class="headerlink" title="Binary Search"></a>Binary Search</h4><p><img data-src="/images/CMU1544564/Lec07/46.jpg" alt="46.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec07/47.jpg" alt="47.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec07/48.jpg" alt="48.jpg"></p>
+<blockquote>
+<p>Binary: Jump to the middle key, and then pivot left/right depending on whether that middle key is less<br>than or greater than the search key. This requires the key/value entries to be pre-sorted.</p>
+</blockquote>
 <h4 id="Interpolation"><a href="#Interpolation" class="headerlink" title="Interpolation"></a>Interpolation</h4><p>Interpolation指数字的分布如果已知，可以直接猜到想搜的<code>key</code>的位置。这个属于特例，而且不适用于字符串。</p>
 <p><img data-src="/images/CMU1544564/Lec07/49.jpg" alt="49.jpg"></p>
+<blockquote>
+<p>Interpolation: Approximate the starting location of the search key based on the known low/high key<br>values in the node. Then perform linear scan from that location. This requires the key/value entries to<br>be pre-sorted.</p>
+</blockquote>
 <p><br><br><br></p>
 <h2 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h2><p><img data-src="/images/CMU1544564/Lec07/50.jpg" alt="50.jpg"></p>
 <h3 id="Prefix-Compression"><a href="#Prefix-Compression" class="headerlink" title="Prefix Compression"></a>Prefix Compression</h3><p>Prefix Compression即字符串共有的前缀只需要存储一次，能高效节省出存储的空间，同时也可以降低B+ Tree的高度，加快搜索速度。</p>
@@ -1585,6 +1751,9 @@
 <h3 id="Bulk-Insert"><a href="#Bulk-Insert" class="headerlink" title="Bulk Insert"></a>Bulk Insert</h3><p>一次次insert来获得一个B+ Tree很慢。Bulk Insert是将keys先排序，再完成leaf node, 再根据leaf node去完成inner node。Bulk Insert让我们能更快去获得一个B+ Tree:</p>
 <p><img data-src="/images/CMU1544564/Lec07/54.jpg" alt="54.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec07/55.jpg" alt="55.jpg"></p>
+<blockquote>
+<p>This will be faster than inserting one-by-one since there are no splits or merges.</p>
+</blockquote>
 <h3 id="Pointer-Swizzling"><a href="#Pointer-Swizzling" class="headerlink" title="Pointer Swizzling"></a>Pointer Swizzling</h3><p>我们每一次从B+ Tree中需要一个page，都需要调用buffer pool中的函数，用<code>pageid</code>获得对应page的指针。这种间接indirection，带来固定的开销。而我们可以节省这一部分，特别在B+ Tree的上面几层。因为每次查询都需要上面几层的page，它们属于hot page，即它们经常需要有被访问，每一次都找buffer pool显得花销更大了。我们完全可以把这些page一直留着内存里，然后在B+_Tree中直接带上它们内容的指针，这样访问它们不需要经过buffer pool。而这些hot page的数量不是很多，完全可以长久留着内存中。(见<a href="#b+-tree-in-practice">B+ Tree In Practice</a>中，两层node大概在134个page, 占1MiB。)</p>
 <p><img data-src="/images/CMU1544564/Lec07/57.jpg" alt="57.jpg"></p>
 <p><img data-src="/images/CMU1544564/Lec07/58.jpg" alt="58.jpg"></p>
@@ -1615,6 +1784,7 @@
         <category>Access Methods</category>
         <category>B Tree</category>
         <category>Indexing</category>
+        <category>Data Structure</category>
       </categories>
       <tags>
         <tag>Indexing</tag>
@@ -1631,7 +1801,7 @@
     <title>[CMU-15445]Lec06 Hash Tables - 哈希表</title>
     <url>/2020/03/18/CMU-15445-Lec06/</url>
     <content><![CDATA[<p>Hash Tables - 哈希表</p>
-<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzA2LWhhc2h0YWJsZXMucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/slides/06-hashtables.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/06-hashtables.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDYtaGFzaHRhYmxlcy5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/notes/06-hashtables.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/06-hashtables.pdf<i class="fa fa-external-link"></i></span><br>Readings: Chapter 11.6-11.7<!-- TODO:link here --></p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzA2LWhhc2h0YWJsZXMucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/slides/06-hashtables.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/06-hashtables.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDYtaGFzaHRhYmxlcy5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/notes/06-hashtables.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/06-hashtables.pdf<i class="fa fa-external-link"></i></span><br>Readings: Chapter 11.6-11.7, 见我的精读文章: <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
 <p>这节课中，我们会学习数据库的中使用的哈希表hash table，实际上我们涉及纯算法课中的理论，但更重要的是工程实现的角度。数据库中使用的hash table需要有高性能，多线程读写，内存访问友好。</p>
 <a id="more"></a>
 <p><img data-src="/images/CMU1544564/Lec06/1.jpg" alt="1.jpg"></p>
@@ -1928,6 +2098,7 @@
         <category>Access Methods</category>
         <category>Hash Table</category>
         <category>Indexing</category>
+        <category>Data Structure</category>
       </categories>
       <tags>
         <tag>Indexing</tag>
