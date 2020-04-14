@@ -2,6 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/</loc>
+    
+    <lastmod>2020-04-14T18:38:34.196Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/</loc>
+    
+    <lastmod>2020-04-14T18:38:13.484Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/</loc>
+    
+    <lastmod>2020-04-14T18:37:18.696Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/04/14/DBMS-Tree-Index-pageinspect/</loc>
+    
+    <lastmod>2020-04-14T18:36:39.167Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
     
     <lastmod>2020-04-13T21:05:01.941Z</lastmod>
@@ -12,13 +40,6 @@
     <loc>https://cakebytheoceanluo.github.io/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/</loc>
     
     <lastmod>2020-04-13T10:43:01.014Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/</loc>
-    
-    <lastmod>2020-04-12T20:17:50.147Z</lastmod>
     
   </url>
   
@@ -198,13 +219,6 @@
   </url>
   
   <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/</loc>
-    
-    <lastmod>2020-03-18T18:43:06.986Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/</loc>
     
     <lastmod>2020-03-18T18:42:47.966Z</lastmod>
@@ -215,13 +229,6 @@
     <loc>https://cakebytheoceanluo.github.io/2020/03/17/DBMS-PostgreSQL-%E7%BC%93%E5%AD%98%E5%8C%BA%E7%AE%A1%E7%90%86BufferPool/</loc>
     
     <lastmod>2020-03-17T19:15:05.645Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/</loc>
-    
-    <lastmod>2020-03-17T18:49:37.578Z</lastmod>
     
   </url>
   

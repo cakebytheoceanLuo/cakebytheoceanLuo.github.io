@@ -142,7 +142,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">56</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">55</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">75</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">76</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,117 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/13/SQL-Leetcode-626-exchange-seats/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/13/SQL-Leetcode-626-exchange-seats/" class="post-title-link" itemprop="url">[Leetcode-SQL] 626.exchange.seats</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-13 19:46:59 / 修改时间：19:53:47" itemprop="dateCreated datePublished" datetime="2020-03-13T19:46:59+01:00">2020-03-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/13/SQL-Leetcode-626-exchange-seats/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 626.exchange.seats" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>626.Exchange Seats</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> seat(<span class="keyword">id</span> <span class="built_in">int</span>, student <span class="built_in">varchar</span>(<span class="number">255</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> seat</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Abbot'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Doris'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Emerson'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Green'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Jeames'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> seat;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> seat(<span class="keyword">id</span> <span class="built_in">int</span>, student <span class="built_in">varchar</span>(<span class="number">255</span>));</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'Abbot'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'Doris'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'Emerson'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'4'</span>, <span class="string">'Green'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> seat (<span class="keyword">id</span>, student) <span class="keyword">values</span> (<span class="string">'5'</span>, <span class="string">'Jeames'</span>);</span><br></pre></td></tr></tbody></table></figure>
+<p>Mary is a teacher in a middle school and she has a table <code>seat</code> storing students’ names and their corresponding <code>seat</code> ids.</p>
+<p>The column id is continuous increment.</p>
+<p>Mary wants to change seats for the adjacent students.</p>
+<p>Can you write a SQL query to output the result for Mary?</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+---------+</span></span><br><span class="line">|    id   | student |</span><br><span class="line">+<span class="comment">---------+---------+</span></span><br><span class="line">|    1    | Abbot   |</span><br><span class="line">|    2    | Doris   |</span><br><span class="line">|    3    | Emerson |</span><br><span class="line">|    4    | Green   |</span><br><span class="line">|    5    | Jeames  |</span><br><span class="line">+<span class="comment">---------+---------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>For the sample input, the output is:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------+---------+</span></span><br><span class="line">|    id   | student |</span><br><span class="line">+<span class="comment">---------+---------+</span></span><br><span class="line">|    1    | Doris   |</span><br><span class="line">|    2    | Abbot   |</span><br><span class="line">|    3    | Green   |</span><br><span class="line">|    4    | Emerson |</span><br><span class="line">|    5    | Jeames  |</span><br><span class="line">+<span class="comment">---------+---------+</span></span><br></pre></td></tr></tbody></table></figure>
+<p>Note:<br>If the number of students is odd, there is no need to change the last one’s seat.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/13/SQL-Leetcode-626-exchange-seats/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1007,7 +1118,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-12 22:17:50" itemprop="dateModified" datetime="2020-04-12T22:17:50+02:00">2020-04-12</time>
+                <time title="修改时间：2020-04-14 20:38:13" itemprop="dateModified" datetime="2020-04-14T20:38:13+02:00">2020-04-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1121,7 +1232,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-17 19:49:37" itemprop="dateModified" datetime="2020-03-17T19:49:37+01:00">2020-03-17</time>
+                <time title="修改时间：2020-04-14 20:38:34" itemprop="dateModified" datetime="2020-04-14T20:38:34+02:00">2020-04-14</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1186,104 +1297,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/03/11/DBMS-PostgreSQL-PageLayout/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/10/books/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/10/books/" class="post-title-link" itemprop="url">[DBMS Books]数据库书籍推荐</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-10 23:53:07 / 修改时间：23:54:09" itemprop="dateCreated datePublished" datetime="2020-03-10T23:53:07+01:00">2020-03-10</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/10/books/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS Books]数据库书籍推荐" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这篇文章囊括了数据库领域经典书籍，并附上必要链接，方便搜索。所推荐书籍囊括基础概念，实现原理，数据库理论，分布式数据库，数据库事务。</p>
-<p>本文基于该文章：</p>
-<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">作者：钱卫宁 华东师范大学 数据科学与工程学院 教授/院长</span><br><span class="line">链接：https://www.zhihu.com/question/52498996/answer/142789892</span><br><span class="line">来源：知乎</span><br></pre></td></tr></tbody></table></figure>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/10/books/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1375,7 +1388,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">75</span>
+          <span class="site-state-item-count">76</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1388,7 +1401,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-count">55</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1454,13 +1467,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">364k</span>
+    <span title="站点总字数">369k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">5:31</span>
+    <span title="站点阅读时长">5:36</span>
 </div>
 
         
