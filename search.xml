@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>[DBMS]Tree Index pageinspect</title>
+    <title>[DBMS]Tree Index pageinspect 索引页面内容</title>
     <url>/2020/04/14/DBMS-Tree-Index-pageinspect/</url>
     <content><![CDATA[<p>数据库的索引基本分为两种类型:</p>
 <ul>
@@ -64,8 +64,8 @@
       </categories>
       <tags>
         <tag>PostgreSQL</tag>
-        <tag>Indexing</tag>
         <tag>Page</tag>
+        <tag>Indexing</tag>
         <tag>B Tree</tag>
       </tags>
   </entry>
@@ -572,9 +572,9 @@ TODO: link -->
       </script>]]></content>
       <categories>
         <category>Access Methods</category>
+        <category>Database System Concepts</category>
         <category>Hash Table</category>
         <category>Indexing</category>
-        <category>Database System Concepts</category>
         <category>Data Structure</category>
       </categories>
       <tags>
@@ -1251,8 +1251,8 @@ TODO: link -->
       </categories>
       <tags>
         <tag>SQL</tag>
-        <tag>PostgreSQL</tag>
         <tag>Recursion</tag>
+        <tag>PostgreSQL</tag>
         <tag>Six Degrees of Kevin Bacon</tag>
         <tag>BFS</tag>
       </tags>
@@ -1306,8 +1306,8 @@ TODO: link -->
       </script>]]></content>
       <categories>
         <category>SQL</category>
-        <category>Graph</category>
         <category>TUM-IN2326</category>
+        <category>Graph</category>
       </categories>
       <tags>
         <tag>SQL</tag>
@@ -2652,8 +2652,8 @@ TODO: link -->
         <category>CMU-15445</category>
         <category>Storage</category>
         <category>DBMS</category>
-        <category>PostgreSQL</category>
         <category>Buffer Management</category>
+        <category>PostgreSQL</category>
       </categories>
       <tags>
         <tag>PostgreSQL</tag>

@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/04/14/DBMS-Tree-Index-pageinspect/</loc>
+    
+    <lastmod>2020-04-14T18:43:52.819Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/</loc>
     
     <lastmod>2020-04-14T18:38:34.196Z</lastmod>
@@ -19,13 +26,6 @@
     <loc>https://cakebytheoceanluo.github.io/2020/03/06/CMU-15445-Lec02-part1/</loc>
     
     <lastmod>2020-04-14T18:37:18.696Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/04/14/DBMS-Tree-Index-pageinspect/</loc>
-    
-    <lastmod>2020-04-14T18:36:39.167Z</lastmod>
     
   </url>
   
