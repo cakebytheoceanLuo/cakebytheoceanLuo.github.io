@@ -1,7 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>[DBMS]Cluster Index</title>
+    <title>[CMU-15445]17_18_Project0</title>
+    <url>/2020/04/16/CMU-15445-17-18-Project0/</url>
+    <content><![CDATA[<p>我目前正在写CMU-15445的课程项目。这篇文章关注17Fall和18Fall的课程项目，因为这两年的作业类似，而且基于同一个代码框架。(18Fall应该去掉该代码框架中的一些bug，但是大体框架是类似)</p>
+<p>我整理了一些我网上能搜到的相关博客文章和代码实现。我自己的实现文章中，我和下面的实现对比。</p>
+<a id="more"></a>
+<h1 id="博客文章"><a href="#博客文章" class="headerlink" title="博客文章"></a>博客文章</h1><p>west_liu (liu-jianhao): <span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlc3Ricm9va2xpdS9hcnRpY2xlL2RldGFpbHMvODM5MjcwODM=" title="https://blog.csdn.net/westbrookliu/article/details/83927083">https://blog.csdn.net/westbrookliu/article/details/83927083<i class="fa fa-external-link"></i></span></p>
+<p>Gatsby123 (gatsbyd): <span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZ2F0c2J5MTIzL3AvMTIwNzU1ODMuaHRtbA==" title="https://www.cnblogs.com/gatsby123/p/12075583.html">https://www.cnblogs.com/gatsby123/p/12075583.html<i class="fa fa-external-link"></i></span></p>
+<p>西部小笼包 (yixuaz): <span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vbmIvMzYyNjU4NDE=" title="https://www.jianshu.com/nb/36265841">https://www.jianshu.com/nb/36265841<i class="fa fa-external-link"></i></span></p>
+<p>丁浩羚 HDing Blog: <span class="exturl" data-url="aHR0cHM6Ly9obGRpbmd6eWRvbmcuZ2l0aHViLmlvL3RhZ3MvI2RhdGFiYXNl" title="https://hldingzydong.github.io/tags/#database">https://hldingzydong.github.io/tags/#database<i class="fa fa-external-link"></i></span></p>
+<!-- TODO:还有我 -->
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>west_liu (liu-jianhao): <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2xpdS1qaWFuaGFvL0NNVS0xNS00NDU=" title="https://github.com/liu-jianhao/CMU-15-445">https://github.com/liu-jianhao/CMU-15-445<i class="fa fa-external-link"></i></span><br><!-- - Fork : https://github.com/YvetteCh/dbms (only Project1 Task1)　这人没劲 --></p>
+<p>Gatsby123 (gatsbyd): <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dhdHNieWQvY211XzE1NDQ1XzIwMTg=" title="https://github.com/gatsbyd/cmu_15445_2018">https://github.com/gatsbyd/cmu_15445_2018<i class="fa fa-external-link"></i></span></p>
+<p>西部小笼包 (yixuaz): <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3lpeHVhei9DTVUtMTU0NDU=" title="https://github.com/yixuaz/CMU-15445">https://github.com/yixuaz/CMU-15445<i class="fa fa-external-link"></i></span></p>
+<!-- TODO:还有我 -->
+<!-- 丁浩羚 HDing Blog: https://github.com/hldingzydong/CMU15-445-lab　和west_liu (liu-jianhao)一样 -->
+<p><br></p>
+<p>下面是没有对应博客的实现:</p>
+<p>lancecopper: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2xhbmNlY29wcGVyL2NtdTE1NDQ1X2ZhbGwyMDE3" title="https://github.com/lancecopper/cmu15445_fall2017">https://github.com/lancecopper/cmu15445_fall2017<i class="fa fa-external-link"></i></span> <!-- 很好 --></p>
+<p>liujxing: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2xpdWp4aW5nL0NNVV8xNTQ0NV9GYWxsMjAxN19EYXRhYmFzZVN5c3RlbXM=" title="https://github.com/liujxing/CMU_15445_Fall2017_DatabaseSystems">https://github.com/liujxing/CMU_15445_Fall2017_DatabaseSystems<i class="fa fa-external-link"></i></span> <!-- TODO:中文注释 --></p>
+<p>Nov11: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL1RheWE2NjYvMTUtNDQ1" title="https://github.com/Taya666/15-445">https://github.com/Taya666/15-445<i class="fa fa-external-link"></i></span>　(原repo中已删除)</p>
+<p>gigimushroom: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2dpZ2ltdXNocm9vbS9EYXRhYmFzZUJhY2tlbmRFbmdpbmU=" title="https://github.com/gigimushroom/DatabaseBackendEngine">https://github.com/gigimushroom/DatabaseBackendEngine<i class="fa fa-external-link"></i></span></p>
+<p>xc42: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3hjNDIvdG95REI=" title="https://github.com/xc42/toyDB">https://github.com/xc42/toyDB<i class="fa fa-external-link"></i></span></p>
+<p>761417898: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tLzc2MTQxNzg5OC9jbXUxNS00NDVsYWI=" title="https://github.com/761417898/cmu15-445lab">https://github.com/761417898/cmu15-445lab<i class="fa fa-external-link"></i></span></p>
+<p>程嵇邢滑 xingdl2007: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3hpbmdkbDIwMDcvY211MTUtNDQ1" title="https://github.com/xingdl2007/cmu15-445">https://github.com/xingdl2007/cmu15-445<i class="fa fa-external-link"></i></span></p>
+<p>hqnddw: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hxbmRkdy9DTVUtMTU0NDUtZGF0YWJhc2U=" title="https://github.com/hqnddw/CMU-15445-database">https://github.com/hqnddw/CMU-15445-database<i class="fa fa-external-link"></i></span></p>
+<p>ssujeen: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3NzdWplZW4vMTU0NDUtZGI=" title="https://github.com/ssujeen/15445-db">https://github.com/ssujeen/15445-db<i class="fa fa-external-link"></i></span> <!-- TODO: 很一般--></p>
+<p>junjieliu2910: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2p1bmppZWxpdTI5MTAvY211LTE1LTQ0NQ==" title="https://github.com/junjieliu2910/cmu-15-445">https://github.com/junjieliu2910/cmu-15-445<i class="fa fa-external-link"></i></span> <!-- BUGGY --></p>
+<p><br></p>
+<p>下面是不完整的实现:</p>
+<p>FateTHarlaown: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ZhdGVUSGFybGFvd24vY211MTUtNDQ1bGFi" title="https://github.com/FateTHarlaown/cmu15-445lab">https://github.com/FateTHarlaown/cmu15-445lab<i class="fa fa-external-link"></i></span> (only Project1)<!-- TODO:这人不错 --></p>
+<p>astronaut0131: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FzdHJvbmF1dDAxMzEvY211MTUtNDQ1LTIwMTc=" title="https://github.com/astronaut0131/cmu15-445-2017">https://github.com/astronaut0131/cmu15-445-2017<i class="fa fa-external-link"></i></span> (only Project1)<!-- TODO:这人不错 --></p>
+<p>uniquebby: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3VuaXF1ZWJieS8yMDE3Y211MTUtNDQ1" title="https://github.com/uniquebby/2017cmu15-445">https://github.com/uniquebby/2017cmu15-445<i class="fa fa-external-link"></i></span> (only Project1, 2, 3)</p>
+<p>hcyezhang: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hjeWV6aGFuZy9DTVUxNS00NDUtRGF0YWJhc2UtU3lzdGVtcw==" title="https://github.com/hcyezhang/CMU15-445-Database-Systems">https://github.com/hcyezhang/CMU15-445-Database-Systems<i class="fa fa-external-link"></i></span> (only Project1, 2, 3)</p>
+<p>sql-ai: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3NxbC1haS9jbXVEQg==" title="https://github.com/sql-ai/cmuDB">https://github.com/sql-ai/cmuDB<i class="fa fa-external-link"></i></span> (only Project1, 2)</p>
+<p>hxin18: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2h4aW4xOC8xNTQ0NQ==" title="https://github.com/hxin18/15445">https://github.com/hxin18/15445<i class="fa fa-external-link"></i></span> (only Project1, 2)<!-- TODFO:TODO: 和west_liu (liu-jianhao) --></p>
+<p>Jiawei0227: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ppYXdlaTAyMjcvQ01VLURhdGFiYXNl" title="https://github.com/Jiawei0227/CMU-Database">https://github.com/Jiawei0227/CMU-Database<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>BragCat: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0JyYWdDYXQvQ01VLTE1NDQ1LURC" title="https://github.com/BragCat/CMU-15445-DB">https://github.com/BragCat/CMU-15445-DB<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>MiracleMa: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pcmFjbGVNYS9DTVUxNS00NDU=" title="https://github.com/MiracleMa/CMU15-445">https://github.com/MiracleMa/CMU15-445<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>Junoth: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0p1bm90aC9DTVUtMTUtNDQ1" title="https://github.com/Junoth/CMU-15-445">https://github.com/Junoth/CMU-15-445<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>ComputerCourses: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0NvbXB1dGVyQ291cnNlcy9DTVUtMTUtNDQ1" title="https://github.com/ComputerCourses/CMU-15-445">https://github.com/ComputerCourses/CMU-15-445<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>LucienXian: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0x1Y2llblhpYW4vQ01VMTU0NDU=" title="https://github.com/LucienXian/CMU15445">https://github.com/LucienXian/CMU15445<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>jackwener: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2phY2t3ZW5lci9jbXUtMTU0NDU=" title="https://github.com/jackwener/cmu-15445">https://github.com/jackwener/cmu-15445<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>FlorianFANG: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Zsb3JpYW5GQU5HL2NtdS0xNTQ0NQ==" title="https://github.com/FlorianFANG/cmu-15445">https://github.com/FlorianFANG/cmu-15445<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>JiankunDai: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ppYW5rdW5EYWkvY211LTE1NDQ1LWZhbGwyMDE4" title="https://github.com/JiankunDai/cmu-15445-fall2018">https://github.com/JiankunDai/cmu-15445-fall2018<i class="fa fa-external-link"></i></span> (only Project1)</p>
+<p>xuchongfeng: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3h1Y2hvbmdmZW5nL2Ric3lzdGVtLWNtdS0xNS00NDU=" title="https://github.com/xuchongfeng/dbsystem-cmu-15-445">https://github.com/xuchongfeng/dbsystem-cmu-15-445<i class="fa fa-external-link"></i></span> (only Project1 Task 1)</p>
+<h1 id="源代码"><a href="#源代码" class="headerlink" title="源代码:"></a>源代码:</h1><p>上面项目的第一个commit大致可以作为开始。下面有几个例子:</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0ppYXdlaTAyMjcvQ01VLURhdGFiYXNlL3RyZWUvNDQxZDQ4NjczMzUzYmYwNzA3NDdjZjg4OGExMzdlMzMxMDYzZmNlZg==" title="https://github.com/Jiawei0227/CMU-Database/tree/441d48673353bf070747cf888a137e331063fcef">https://github.com/Jiawei0227/CMU-Database/tree/441d48673353bf070747cf888a137e331063fcef<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Rpb3h5Z2VuL0NNVTE1LTQ0NQ==" title="https://github.com/dioxygen/CMU15-445">https://github.com/dioxygen/CMU15-445<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0RKLUxFU1NPTi9DTVUtMTU0NDU=" title="https://github.com/DJ-LESSON/CMU-15445">https://github.com/DJ-LESSON/CMU-15445<i class="fa fa-external-link"></i></span></p>
+<p>它们都来自Fall 2017, 版本均为:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">15-445/645 Project Source Code</span><br><span class="line">------------------------------------------------------------</span><br><span class="line">Created: Nov 21 2017 @ 00:28:55</span><br><span class="line">Last Commit: be0f6dd92b4c3eaa52a6456bd8847773ab65b3ed</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Fall-2018"><a href="#Fall-2018" class="headerlink" title="Fall 2018"></a>Fall 2018</h2><p>不建议使用2018的，因为代码里面声明不允许公开</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2phY2t3ZW5lci9jbXUtMTU0NDU=" title="https://github.com/jackwener/cmu-15445">https://github.com/jackwener/cmu-15445<i class="fa fa-external-link"></i></span></p>
+<h1 id="Test"><a href="#Test" class="headerlink" title="Test"></a>Test</h1><p>需要更多的test可以使用这里的:</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3lpeHVhei9DTVUtMTU0NDUvYmxvYi9tYXN0ZXIvY211XzE1NDQ1XzIwMTcoc29sKS5yYXI=" title="https://github.com/yixuaz/CMU-15445/blob/master/cmu_15445_2017(sol).rar">https://github.com/yixuaz/CMU-15445/blob/master/cmu_15445_2017(sol).rar<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2xpdS1qaWFuaGFvL0NNVS0xNS00NDUvdHJlZS9tYXN0ZXIvTGFiL3Rlc3Q=" title="https://github.com/liu-jianhao/CMU-15-445/tree/master/Lab/test">https://github.com/liu-jianhao/CMU-15-445/tree/master/Lab/test<i class="fa fa-external-link"></i></span></p>
+<h1 id="Build"><a href="#Build" class="headerlink" title="Build"></a>Build</h1><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">mkdir build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line">cmake ..</span><br><span class="line">make</span><br></pre></td></tr></tbody></table></figure>
+<p>源代码如果想通过build，需要改<code>CMakelist.txt</code>31行:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">set</span>(CMAKE_CXX_FLAGS <span class="string">"<span class="variable">${CMAKE_CXX_FLAGS}</span> -fPIC -Wall -Wextra -Werror -march=native"</span>)</span><br></pre></td></tr></tbody></table></figure>
+<p>改成:</p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="built_in">set</span>(CMAKE_CXX_FLAGS <span class="string">"<span class="variable">${CMAKE_CXX_FLAGS}</span> -fPIC -Wall -Wextra -march=native"</span>)</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>一个Java的实现: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0RyZWFNZXI5NjMvVG95REI=" title="https://github.com/DreaMer963/ToyDB">https://github.com/DreaMer963/ToyDB<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>CMU-15445</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>[DBMS] Cluster Index</title>
     <url>/2020/04/15/DBMS-Cluster-Index/</url>
     <content><![CDATA[<p>有关Clustered Indexes: <a href="https://cakebytheoceanluo.github.io/2020/03/19/CMU-15445-Lec07/#Clustered-Indexes">[CMU-15445] Lec07 Tree Indexes Part I - 树索引 I - Clustered Indexes</a></p>
 <p>我们这次在PostgreSQL中使用Clustered Indexes。</p>
@@ -56,6 +142,7 @@
         <tag>Page</tag>
         <tag>Indexing</tag>
         <tag>B Tree</tag>
+        <tag>Clustered Index</tag>
       </tags>
   </entry>
   <entry>

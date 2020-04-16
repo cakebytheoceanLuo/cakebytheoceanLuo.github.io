@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">77</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">78</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,112 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/13/SQL-Leetcode-1179-reformat-department-table/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/13/SQL-Leetcode-1179-reformat-department-table/" class="post-title-link" itemprop="url">[Leetcode-SQL] 1179.reformat-department-table</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-13 19:53:22 / 修改时间：19:54:37" itemprop="dateCreated datePublished" datetime="2020-03-13T19:53:22+01:00">2020-03-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/13/SQL-Leetcode-1179-reformat-department-table/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 1179.reformat-department-table" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>1179.Reformat Department Table</p>
+<p>SQL Schema:</p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Department (<span class="keyword">id</span> <span class="built_in">int</span>, revenue <span class="built_in">int</span>, <span class="keyword">month</span> <span class="built_in">varchar</span>(<span class="number">5</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Department</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'8000'</span>, <span class="string">'Jan'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'9000'</span>, <span class="string">'Jan'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'10000'</span>, <span class="string">'Feb'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'7000'</span>, <span class="string">'Feb'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'6000'</span>, <span class="string">'Mar'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">--PostgreSQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Department (<span class="keyword">id</span> <span class="built_in">int</span>, revenue <span class="built_in">int</span>, <span class="keyword">month</span> <span class="built_in">varchar</span>(<span class="number">5</span>))</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Department</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'8000'</span>, <span class="string">'Jan'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'9000'</span>, <span class="string">'Jan'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'10000'</span>, <span class="string">'Feb'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'7000'</span>, <span class="string">'Feb'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Department (<span class="keyword">id</span>, revenue, <span class="keyword">month</span>) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'6000'</span>, <span class="string">'Mar'</span>)</span><br></pre></td></tr></tbody></table></figure>
+<p>Table: <code>Department</code><br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------------+---------+</span></span><br><span class="line">| Column Name   | Type    |</span><br><span class="line">+<span class="comment">---------------+---------+</span></span><br><span class="line">| id            | int     |</span><br><span class="line">| revenue       | int     |</span><br><span class="line">| month         | varchar |</span><br><span class="line">+<span class="comment">---------------+---------+</span></span><br><span class="line">(id, month) is the primary key of this table.</span><br><span class="line">The table has information about the revenue of each department per month.</span><br><span class="line">The month has <span class="keyword">values</span> <span class="keyword">in</span> [<span class="string">"Jan"</span>,<span class="string">"Feb"</span>,<span class="string">"Mar"</span>,<span class="string">"Apr"</span>,<span class="string">"May"</span>,<span class="string">"Jun"</span>,<span class="string">"Jul"</span>,<span class="string">"Aug"</span>,<span class="string">"Sep"</span>,<span class="string">"Oct"</span>,<span class="string">"Nov"</span>,<span class="string">"Dec"</span>].</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>Write an SQL query to reformat the table such that there is a department id column and a revenue column <strong>for each month</strong>.</p>
+<p>The query result format is in the following example:<br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">Department table:</span><br><span class="line">+<span class="comment">------+---------+-------+</span></span><br><span class="line">| id   | revenue | month |</span><br><span class="line">+<span class="comment">------+---------+-------+</span></span><br><span class="line">| 1    | 8000    | Jan   |</span><br><span class="line">| 2    | 9000    | Jan   |</span><br><span class="line">| 3    | 10000   | Feb   |</span><br><span class="line">| 1    | 7000    | Feb   |</span><br><span class="line">| 1    | 6000    | Mar   |</span><br><span class="line">+<span class="comment">------+---------+-------+</span></span><br><span class="line"></span><br><span class="line">Result table:</span><br><span class="line">+<span class="comment">------+-------------+-------------+-------------+-----+-------------+</span></span><br><span class="line">| id   | Jan_Revenue | Feb_Revenue | Mar_Revenue | ... | Dec_Revenue |</span><br><span class="line">+<span class="comment">------+-------------+-------------+-------------+-----+-------------+</span></span><br><span class="line">| 1    | 8000        | 7000        | 6000        | ... | null        |</span><br><span class="line">| 2    | 9000        | null        | null        | ... | null        |</span><br><span class="line">| 3    | null        | 10000       | null        | ... | null        |</span><br><span class="line">+<span class="comment">------+-------------+-------------+-------------+-----+-------------+</span></span><br><span class="line"></span><br><span class="line">Note that the result table has 13 columns (1 for the department id + 12 for the months).</span><br></pre></td></tr></tbody></table></figure><p></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/13/SQL-Leetcode-1179-reformat-department-table/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1192,120 +1298,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/11/CMU-15445-Lec03/" class="post-title-link" itemprop="url">[CMU-15445]Lec03 Database Storage Part I - 数据库存储 I</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-11 10:51:09" itemprop="dateCreated datePublished" datetime="2020-03-11T10:51:09+01:00">2020-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-14 20:38:13" itemprop="dateModified" datetime="2020-04-14T20:38:13+02:00">2020-04-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Disk-Management/" itemprop="url" rel="index"><span itemprop="name">Disk Management</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/03/11/CMU-15445-Lec03/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec03 Database Storage Part I - 数据库存储 I" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>7.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Database Storage Part I - 数据库存储 I</p>
-<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAzLXN0b3JhZ2UxLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/03-storage1.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/03-storage1.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDMtc3RvcmFnZTEucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/03-storage1.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapter 10.1-10.2, 10.5-10.6</p>
-<p>这节两课，我们会学习数据库内部的存储。</p>
-<p>Database Storage 在CMU分成了两部分，在两节课中讲。这是第一部分。</p>
-<p>这部分涉及存储的硬件, 操作系统提供的syscall, 数据库缓存区(buffer pool)的缓存页(buffer page), Slotted page等等。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/11/CMU-15445-Lec03/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1378,7 +1370,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-count">78</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1457,13 +1449,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">375k</span>
+    <span title="站点总字数">378k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">5:41</span>
+    <span title="站点阅读时长">5:44</span>
 </div>
 
         
