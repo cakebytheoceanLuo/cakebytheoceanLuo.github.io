@@ -22,29 +22,49 @@
     var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="关于数据库的一切">
-<meta property="og:url" content="https://cakebytheoceanluo.github.io/index.html">
+  <meta name="description" content="题目我摘抄题目的重点:  Your table needs to automatically grow in size as needed but you do not need shrink it. That is, you do not need to implement support for shrinking or compacting the hash table.  Check ou">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]17_18_Project1_1">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/04/17/CMU-15445-17-18-Project1-1/index.html">
 <meta property="og:site_name" content="关于数据库的一切">
-<meta property="og:description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+<meta property="og:description" content="题目我摘抄题目的重点:  Your table needs to automatically grow in size as needed but you do not need shrink it. That is, you do not need to implement support for shrinking or compacting the hash table.  Check ou">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_1.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_2.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_3.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_4.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_5.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_1.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_6.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_7.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_8.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_9.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_10.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_11.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_12.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_13.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec07/18.jpg">
+<meta property="article:published_time" content="2020-04-17T14:11:06.000Z">
+<meta property="article:modified_time" content="2020-04-17T14:12:57.582Z">
 <meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Dynamic Hashing Scheme">
+<meta property="article:tag" content="Extendible Hashing">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project1718/P1_T1_1.png">
 
-<link rel="canonical" href="https://cakebytheoceanluo.github.io/">
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/04/17/CMU-15445-17-18-Project1-1/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false
+    isHome : false,
+    isPost : true
   };
 </script>
 
-  <title>关于数据库的一切 - 罗济高的博客</title>
+  <title>[CMU-15445]17_18_Project1_1 | 关于数据库的一切</title>
   
 
 
@@ -209,10 +229,10 @@
             
 
   <div class="posts-expand">
-        
+      
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/17/CMU-15445-17-18-Project1-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -226,8 +246,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/17/CMU-15445-17-18-Project1-1/" class="post-title-link" itemprop="url">[CMU-15445]17_18_Project1_1</a>
+          [CMU-15445]17_18_Project1_1
         </h2>
 
         <div class="post-meta">
@@ -298,7 +317,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>我摘抄题目的重点:</p>
+        <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>我摘抄题目的重点:</p>
 <ul>
 <li>Your table needs to automatically grow in size as needed but you do not need shrink it. That is, you do not need to implement support for shrinking or compacting the hash table. </li>
 <li>Check out chapters 11.5-11.7 in the textbook for more information on how to implement this table. </li>
@@ -528,1022 +547,73 @@
             document.body.appendChild(img);
           });
       </script>
-      
     </div>
 
     
     
     
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
         
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/16/CMU-15445-17-18-Project0/">
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/16/CMU-15445-17-18-Project0/" class="post-title-link" itemprop="url">[CMU-15445]17_18_Project0</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-04-16 14:02:27 / 修改时间：14:04:40" itemprop="dateCreated datePublished" datetime="2020-04-16T14:02:27+02:00">2020-04-16</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/16/CMU-15445-17-18-Project0/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]17_18_Project0" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>我目前正在写CMU-15445的课程项目。这篇文章关注17Fall和18Fall的课程项目，因为这两年的作业类似，而且基于同一个代码框架。(18Fall应该去掉该代码框架中的一些bug，但是大体框架是类似)</p>
-<p>我整理了一些我网上能搜到的相关博客文章和代码实现。我自己的实现文章中，我和下面的实现对比。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/16/CMU-15445-17-18-Project0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/15/DBMS-Cluster-Index/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/15/DBMS-Cluster-Index/" class="post-title-link" itemprop="url">[DBMS] Cluster Index</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-15 19:24:04" itemprop="dateCreated datePublished" datetime="2020-04-15T19:24:04+02:00">2020-04-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-16 12:01:41" itemprop="dateModified" datetime="2020-04-16T12:01:41+02:00">2020-04-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/B-Tree/" itemprop="url" rel="index"><span itemprop="name">B Tree</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/15/DBMS-Cluster-Index/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS] Cluster Index" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>5 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>有关Clustered Indexes: <a href="https://cakebytheoceanluo.github.io/2020/03/19/CMU-15445-Lec07/#Clustered-Indexes">[CMU-15445] Lec07 Tree Indexes Part I - 树索引 I - Clustered Indexes</a></p>
-<p>我们这次在PostgreSQL中使用Clustered Indexes。</p>
-<p>这篇文章中我会提到，ctid和页面布局, 具体可以看下面两篇文章:</p>
-<ul>
-<li><a href="https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/">[DBMS][PostgreSQL] Page Layout 页面布局</a></li>
-<li><a href="https://cakebytheoceanluo.github.io/2020/04/14/DBMS-Tree-Index-pageinspect/">[DBMS] Tree Index pageinspect 索引页面内容</a></li>
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/04/17/CMU-15445-17-18-Project1-1/" title="[CMU-15445]17_18_Project1_1">https://cakebytheoceanluo.github.io/2020/04/17/CMU-15445-17-18-Project1-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
 </ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/15/DBMS-Cluster-Index/#more" rel="contents">
-                阅读全文 &raquo;
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
               </a>
             </div>
-          <!--/noindex-->
-        
-      
     </div>
+  </div>
 
-    
-    
-    
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          
+          <div class="post-tags">
+              <a href="/tags/Dynamic-Hashing-Scheme/" rel="tag"><i class="fa fa-tag"></i> Dynamic Hashing Scheme</a>
+              <a href="/tags/Extendible-Hashing/" rel="tag"><i class="fa fa-tag"></i> Extendible Hashing</a>
+          </div>
 
         
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/14/DBMS-Tree-Index-pageinspect/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/14/DBMS-Tree-Index-pageinspect/" class="post-title-link" itemprop="url">[DBMS]Tree Index pageinspect 索引页面内容</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-04-14 20:33:38 / 修改时间：20:43:52" itemprop="dateCreated datePublished" datetime="2020-04-14T20:33:38+02:00">2020-04-14</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/B-Tree/" itemprop="url" rel="index"><span itemprop="name">B Tree</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/14/DBMS-Tree-Index-pageinspect/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS]Tree Index pageinspect 索引页面内容" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>数据库的索引基本分为两种类型:</p>
-<ul>
-<li>Hash Index</li>
-<li>Tree Index</li>
-</ul>
-<p>我们今天来看一看PostgreSQL中的Tree Index的page格式。</p>
-<p>B+ Tree中元素的排序有多种方法: </p>
-<ul>
-<li>PostgreSQL根据record id来排序</li>
-<li>MySQL根据primary key来排序</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/14/DBMS-Tree-Index-pageinspect/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
     </div>
+  </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
         
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/" class="post-title-link" itemprop="url">[DBMS]Hash Index与Tree Index</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-04-13 12:37:01 / 修改时间：12:43:01" itemprop="dateCreated datePublished" datetime="2020-04-13T12:37:01+02:00">2020-04-13</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/DBMS/" itemprop="url" rel="index"><span itemprop="name">DBMS</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hash-Table/" itemprop="url" rel="index"><span itemprop="name">Hash Table</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/PostgreSQL/" itemprop="url" rel="index"><span itemprop="name">PostgreSQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/B-Tree/" itemprop="url" rel="index"><span itemprop="name">B Tree</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/" class="post-meta-item leancloud_visitors" data-flag-title="[DBMS]Hash Index与Tree Index" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>8.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>7 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>数据库的索引基本分为两种类型:</p>
-<ul>
-<li>Hash Index</li>
-<li>Tree Index</li>
-</ul>
-<p>我们今天来看一看PostgreSQL中的这两种索引会如何帮助我们的query。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/16/CMU-15445-17-18-Project0/" rel="prev" title="[CMU-15445]17_18_Project0">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]17_18_Project0
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/12/Extendable-Hashing-Exercise/" class="post-title-link" itemprop="url">Extendable Hashing 练习</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-04-12 20:52:43 / 修改时间：20:56:28" itemprop="dateCreated datePublished" datetime="2020-04-12T20:52:43+02:00">2020-04-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hash-Table/" itemprop="url" rel="index"><span itemprop="name">Hash Table</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/12/Extendable-Hashing-Exercise/" class="post-meta-item leancloud_visitors" data-flag-title="Extendable Hashing 练习" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/12/Extendable-Hashing-Exercise/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/11/DSC-11-6-11-7-Hashing/" class="post-title-link" itemprop="url">Database System Concepts 精读 [11.6-11.7] Hashing</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-11 16:19:16" itemprop="dateCreated datePublished" datetime="2020-04-11T16:19:16+02:00">2020-04-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-12 20:56:23" itemprop="dateModified" datetime="2020-04-12T20:56:23+02:00">2020-04-12</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Database-System-Concepts/" itemprop="url" rel="index"><span itemprop="name">Database System Concepts</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hash-Table/" itemprop="url" rel="index"><span itemprop="name">Hash Table</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/11/DSC-11-6-11-7-Hashing/" class="post-meta-item leancloud_visitors" data-flag-title="Database System Concepts 精读 [11.6-11.7] Hashing" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>16k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>14 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>[11.6-11.7] Hashing</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/11/DSC-11-6-11-7-Hashing/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/10/DSC-0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/10/DSC-0/" class="post-title-link" itemprop="url">Database System Concepts-精读</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-04-10 18:41:55" itemprop="dateCreated datePublished" datetime="2020-04-10T18:41:55+02:00">2020-04-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-11 16:31:36" itemprop="dateModified" datetime="2020-04-11T16:31:36+02:00">2020-04-11</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Database-System-Concepts/" itemprop="url" rel="index"><span itemprop="name">Database System Concepts</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/10/DSC-0/" class="post-meta-item leancloud_visitors" data-flag-title="Database System Concepts-精读" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>1.3k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="笔记文章链接"><a href="#笔记文章链接" class="headerlink" title="笔记文章链接"></a>笔记文章链接</h1><ul>
-<li>Chapter 11 Indexing and Hashing:<ul>
-<li>11.6-11.7 Hashing: <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></li>
-</ul>
-</li>
-</ul>
-<p>此区域持续更新</p>
-<hr>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/10/DSC-0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/" class="post-title-link" itemprop="url">[SQL]高级SQL-窗口函数(7)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-04-09 15:37:29 / 修改时间：15:38:14" itemprop="dateCreated datePublished" datetime="2020-04-09T15:37:29+02:00">2020-04-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]高级SQL-窗口函数(7)" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在了解了窗口函数后， 我们这次对它进行最后(?)一次练习。我们考虑一个秋有问题，即一些连续的数字是否被使用完。这次的数据集直接存在于SQL语句里面。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/08/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/08/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-6/" class="post-title-link" itemprop="url">[SQL]高级SQL-窗口函数(6)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-04-08 19:34:47 / 修改时间：19:44:29" itemprop="dateCreated datePublished" datetime="2020-04-08T19:34:47+02:00">2020-04-08</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TUM-IN2326/" itemprop="url" rel="index"><span itemprop="name">TUM-IN2326</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/08/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-6/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]高级SQL-窗口函数(6)" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>我们继续练习窗口函数，这次我们使用TPC-H数据集来练习。TPC-H是一个商业决策方向的数据集，因此里面有很多金额/销售额/年度销售额/国家销售额等等OLAP的数目可以被计算。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/08/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
   </article>
   
   
@@ -1551,15 +621,16 @@
 
   </div>
 
-  
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
-  </nav>
-
-
 
           </div>
           
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -1606,6 +677,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#题目"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引入"><span class="nav-number">2.</span> <span class="nav-text">引入</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#SampleTest"><span class="nav-number">2.1.</span> <span class="nav-text">SampleTest</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BasicDepthTest"><span class="nav-number">2.2.</span> <span class="nav-text">BasicDepthTest</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#split-bucket前后"><span class="nav-number">2.3.</span> <span class="nav-text">split bucket前后</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#split-bucket前"><span class="nav-number">2.3.1.</span> <span class="nav-text">split bucket前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#split-bucket后"><span class="nav-number">2.3.2.</span> <span class="nav-text">split bucket后</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现"><span class="nav-number">3.</span> <span class="nav-text">实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bit-Operation-位操作"><span class="nav-number">3.1.</span> <span class="nav-text">Bit Operation 位操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GET-LAST-N-BITS"><span class="nav-number">3.1.1.</span> <span class="nav-text">GET_LAST_N_BITS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GET-LAST-N-TH-BIT"><span class="nav-number">3.1.2.</span> <span class="nav-text">GET_LAST_N_TH_BIT</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#struct-Bucket"><span class="nav-number">3.2.</span> <span class="nav-text">struct Bucket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class-ExtendibleHash-attributes"><span class="nav-number">3.3.</span> <span class="nav-text">class ExtendibleHash attributes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class-ExtendibleHash-number-function-public-private"><span class="nav-number">3.4.</span> <span class="nav-text">class ExtendibleHash number function (public, private)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Find"><span class="nav-number">3.4.1.</span> <span class="nav-text">Find</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Remove"><span class="nav-number">3.4.2.</span> <span class="nav-text">Remove</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert"><span class="nav-number">3.4.3.</span> <span class="nav-text">Insert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#其他"><span class="nav-number">3.4.4.</span> <span class="nav-text">其他</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Test"><span class="nav-number">4.</span> <span class="nav-text">Test</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MY-TODO"><span class="nav-number">5.</span> <span class="nav-text">MY-TODO</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1954,6 +1026,16 @@
     
 
   
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/04/17/CMU-15445-17-18-Project1-1/',]
+      });
+      });
+  </script>
 
 </body>
 </html>
