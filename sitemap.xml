@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/04/23/cache-page-replacement/</loc>
+    
+    <lastmod>2020-04-23T21:53:02.929Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/04/20/Leetcode-Algo-146-lru-cache/</loc>
     
     <lastmod>2020-04-20T19:11:43.879Z</lastmod>
