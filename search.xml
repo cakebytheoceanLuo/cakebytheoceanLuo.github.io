@@ -10,6 +10,7 @@
 <li>You do not need to worry about a maximun size of the data structures. You can assume that you will not run out of memory. Again, you need to make sure that the operations are thread-safe.</li>
 <li>我对比过这部分的Fall2017的源代码和Fall2018没有区别， Fall2018多了一个test: <code>ConcurrencyTest</code></li>
 </ul>
+<a id="more"></a>
 <h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p>我强烈建议大家先去做Leetcode上的LRU题，对应的文章我列在这里:</p>
 <ul>
 <li>Leetcode 146: <a href="https://cakebytheoceanluo.github.io/2020/04/20/Leetcode-Algo-146-lru-cache/">[Leetcode-Algorithm] 146.lru-cache</a>, <a href="https://cakebytheoceanluo.github.io/2020/04/19/std-list-splice/">https://cakebytheoceanluo.github.io/2020/04/19/std-list-splice/</a></li>
@@ -784,14 +785,14 @@
         <category>Access Methods</category>
         <category>DBMS</category>
         <category>B Tree</category>
-        <category>PostgreSQL</category>
         <category>Indexing</category>
+        <category>PostgreSQL</category>
       </categories>
       <tags>
         <tag>Page</tag>
         <tag>PostgreSQL</tag>
-        <tag>B Tree</tag>
         <tag>Indexing</tag>
+        <tag>B Tree</tag>
         <tag>Clustered Index</tag>
       </tags>
   </entry>
@@ -854,14 +855,14 @@
         <category>Access Methods</category>
         <category>DBMS</category>
         <category>B Tree</category>
-        <category>PostgreSQL</category>
         <category>Indexing</category>
+        <category>PostgreSQL</category>
       </categories>
       <tags>
         <tag>Page</tag>
         <tag>PostgreSQL</tag>
-        <tag>B Tree</tag>
         <tag>Indexing</tag>
+        <tag>B Tree</tag>
       </tags>
   </entry>
   <entry>
@@ -972,16 +973,16 @@
       <categories>
         <category>CMU-15445</category>
         <category>Access Methods</category>
-        <category>DBMS</category>
         <category>Hash Table</category>
+        <category>DBMS</category>
         <category>B Tree</category>
-        <category>PostgreSQL</category>
         <category>Indexing</category>
+        <category>PostgreSQL</category>
       </categories>
       <tags>
         <tag>PostgreSQL</tag>
-        <tag>B Tree</tag>
         <tag>Indexing</tag>
+        <tag>B Tree</tag>
       </tags>
   </entry>
   <entry>
@@ -2046,8 +2047,8 @@ TODO: link -->
       </categories>
       <tags>
         <tag>SQL</tag>
-        <tag>Recursion</tag>
         <tag>PostgreSQL</tag>
+        <tag>Recursion</tag>
         <tag>Six Degrees of Kevin Bacon</tag>
         <tag>BFS</tag>
       </tags>
@@ -2771,8 +2772,8 @@ TODO: link -->
         <category>Indexing</category>
       </categories>
       <tags>
-        <tag>B Tree</tag>
         <tag>Indexing</tag>
+        <tag>B Tree</tag>
         <tag>Clustered Index</tag>
         <tag>Variable Length Key</tag>
         <tag>Prefix Compression</tag>
