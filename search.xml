@@ -1,6 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[CMU-15445]19_Projet1_disk_manager</title>
+    <url>/2020/08/17/CMU-15445-19-Projet1-disk-manager/</url>
+    <content><![CDATA[<p>Disk Manager是数据库中对磁盘文件操作的抽象。它提供给Buffer Manager的粒度是一个page, 即它操作的最小单元是一个page。而操作可以分为allocation分配和deallocation释放。</p>
+<p>在CMU Bustub中Disk Manager总是针对一个文件，每次从它上面获得或者写入page大小的数据量。Bustub是模拟SQLite, 而SQLite作为一个简单的数据库，只操作一个文件。当然其他复杂的数据集需要操作多个文件，那对应的Disk Manager需要去对应多个文件(open, read, write, close等操作)。我们下次有机会去考虑一下这样多文件的Disk Manger如何实现。而这次我们先打好基础，去理解CMU Bustub中单文件的Disk Manager。</p>
+<p>另外这篇文章中不关注Log。它需要之后单独描述。我们会区分Log(也对应一个文件)和File，File指那个特定的我们想读取和写入的文件。</p>
+<p>(另外CMU Bustub中的Disk Manager和CMU 17Fall 18Fall对应项目的Disk Manager没有区别)</p>
+<a id="more"></a>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这部分我借用代码中的注释文档来对Disk Manager进行介绍:</p>
+<ul>
+<li>DiskManager takes care of the <strong>allocation and deallocation of pages</strong> within a database. It performs <strong>the reading and writing of pages to and from disk</strong>, providing a logical file layer within the context of a database management system.</li>
+</ul>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/ModernDBS/Chap2/7.jpg" alt="7.jpg 引用见文章最后"></p>
+<ul>
+<li>Disk Manager隶属于上图File Interface: read block k, write block k</li>
+<li>它可以对一个文件或者block进行读与写操作</li>
+<li>它提供给Buffer Manager接口，让Buffer Manager可以以page粒度，对磁盘文件进行操作 (这就是Project1需要的部分)</li>
+</ul>
+<p><br></p>
+<h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Project19/P1_1.png" alt="引入"></p>
+<ul>
+<li>上图中我们在硬盘上有一个File <code>"test.db"</code>, 他的大小是15000bit</li>
+<li>bustub中Page的大小是4KiB: <code>src/include/common/config.h</code>中:<ul>
+<li><code>static constexpr int PAGE_SIZE = 4096;                                        // size of a data page in byte</code></li>
+</ul>
+</li>
+<li>因此这个文件不是整数倍的page大小， 我们<strong>向上取整</strong>，需要4个page去读取这个文件。</li>
+<li>4个page对应的page_id即图中的0, 1, 2, 3。</li>
+<li>我们可以从这个例子中理解，page_id和File中的byte位置是对应。</li>
+</ul>
+<h1 id="bustub-DiskManager"><a href="#bustub-DiskManager" class="headerlink" title="bustub::DiskManager"></a><code>bustub::DiskManager</code></h1><p>我们接下来来看代码: </p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvYmxvYi9tYXN0ZXIvc3JjL2luY2x1ZGUvc3RvcmFnZS9kaXNrL2Rpc2tfbWFuYWdlci5o" title="https://github.com/cmu-db/bustub/blob/master/src/include/storage/disk/disk_manager.h">https://github.com/cmu-db/bustub/blob/master/src/include/storage/disk/disk_manager.h<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvYmxvYi9tYXN0ZXIvc3JjL3N0b3JhZ2UvZGlzay9kaXNrX21hbmFnZXIuY3Bw" title="https://github.com/cmu-db/bustub/blob/master/src/storage/disk/disk_manager.cpp">https://github.com/cmu-db/bustub/blob/master/src/storage/disk/disk_manager.cpp<i class="fa fa-external-link"></i></span></li>
+</ul>
+<h3 id="attributes"><a href="#attributes" class="headerlink" title="attributes"></a>attributes</h3><p>attributes均为private.</p>
+<p>Log所需成员:</p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// stream to write log file</span></span><br><span class="line"><span class="built_in">std</span>::fstream log_io_;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> log_name_;</span><br><span class="line"><span class="keyword">bool</span> flush_log_;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">future</span>&lt;<span class="keyword">void</span>&gt; *flush_log_f_;</span><br><span class="line"><span class="keyword">int</span> num_flushes_;</span><br></pre></td></tr></tbody></table></figure>
+<p>另外有一个class以外的全局变量:<br></p><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> *buffer_used;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<ul>
+<li>它是LOG的缓存区</li>
+</ul>
+<p><br></p>
+<p>File所需成员:<br></p><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// stream to write db file</span></span><br><span class="line"><span class="built_in">std</span>::fstream db_io_;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> file_name_;</span><br><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">page_id_t</span>&gt; next_page_id_;</span><br><span class="line"><span class="keyword">int</span> num_writes_;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<ul>
+<li><code>std::fstream db_io_;</code>对应我们的File, 属于核心数据结构，提供文件操作,使用C++文件file stream接口。</li>
+<li><code>std::string file_name_;</code>即文件名，用处是提供给<code>GetFileSize</code>方法</li>
+<li><code>std::atomic&lt;page_id_t&gt; next_page_id_;</code>这个成员是<strong>线程安全的</strong>， 我们会在<code>AllocatePage</code>方法中用它</li>
+<li><code>int num_writes_</code>记录<code>WritePage</code>调用的次数</li>
+</ul>
+<p><br></p>
+<h3 id="methods"><a href="#methods" class="headerlink" title="methods"></a>methods</h3><h4 id="private-method"><a href="#private-method" class="headerlink" title="private method"></a>private method</h4><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetFileSize</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;file_name)</span> </span>{</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">stat_buf</span>;</span></span><br><span class="line">  <span class="keyword">int</span> rc = stat(file_name.c_str(), &amp;stat_buf);</span><br><span class="line">  <span class="keyword">return</span> rc == <span class="number">0</span> ? <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(stat_buf.st_size) : <span class="number">-1</span>; </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>GetFileSize</code>: 获得<code>file_name</code>文件的大小， 使用<code>stat</code>这个syscall, 见<span class="exturl" data-url="aHR0cDovL21hbjcub3JnL2xpbnV4L21hbi1wYWdlcy9tYW4yL3N0YXQuMi5odG1s" title="http://man7.org/linux/man-pages/man2/stat.2.html">man stat<i class="fa fa-external-link"></i></span></li>
+<li><blockquote>
+<pre><code>   int stat(const char *pathname, struct stat *statbuf);
+</code></pre></blockquote>
+</li>
+<li><blockquote>
+<p>On success, <strong>zero</strong> is returned.  On error, -1 is returned, and <em>errno</em> is set appropriately.</p>
+</blockquote>
+</li>
+<li><blockquote>
+<pre><code>           off_t     st_size;        /* Total size, in bytes */
+</code></pre></blockquote>
+</li>
+</ul>
+<p><br></p>
+<h4 id="public-methods"><a href="#public-methods" class="headerlink" title="public methods"></a>public methods</h4><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Creates a new disk manager that writes to the specified database file.</span></span><br><span class="line"><span class="comment"> * @param db_file the file name of the database file to write to</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">explicit DiskManager(const std::string &amp;db_file) : file_name_(db_file), next_page_id_(0), num_flushes_(0), num_writes_(0), flush_log_(false), flush_log_f_(nullptr) {</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">string</span>::size_type n = file_name_.<span class="built_in">find</span>(<span class="string">'.'</span>);</span><br><span class="line">  <span class="keyword">if</span> (n == <span class="built_in">std</span>::<span class="built_in">string</span>::npos) {</span><br><span class="line">    LOG_DEBUG(<span class="string">"wrong file format"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** ---------- LOG相关部分 隐去 ----------*/</span></span><br><span class="line"></span><br><span class="line">  db_io_.<span class="built_in">open</span>(db_file, <span class="built_in">std</span>::ios::binary | <span class="built_in">std</span>::ios::in | <span class="built_in">std</span>::ios::out);</span><br><span class="line">  <span class="comment">// directory or file does not exist</span></span><br><span class="line">  <span class="keyword">if</span> (!db_io_.is_open()) {</span><br><span class="line">    db_io_.<span class="built_in">clear</span>();</span><br><span class="line">    <span class="comment">// create a new file</span></span><br><span class="line">    db_io_.<span class="built_in">open</span>(db_file, <span class="built_in">std</span>::ios::binary | <span class="built_in">std</span>::ios::trunc | <span class="built_in">std</span>::ios::out);</span><br><span class="line">    db_io_.<span class="built_in">close</span>();</span><br><span class="line">    <span class="comment">// reopen with original mode</span></span><br><span class="line">    db_io_.<span class="built_in">open</span>(db_file, <span class="built_in">std</span>::ios::binary | <span class="built_in">std</span>::ios::in | <span class="built_in">std</span>::ios::out);</span><br><span class="line">  }</span><br><span class="line">  buffer_used = <span class="literal">nullptr</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>一开始对文件名格式进行检查, 它必须带<code>.</code>, 比如<code>"test.db"</code>: <code>std::string::size_type n = file_name_.find('.');</code></li>
+<li>然后进行LOG文件的操作。我们在这篇文章中隐去。</li>
+<li>最重要的是打开我们的File, 使用C++文件file stream接口。<ul>
+<li>打开一个已存在的文件: <code>db_io_.open(db_file, std::ios::binary | std::ios::in | std::ios::out);</code></li>
+<li>新建一个文件: <code>db_io_.open(db_file, std::ios::binary | std::ios::trunc | std::ios::out);</code></li>
+<li>另外新建一个文件有多种作法, 见: <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzE4MTYwODM3LzEwOTcxNjUw" title="https://stackoverflow.com/a/18160837/10971650">https://stackoverflow.com/a/18160837/10971650<i class="fa fa-external-link"></i></span></li>
+<li><code>std::fstream::open</code>: <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3BsdXNwbHVzLmNvbS9yZWZlcmVuY2UvZnN0cmVhbS9mc3RyZWFtL29wZW4v" title="https://www.cplusplus.com/reference/fstream/fstream/open/">https://www.cplusplus.com/reference/fstream/fstream/open/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line">~DiskManager() = <span class="keyword">default</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/** Shut down the disk manager and close all the file resources. Close all file streams. */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ShutDown</span><span class="params">()</span> </span>{  db_io_.<span class="built_in">close</span>(); log_io_.<span class="built_in">close</span>(); }</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>close</code>这两个打开的文件</li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Write a page to the database file. Write the contents of the specified page into disk file</span></span><br><span class="line"><span class="comment"> * @param page_id id of the page</span></span><br><span class="line"><span class="comment"> * @param page_data raw page data</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WritePage</span><span class="params">(<span class="keyword">page_id_t</span> page_id, <span class="keyword">const</span> <span class="keyword">char</span> *page_data)</span> </span>{</span><br><span class="line">  <span class="keyword">size_t</span> offset = <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span>&gt;(page_id) * PAGE_SIZE;</span><br><span class="line">  <span class="comment">// set write cursor to offset</span></span><br><span class="line">  num_writes_ += <span class="number">1</span>;</span><br><span class="line">  db_io_.seekp(offset);</span><br><span class="line">  db_io_.<span class="built_in">write</span>(page_data, PAGE_SIZE);</span><br><span class="line">  <span class="comment">// check for I/O error</span></span><br><span class="line">  <span class="keyword">if</span> (db_io_.bad()) {</span><br><span class="line">    LOG_DEBUG(<span class="string">"I/O error while writing"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  }</span><br><span class="line">  <span class="comment">// needs to flush to keep disk file in sync</span></span><br><span class="line">  db_io_.<span class="built_in">flush</span>();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><a href="#引入">引入</a>中我们用例子解释了: <code>size_t offset = static_cast&lt;size_t&gt;(page_id) * PAGE_SIZE;</code></li>
+<li>这次写入增加<code>num_writes_</code></li>
+<li>寻找文件的<code>offset</code>位置(开始写的起始位置)，进行一次<code>PAGE_SIZE</code>的写操作: <code>db_io_.seekp(offset); db_io_.write(page_data, PAGE_SIZE);</code></li>
+<li>将操作系统缓存区的文件映射 写入至硬盘。同步持久化: <code>db_io_.flush();</code></li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Read a page from the database file.</span></span><br><span class="line"><span class="comment"> * @param page_id id of the page</span></span><br><span class="line"><span class="comment"> * @param[out] page_data output buffer</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ReadPage</span><span class="params">(<span class="keyword">page_id_t</span> page_id, <span class="keyword">char</span> *page_data)</span> </span>{</span><br><span class="line">  <span class="keyword">int</span> offset = page_id * PAGE_SIZE;</span><br><span class="line">  <span class="comment">// check if read beyond file length</span></span><br><span class="line">  <span class="keyword">if</span> (offset &gt; GetFileSize(file_name_)) {</span><br><span class="line">    LOG_DEBUG(<span class="string">"I/O error while reading"</span>);</span><br><span class="line">    <span class="comment">// std::cerr &lt;&lt; "I/O error while reading" &lt;&lt; std::endl;</span></span><br><span class="line">  } <span class="keyword">else</span> {</span><br><span class="line">    <span class="comment">// set read cursor to offset</span></span><br><span class="line">    db_io_.seekp(offset);</span><br><span class="line">    db_io_.<span class="built_in">read</span>(page_data, PAGE_SIZE);</span><br><span class="line">    <span class="comment">// if file ends before reading PAGE_SIZE</span></span><br><span class="line">    <span class="keyword">int</span> read_count = db_io_.gcount();</span><br><span class="line">    <span class="keyword">if</span> (read_count &lt; PAGE_SIZE) {</span><br><span class="line">      LOG_DEBUG(<span class="string">"Read less than a page"</span>);</span><br><span class="line">      <span class="comment">// std::cerr &lt;&lt; "Read less than a page" &lt;&lt; std::endl;</span></span><br><span class="line">      <span class="built_in">memset</span>(page_data + read_count, <span class="number">0</span>, PAGE_SIZE - read_count);</span><br><span class="line">    }</span><br><span class="line">  }  </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>ReadPage</code>和<code>WritePage</code>非常类似</li>
+<li>需要确保<code>offset</code>读取的起始位置在文件之内: <code>if (offset &gt; GetFileSize(file_name_)) LOG_DEBUG("I/O error while reading");</code></li>
+<li>寻找文件的<code>offset</code>位置(开始读的起始位置)，进行一次<code>PAGE_SIZE</code>的读操作: <code>db_io_.seekp(offset); db_io_.read(page_data, PAGE_SIZE);</code></li>
+<li>参考<a href="#引入">引入</a>, 如果文件不是<code>PAGE_SIZE</code>的整数倍，将多读的部分(事实上不属于文件的部分)set成0: <code>int read_count = db_io_.gcount(); if (read_count &lt; PAGE_SIZE) { LOG_DEBUG("Read less than a page"); memset(page_data + read_count, 0, PAGE_SIZE - read_count); }</code></li>
+<li><code>gcount()</code>方法， 见: <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3BsdXNwbHVzLmNvbS9yZWZlcmVuY2UvaXN0cmVhbS9pc3RyZWFtL2djb3VudC8=" title="https://www.cplusplus.com/reference/istream/istream/gcount/">https://www.cplusplus.com/reference/istream/istream/gcount/<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Allocate new page (operations like create index/table)</span></span><br><span class="line"><span class="comment">  * For now just keep an increasing counter</span></span><br><span class="line"><span class="comment">  * @return the id of the allocated page</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">page_id_t</span> <span class="title">AllocatePage</span><span class="params">()</span> </span>{ <span class="keyword">return</span> next_page_id_++; }</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>std::atomic&lt;page_id_t&gt; next_page_id_;</code>这个成员是<strong>线程安全的</strong></li>
+<li>因此这个<code>AllocatePage</code>方法也是<strong>线程安全</strong>的，我们调用这个方法的时候不需要加锁</li>
+<li>另外这个方法没有被完全实现，见本文对应时间的项目: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvdHJlZS9mMzY2OWMzZTZkZmI1NjE3YjcyZGYxNmNhODRmODBmZTg3ZGYyMGRhI3RvZG8=" title="https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo">https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Deallocate page (operations like drop index/table)</span></span><br><span class="line"><span class="comment"> * Need bitmap in header page for tracking pages</span></span><br><span class="line"><span class="comment"> * This does not actually need to do anything for now.</span></span><br><span class="line"><span class="comment"> * @param page_id id of the page to deallocate</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DeallocatePage</span><span class="params">(__attribute__((unused)) <span class="keyword">page_id_t</span> page_id)</span> </span>{}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>(__attribute__((unused))</code>只是去除编译器的Warning, 即使我们不使用方法参数<code>page_id</code>， 见: <span class="exturl" data-url="aHR0cHM6Ly9nY2MuZ251Lm9yZy9vbmxpbmVkb2NzL2djYy0zLjIvZ2NjL0Z1bmN0aW9uLUF0dHJpYnV0ZXMuaHRtbA==" title="https://gcc.gnu.org/onlinedocs/gcc-3.2/gcc/Function-Attributes.html">https://gcc.gnu.org/onlinedocs/gcc-3.2/gcc/Function-Attributes.html<i class="fa fa-external-link"></i></span></li>
+<li><blockquote>
+<p>This attribute, attached to a function, means that the function is meant to be possibly unused. GCC will not produce a warning for this function. GNU C++ does not currently support this attribute as definitions without parameters are valid in C++.</p>
+</blockquote>
+</li>
+<li>另外这个方法没有被实现，见本文对应时间的项目: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvdHJlZS9mMzY2OWMzZTZkZmI1NjE3YjcyZGYxNmNhODRmODBmZTg3ZGYyMGRhI3RvZG8=" title="https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo">https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo<i class="fa fa-external-link"></i></span></li>
+<li>(因为没有被实现)这个<code>DeallocatePage</code>方法也是<strong>线程安全</strong>的，我们调用这个方法的时候不需要加锁</li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/** @return the number of disk writes */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetNumWrites</span><span class="params">()</span> <span class="keyword">const</span> </span>{ <span class="keyword">return</span> num_writes_; };</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>GetNumWrites</code>只是简单的Getter方法</li>
+<li><code>num_writes_</code>在每次<code>WritePage</code>会增加一</li>
+</ul>
+<p><br><br><br></p>
+<h5 id="Log相关methods"><a href="#Log相关methods" class="headerlink" title="Log相关methods"></a>Log相关methods</h5><p>这部分我们有机会单独讲。它们和Project1关系很小， 不知道它们的存在，也可以完成Project1。</p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Append a log entry to the log file.</span></span><br><span class="line"><span class="comment">* @param log_data raw log data</span></span><br><span class="line"><span class="comment">* @param size size of log entry</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WriteLog</span><span class="params">(<span class="keyword">char</span> *log_data, <span class="keyword">int</span> <span class="built_in">size</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Read a log entry from the log file.</span></span><br><span class="line"><span class="comment">* @param[out] log_data output buffer</span></span><br><span class="line"><span class="comment">* @param size size of the log entry</span></span><br><span class="line"><span class="comment">* @param offset offset of the log entry in the file</span></span><br><span class="line"><span class="comment">* @return true if the read was successful, false otherwise</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ReadLog</span><span class="params">(<span class="keyword">char</span> *log_data, <span class="keyword">int</span> <span class="built_in">size</span>, <span class="keyword">int</span> offset)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Sets the future which is used to check for non-blocking flushes.</span></span><br><span class="line"><span class="comment">* @param f the non-blocking flush check</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">SetFlushLogFuture</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">future</span>&lt;<span class="keyword">void</span>&gt; *f)</span> </span>{ flush_log_f_ = f; }</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Checks if the non-blocking flush future was set. */</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">HasFlushLogFuture</span><span class="params">()</span> </span>{ <span class="keyword">return</span> flush_log_f_ != <span class="literal">nullptr</span>; }</span><br><span class="line"></span><br><span class="line"><span class="comment">/** @return true iff the in-memory content has not been flushed yet */</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">GetFlushState</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** @return the number of disk flushes */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetNumFlushes</span><span class="params">()</span> <span class="keyword">const</span> </span>{ <span class="keyword">return</span> num_flushes_; }</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>我们在这篇文章最开始的时候介绍了Disk Manager的接口和服务，我们现在用代码层面去总结一下Disk Manager:</p>
+<ul>
+<li><code>DiskManager(const std::string &amp;db_file);</code>: 构造函数只需要一个文件名, 它主要使用<code>std::fstream::open</code>，对应的mode是<code>std::ios::binary | std::ios::trunc | std::ios::out</code></li>
+<li><code>page_id_t AllocatePage()；</code>: 在磁盘上的文件分配一个新的page</li>
+<li><code>void DeallocatePage(page_id_t page_id);</code>: 在磁盘上的文件回收一个page</li>
+<li><code>void ReadPage(page_id_t page_id, char *page_data);</code>: 将page(文件上对应的部分)读入<code>page_data</code></li>
+<li><code>void WritePage(page_id_t page_id, const char *page_data);</code>: 将<code>page_data</code>写入page(文件上对应的部分)</li>
+<li><code>void ShutDown();</code>， <code>int GetFileSize(const std::string &amp;file_name);</code>， <code>int GetNumWrites() const;</code>: 均为简单的实现</li>
+<li>(我们回避了Log的部分)</li>
+</ul>
+<h2 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h2><ul>
+<li><code>std::fstream</code> 并不是线程安全的: <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzIwMjEyMTU1LzEwOTcxNjUw" title="https://stackoverflow.com/a/20212155/10971650">https://stackoverflow.com/a/20212155/10971650<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cDovL3d3dy5vcGVuLXN0ZC5vcmcvanRjMS9zYzIyL3dnMjEvZG9jcy9wYXBlcnMvMjAwOC9uMjc2MC5odG0=" title="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2760.htm">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2760.htm<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9mb3J1bS8jIXRvcGljL2NvbXAudW5peC5zb2xhcmlzL2JCX3RnRldYTElZ" title="https://groups.google.com/forum/#!topic/comp.unix.solaris/bB_tgFWXLIY">https://groups.google.com/forum/#!topic/comp.unix.solaris/bB_tgFWXLIY<i class="fa fa-external-link"></i></span><ul>
+<li><code>ReadPage</code>，<code>WritePage</code>不是线程安全的</li>
+</ul>
+</li>
+<li>从实现上看<code>AllocatePage</code>和<code>DeallocatePage</code>是线程安全的</li>
+</ul>
+<p><br></p>
+<ul>
+<li>因此buffer manager需要给disk manager上一把线程锁<ul>
+<li>最好是disk manager单独拥有一把锁，用于read write, 因为这些I/O需要时间很久。在这些I/O发生的时间里面，我们最好能继续使用buffer manager去做一些和disk manager(的线程锁)无关的事情，提高buffer manager的并行程度。</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用例子"><a href="#使用例子" class="headerlink" title="使用例子"></a>使用例子</h2><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>{</span><br><span class="line">  <span class="comment">// 0. Init a disk manager to create a temporary file  </span></span><br><span class="line">  <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> db_name = <span class="string">"test.db"</span>;</span><br><span class="line">  <span class="keyword">auto</span> *disk_manager = <span class="keyword">new</span> DiskManager(db_name);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 1. Use disk_manager to do the work</span></span><br><span class="line">  <span class="comment">//    here can be multithreading - but use a mutex to do write+read</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 2. All threads joined here</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 3. Shutdown the disk manager and remove the temporary file we created.</span></span><br><span class="line">  disk_manager-&gt;ShutDown();</span><br><span class="line">  <span class="built_in">remove</span>(<span class="string">"test.db"</span>);</span><br><span class="line">  <span class="keyword">delete</span> disk_manager;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<p>引用:</p>
+<ul>
+<li>Database Implementation For Modern Hardware. Chapter 2: Storage - Thomas Neumann: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvc3MyMC9tb2Rlcm5kYnMvY2hhcHRlcjIucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/ss20/moderndbs/chapter2.pdf?lang=de">https://db.in.tum.de/teaching/ss20/moderndbs/chapter2.pdf?lang=de<i class="fa fa-external-link"></i></span></li>
+<li>Bustub - CMU Database Group: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWI=" title="https://github.com/cmu-db/bustub">https://github.com/cmu-db/bustub<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p>推荐的阅读:</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvNTI2ODMwNy90aHJlYWQtc2FmZXR5LW9mLXJlYWQtcHJlYWQtc3lzdGVtLWNhbGxzLzUyNjg1NzgjNTI2ODU3OA==" title="https://stackoverflow.com/questions/5268307/thread-safety-of-read-pread-system-calls/5268578#5268578">https://stackoverflow.com/questions/5268307/thread-safety-of-read-pread-system-calls/5268578#5268578<i class="fa fa-external-link"></i></span></li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>CMU-15445</category>
+        <category>Storage</category>
+        <category>Buffer Management</category>
+      </categories>
+      <tags>
+        <tag>Disk Manager</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[CMU-15445]17_18_Project1_2</title>
     <url>/2020/05/20/CMU-15445-17-18-Project1-2/</url>
     <content><![CDATA[<h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>我摘抄题目的重点:</p>

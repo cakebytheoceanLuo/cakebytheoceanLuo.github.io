@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Disk Manager是数据库中对磁盘文件操作的抽象。它提供给Buffer Manager的粒度是一个page, 即它操作的最小单元是一个page。而操作可以分为allocation分配和deallocation释放。 在CMU Bustub中Disk Manager总是针对一个文件，每次从它上面获得或者写入page大小的数据量。Bustub是模拟SQLite, 而SQLite作为一个简单的数据">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]19_Projet1_disk_manager">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/08/17/CMU-15445-19-Projet1-disk-manager/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Disk Manager是数据库中对磁盘文件操作的抽象。它提供给Buffer Manager的粒度是一个page, 即它操作的最小单元是一个page。而操作可以分为allocation分配和deallocation释放。 在CMU Bustub中Disk Manager总是针对一个文件，每次从它上面获得或者写入page大小的数据量。Bustub是模拟SQLite, 而SQLite作为一个简单的数据">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/ModernDBS/Chap2/7.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Project19/P1_1.png">
+<meta property="article:published_time" content="2020-08-17T13:20:11.000Z">
+<meta property="article:modified_time" content="2020-08-17T13:22:32.352Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Disk Manager">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/ModernDBS/Chap2/7.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/08/17/CMU-15445-19-Projet1-disk-manager/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]19_Projet1_disk_manager | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">59</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">24</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">85</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/08/17/CMU-15445-19-Projet1-disk-manager/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]19_Projet1_disk_manager
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-08-17 15:20:11 / 修改时间：15:22:32" itemprop="dateCreated datePublished" datetime="2020-08-17T15:20:11+02:00">2020-08-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Storage/" itemprop="url" rel="index"><span itemprop="name">Storage</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Buffer-Management/" itemprop="url" rel="index"><span itemprop="name">Buffer Management</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/08/17/CMU-15445-19-Projet1-disk-manager/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]19_Projet1_disk_manager" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>9.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Disk Manager是数据库中对磁盘文件操作的抽象。它提供给Buffer Manager的粒度是一个page, 即它操作的最小单元是一个page。而操作可以分为allocation分配和deallocation释放。</p>
+<p>在CMU Bustub中Disk Manager总是针对一个文件，每次从它上面获得或者写入page大小的数据量。Bustub是模拟SQLite, 而SQLite作为一个简单的数据库，只操作一个文件。当然其他复杂的数据集需要操作多个文件，那对应的Disk Manager需要去对应多个文件(open, read, write, close等操作)。我们下次有机会去考虑一下这样多文件的Disk Manger如何实现。而这次我们先打好基础，去理解CMU Bustub中单文件的Disk Manager。</p>
+<p>另外这篇文章中不关注Log。它需要之后单独描述。我们会区分Log(也对应一个文件)和File，File指那个特定的我们想读取和写入的文件。</p>
+<p>(另外CMU Bustub中的Disk Manager和CMU 17Fall 18Fall对应项目的Disk Manager没有区别)</p>
+<a id="more"></a>
+<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这部分我借用代码中的注释文档来对Disk Manager进行介绍:</p>
+<ul>
+<li>DiskManager takes care of the <strong>allocation and deallocation of pages</strong> within a database. It performs <strong>the reading and writing of pages to and from disk</strong>, providing a logical file layer within the context of a database management system.</li>
+</ul>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/ModernDBS/Chap2/7.jpg" alt="7.jpg 引用见文章最后"></p>
+<ul>
+<li>Disk Manager隶属于上图File Interface: read block k, write block k</li>
+<li>它可以对一个文件或者block进行读与写操作</li>
+<li>它提供给Buffer Manager接口，让Buffer Manager可以以page粒度，对磁盘文件进行操作 (这就是Project1需要的部分)</li>
+</ul>
+<p><br></p>
+<h1 id="引入"><a href="#引入" class="headerlink" title="引入"></a>引入</h1><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Project19/P1_1.png" alt="引入"></p>
+<ul>
+<li>上图中我们在硬盘上有一个File <code>"test.db"</code>, 他的大小是15000bit</li>
+<li>bustub中Page的大小是4KiB: <code>src/include/common/config.h</code>中:<ul>
+<li><code>static constexpr int PAGE_SIZE = 4096;                                        // size of a data page in byte</code></li>
+</ul>
+</li>
+<li>因此这个文件不是整数倍的page大小， 我们<strong>向上取整</strong>，需要4个page去读取这个文件。</li>
+<li>4个page对应的page_id即图中的0, 1, 2, 3。</li>
+<li>我们可以从这个例子中理解，page_id和File中的byte位置是对应。</li>
+</ul>
+<h1 id="bustub-DiskManager"><a href="#bustub-DiskManager" class="headerlink" title="bustub::DiskManager"></a><code>bustub::DiskManager</code></h1><p>我们接下来来看代码: </p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvYmxvYi9tYXN0ZXIvc3JjL2luY2x1ZGUvc3RvcmFnZS9kaXNrL2Rpc2tfbWFuYWdlci5o" title="https://github.com/cmu-db/bustub/blob/master/src/include/storage/disk/disk_manager.h">https://github.com/cmu-db/bustub/blob/master/src/include/storage/disk/disk_manager.h<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvYmxvYi9tYXN0ZXIvc3JjL3N0b3JhZ2UvZGlzay9kaXNrX21hbmFnZXIuY3Bw" title="https://github.com/cmu-db/bustub/blob/master/src/storage/disk/disk_manager.cpp">https://github.com/cmu-db/bustub/blob/master/src/storage/disk/disk_manager.cpp<i class="fa fa-external-link"></i></span></li>
+</ul>
+<h3 id="attributes"><a href="#attributes" class="headerlink" title="attributes"></a>attributes</h3><p>attributes均为private.</p>
+<p>Log所需成员:</p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// stream to write log file</span></span><br><span class="line"><span class="built_in">std</span>::fstream log_io_;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> log_name_;</span><br><span class="line"><span class="keyword">bool</span> flush_log_;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">future</span>&lt;<span class="keyword">void</span>&gt; *flush_log_f_;</span><br><span class="line"><span class="keyword">int</span> num_flushes_;</span><br></pre></td></tr></tbody></table></figure>
+<p>另外有一个class以外的全局变量:<br></p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> *buffer_used;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<ul>
+<li>它是LOG的缓存区</li>
+</ul>
+<p><br></p>
+<p>File所需成员:<br></p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// stream to write db file</span></span><br><span class="line"><span class="built_in">std</span>::fstream db_io_;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> file_name_;</span><br><span class="line"><span class="built_in">std</span>::atomic&lt;<span class="keyword">page_id_t</span>&gt; next_page_id_;</span><br><span class="line"><span class="keyword">int</span> num_writes_;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<ul>
+<li><code>std::fstream db_io_;</code>对应我们的File, 属于核心数据结构，提供文件操作,使用C++文件file stream接口。</li>
+<li><code>std::string file_name_;</code>即文件名，用处是提供给<code>GetFileSize</code>方法</li>
+<li><code>std::atomic&lt;page_id_t&gt; next_page_id_;</code>这个成员是<strong>线程安全的</strong>， 我们会在<code>AllocatePage</code>方法中用它</li>
+<li><code>int num_writes_</code>记录<code>WritePage</code>调用的次数</li>
+</ul>
+<p><br></p>
+<h3 id="methods"><a href="#methods" class="headerlink" title="methods"></a>methods</h3><h4 id="private-method"><a href="#private-method" class="headerlink" title="private method"></a>private method</h4><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetFileSize</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;file_name)</span> </span>{</span><br><span class="line">  <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">stat_buf</span>;</span></span><br><span class="line">  <span class="keyword">int</span> rc = stat(file_name.c_str(), &amp;stat_buf);</span><br><span class="line">  <span class="keyword">return</span> rc == <span class="number">0</span> ? <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(stat_buf.st_size) : <span class="number">-1</span>; </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>GetFileSize</code>: 获得<code>file_name</code>文件的大小， 使用<code>stat</code>这个syscall, 见<span class="exturl" data-url="aHR0cDovL21hbjcub3JnL2xpbnV4L21hbi1wYWdlcy9tYW4yL3N0YXQuMi5odG1s" title="http://man7.org/linux/man-pages/man2/stat.2.html">man stat<i class="fa fa-external-link"></i></span></li>
+<li><blockquote>
+<pre><code>   int stat(const char *pathname, struct stat *statbuf);
+</code></pre></blockquote>
+</li>
+<li><blockquote>
+<p>On success, <strong>zero</strong> is returned.  On error, -1 is returned, and <em>errno</em> is set appropriately.</p>
+</blockquote>
+</li>
+<li><blockquote>
+<pre><code>           off_t     st_size;        /* Total size, in bytes */
+</code></pre></blockquote>
+</li>
+</ul>
+<p><br></p>
+<h4 id="public-methods"><a href="#public-methods" class="headerlink" title="public methods"></a>public methods</h4><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Creates a new disk manager that writes to the specified database file.</span></span><br><span class="line"><span class="comment"> * @param db_file the file name of the database file to write to</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">explicit DiskManager(const std::string &amp;db_file) : file_name_(db_file), next_page_id_(0), num_flushes_(0), num_writes_(0), flush_log_(false), flush_log_f_(nullptr) {</span><br><span class="line">  <span class="built_in">std</span>::<span class="built_in">string</span>::size_type n = file_name_.<span class="built_in">find</span>(<span class="string">'.'</span>);</span><br><span class="line">  <span class="keyword">if</span> (n == <span class="built_in">std</span>::<span class="built_in">string</span>::npos) {</span><br><span class="line">    LOG_DEBUG(<span class="string">"wrong file format"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** ---------- LOG相关部分 隐去 ----------*/</span></span><br><span class="line"></span><br><span class="line">  db_io_.<span class="built_in">open</span>(db_file, <span class="built_in">std</span>::ios::binary | <span class="built_in">std</span>::ios::in | <span class="built_in">std</span>::ios::out);</span><br><span class="line">  <span class="comment">// directory or file does not exist</span></span><br><span class="line">  <span class="keyword">if</span> (!db_io_.is_open()) {</span><br><span class="line">    db_io_.<span class="built_in">clear</span>();</span><br><span class="line">    <span class="comment">// create a new file</span></span><br><span class="line">    db_io_.<span class="built_in">open</span>(db_file, <span class="built_in">std</span>::ios::binary | <span class="built_in">std</span>::ios::trunc | <span class="built_in">std</span>::ios::out);</span><br><span class="line">    db_io_.<span class="built_in">close</span>();</span><br><span class="line">    <span class="comment">// reopen with original mode</span></span><br><span class="line">    db_io_.<span class="built_in">open</span>(db_file, <span class="built_in">std</span>::ios::binary | <span class="built_in">std</span>::ios::in | <span class="built_in">std</span>::ios::out);</span><br><span class="line">  }</span><br><span class="line">  buffer_used = <span class="literal">nullptr</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>一开始对文件名格式进行检查, 它必须带<code>.</code>, 比如<code>"test.db"</code>: <code>std::string::size_type n = file_name_.find('.');</code></li>
+<li>然后进行LOG文件的操作。我们在这篇文章中隐去。</li>
+<li>最重要的是打开我们的File, 使用C++文件file stream接口。<ul>
+<li>打开一个已存在的文件: <code>db_io_.open(db_file, std::ios::binary | std::ios::in | std::ios::out);</code></li>
+<li>新建一个文件: <code>db_io_.open(db_file, std::ios::binary | std::ios::trunc | std::ios::out);</code></li>
+<li>另外新建一个文件有多种作法, 见: <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzE4MTYwODM3LzEwOTcxNjUw" title="https://stackoverflow.com/a/18160837/10971650">https://stackoverflow.com/a/18160837/10971650<i class="fa fa-external-link"></i></span></li>
+<li><code>std::fstream::open</code>: <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3BsdXNwbHVzLmNvbS9yZWZlcmVuY2UvZnN0cmVhbS9mc3RyZWFtL29wZW4v" title="https://www.cplusplus.com/reference/fstream/fstream/open/">https://www.cplusplus.com/reference/fstream/fstream/open/<i class="fa fa-external-link"></i></span></li>
+</ul>
+</li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~DiskManager() = <span class="keyword">default</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Shut down the disk manager and close all the file resources. Close all file streams. */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ShutDown</span><span class="params">()</span> </span>{  db_io_.<span class="built_in">close</span>(); log_io_.<span class="built_in">close</span>(); }</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>close</code>这两个打开的文件</li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Write a page to the database file. Write the contents of the specified page into disk file</span></span><br><span class="line"><span class="comment"> * @param page_id id of the page</span></span><br><span class="line"><span class="comment"> * @param page_data raw page data</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WritePage</span><span class="params">(<span class="keyword">page_id_t</span> page_id, <span class="keyword">const</span> <span class="keyword">char</span> *page_data)</span> </span>{</span><br><span class="line">  <span class="keyword">size_t</span> offset = <span class="keyword">static_cast</span>&lt;<span class="keyword">size_t</span>&gt;(page_id) * PAGE_SIZE;</span><br><span class="line">  <span class="comment">// set write cursor to offset</span></span><br><span class="line">  num_writes_ += <span class="number">1</span>;</span><br><span class="line">  db_io_.seekp(offset);</span><br><span class="line">  db_io_.<span class="built_in">write</span>(page_data, PAGE_SIZE);</span><br><span class="line">  <span class="comment">// check for I/O error</span></span><br><span class="line">  <span class="keyword">if</span> (db_io_.bad()) {</span><br><span class="line">    LOG_DEBUG(<span class="string">"I/O error while writing"</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  }</span><br><span class="line">  <span class="comment">// needs to flush to keep disk file in sync</span></span><br><span class="line">  db_io_.<span class="built_in">flush</span>();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><a href="#引入">引入</a>中我们用例子解释了: <code>size_t offset = static_cast&lt;size_t&gt;(page_id) * PAGE_SIZE;</code></li>
+<li>这次写入增加<code>num_writes_</code></li>
+<li>寻找文件的<code>offset</code>位置(开始写的起始位置)，进行一次<code>PAGE_SIZE</code>的写操作: <code>db_io_.seekp(offset); db_io_.write(page_data, PAGE_SIZE);</code></li>
+<li>将操作系统缓存区的文件映射 写入至硬盘。同步持久化: <code>db_io_.flush();</code></li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Read a page from the database file.</span></span><br><span class="line"><span class="comment"> * @param page_id id of the page</span></span><br><span class="line"><span class="comment"> * @param[out] page_data output buffer</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ReadPage</span><span class="params">(<span class="keyword">page_id_t</span> page_id, <span class="keyword">char</span> *page_data)</span> </span>{</span><br><span class="line">  <span class="keyword">int</span> offset = page_id * PAGE_SIZE;</span><br><span class="line">  <span class="comment">// check if read beyond file length</span></span><br><span class="line">  <span class="keyword">if</span> (offset &gt; GetFileSize(file_name_)) {</span><br><span class="line">    LOG_DEBUG(<span class="string">"I/O error while reading"</span>);</span><br><span class="line">    <span class="comment">// std::cerr &lt;&lt; "I/O error while reading" &lt;&lt; std::endl;</span></span><br><span class="line">  } <span class="keyword">else</span> {</span><br><span class="line">    <span class="comment">// set read cursor to offset</span></span><br><span class="line">    db_io_.seekp(offset);</span><br><span class="line">    db_io_.<span class="built_in">read</span>(page_data, PAGE_SIZE);</span><br><span class="line">    <span class="comment">// if file ends before reading PAGE_SIZE</span></span><br><span class="line">    <span class="keyword">int</span> read_count = db_io_.gcount();</span><br><span class="line">    <span class="keyword">if</span> (read_count &lt; PAGE_SIZE) {</span><br><span class="line">      LOG_DEBUG(<span class="string">"Read less than a page"</span>);</span><br><span class="line">      <span class="comment">// std::cerr &lt;&lt; "Read less than a page" &lt;&lt; std::endl;</span></span><br><span class="line">      <span class="built_in">memset</span>(page_data + read_count, <span class="number">0</span>, PAGE_SIZE - read_count);</span><br><span class="line">    }</span><br><span class="line">  }  </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>ReadPage</code>和<code>WritePage</code>非常类似</li>
+<li>需要确保<code>offset</code>读取的起始位置在文件之内: <code>if (offset &gt; GetFileSize(file_name_)) LOG_DEBUG("I/O error while reading");</code></li>
+<li>寻找文件的<code>offset</code>位置(开始读的起始位置)，进行一次<code>PAGE_SIZE</code>的读操作: <code>db_io_.seekp(offset); db_io_.read(page_data, PAGE_SIZE);</code></li>
+<li>参考<a href="#引入">引入</a>, 如果文件不是<code>PAGE_SIZE</code>的整数倍，将多读的部分(事实上不属于文件的部分)set成0: <code>int read_count = db_io_.gcount(); if (read_count &lt; PAGE_SIZE) { LOG_DEBUG("Read less than a page"); memset(page_data + read_count, 0, PAGE_SIZE - read_count); }</code></li>
+<li><code>gcount()</code>方法， 见: <span class="exturl" data-url="aHR0cHM6Ly93d3cuY3BsdXNwbHVzLmNvbS9yZWZlcmVuY2UvaXN0cmVhbS9pc3RyZWFtL2djb3VudC8=" title="https://www.cplusplus.com/reference/istream/istream/gcount/">https://www.cplusplus.com/reference/istream/istream/gcount/<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Allocate new page (operations like create index/table)</span></span><br><span class="line"><span class="comment">  * For now just keep an increasing counter</span></span><br><span class="line"><span class="comment">  * @return the id of the allocated page</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">page_id_t</span> <span class="title">AllocatePage</span><span class="params">()</span> </span>{ <span class="keyword">return</span> next_page_id_++; }</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>std::atomic&lt;page_id_t&gt; next_page_id_;</code>这个成员是<strong>线程安全的</strong></li>
+<li>因此这个<code>AllocatePage</code>方法也是<strong>线程安全</strong>的，我们调用这个方法的时候不需要加锁</li>
+<li>另外这个方法没有被完全实现，见本文对应时间的项目: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvdHJlZS9mMzY2OWMzZTZkZmI1NjE3YjcyZGYxNmNhODRmODBmZTg3ZGYyMGRhI3RvZG8=" title="https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo">https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Deallocate page (operations like drop index/table)</span></span><br><span class="line"><span class="comment"> * Need bitmap in header page for tracking pages</span></span><br><span class="line"><span class="comment"> * This does not actually need to do anything for now.</span></span><br><span class="line"><span class="comment"> * @param page_id id of the page to deallocate</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">DeallocatePage</span><span class="params">(__attribute__((unused)) <span class="keyword">page_id_t</span> page_id)</span> </span>{}</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>(__attribute__((unused))</code>只是去除编译器的Warning, 即使我们不使用方法参数<code>page_id</code>， 见: <span class="exturl" data-url="aHR0cHM6Ly9nY2MuZ251Lm9yZy9vbmxpbmVkb2NzL2djYy0zLjIvZ2NjL0Z1bmN0aW9uLUF0dHJpYnV0ZXMuaHRtbA==" title="https://gcc.gnu.org/onlinedocs/gcc-3.2/gcc/Function-Attributes.html">https://gcc.gnu.org/onlinedocs/gcc-3.2/gcc/Function-Attributes.html<i class="fa fa-external-link"></i></span></li>
+<li><blockquote>
+<p>This attribute, attached to a function, means that the function is meant to be possibly unused. GCC will not produce a warning for this function. GNU C++ does not currently support this attribute as definitions without parameters are valid in C++.</p>
+</blockquote>
+</li>
+<li>另外这个方法没有被实现，见本文对应时间的项目: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWIvdHJlZS9mMzY2OWMzZTZkZmI1NjE3YjcyZGYxNmNhODRmODBmZTg3ZGYyMGRhI3RvZG8=" title="https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo">https://github.com/cmu-db/bustub/tree/f3669c3e6dfb5617b72df16ca84f80fe87df20da#todo<i class="fa fa-external-link"></i></span></li>
+<li>(因为没有被实现)这个<code>DeallocatePage</code>方法也是<strong>线程安全</strong>的，我们调用这个方法的时候不需要加锁</li>
+</ul>
+<p><br><br><br></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** @return the number of disk writes */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetNumWrites</span><span class="params">()</span> <span class="keyword">const</span> </span>{ <span class="keyword">return</span> num_writes_; };</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li><code>GetNumWrites</code>只是简单的Getter方法</li>
+<li><code>num_writes_</code>在每次<code>WritePage</code>会增加一</li>
+</ul>
+<p><br><br><br></p>
+<h5 id="Log相关methods"><a href="#Log相关methods" class="headerlink" title="Log相关methods"></a>Log相关methods</h5><p>这部分我们有机会单独讲。它们和Project1关系很小， 不知道它们的存在，也可以完成Project1。</p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Append a log entry to the log file.</span></span><br><span class="line"><span class="comment">* @param log_data raw log data</span></span><br><span class="line"><span class="comment">* @param size size of log entry</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">WriteLog</span><span class="params">(<span class="keyword">char</span> *log_data, <span class="keyword">int</span> <span class="built_in">size</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Read a log entry from the log file.</span></span><br><span class="line"><span class="comment">* @param[out] log_data output buffer</span></span><br><span class="line"><span class="comment">* @param size size of the log entry</span></span><br><span class="line"><span class="comment">* @param offset offset of the log entry in the file</span></span><br><span class="line"><span class="comment">* @return true if the read was successful, false otherwise</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">ReadLog</span><span class="params">(<span class="keyword">char</span> *log_data, <span class="keyword">int</span> <span class="built_in">size</span>, <span class="keyword">int</span> offset)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* Sets the future which is used to check for non-blocking flushes.</span></span><br><span class="line"><span class="comment">* @param f the non-blocking flush check</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">SetFlushLogFuture</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">future</span>&lt;<span class="keyword">void</span>&gt; *f)</span> </span>{ flush_log_f_ = f; }</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Checks if the non-blocking flush future was set. */</span></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">HasFlushLogFuture</span><span class="params">()</span> </span>{ <span class="keyword">return</span> flush_log_f_ != <span class="literal">nullptr</span>; }</span><br><span class="line"></span><br><span class="line"><span class="comment">/** @return true iff the in-memory content has not been flushed yet */</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">GetFlushState</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** @return the number of disk flushes */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetNumFlushes</span><span class="params">()</span> <span class="keyword">const</span> </span>{ <span class="keyword">return</span> num_flushes_; }</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><p>我们在这篇文章最开始的时候介绍了Disk Manager的接口和服务，我们现在用代码层面去总结一下Disk Manager:</p>
+<ul>
+<li><code>DiskManager(const std::string &amp;db_file);</code>: 构造函数只需要一个文件名, 它主要使用<code>std::fstream::open</code>，对应的mode是<code>std::ios::binary | std::ios::trunc | std::ios::out</code></li>
+<li><code>page_id_t AllocatePage()；</code>: 在磁盘上的文件分配一个新的page</li>
+<li><code>void DeallocatePage(page_id_t page_id);</code>: 在磁盘上的文件回收一个page</li>
+<li><code>void ReadPage(page_id_t page_id, char *page_data);</code>: 将page(文件上对应的部分)读入<code>page_data</code></li>
+<li><code>void WritePage(page_id_t page_id, const char *page_data);</code>: 将<code>page_data</code>写入page(文件上对应的部分)</li>
+<li><code>void ShutDown();</code>， <code>int GetFileSize(const std::string &amp;file_name);</code>， <code>int GetNumWrites() const;</code>: 均为简单的实现</li>
+<li>(我们回避了Log的部分)</li>
+</ul>
+<h2 id="线程安全性"><a href="#线程安全性" class="headerlink" title="线程安全性"></a>线程安全性</h2><ul>
+<li><code>std::fstream</code> 并不是线程安全的: <span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzIwMjEyMTU1LzEwOTcxNjUw" title="https://stackoverflow.com/a/20212155/10971650">https://stackoverflow.com/a/20212155/10971650<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cDovL3d3dy5vcGVuLXN0ZC5vcmcvanRjMS9zYzIyL3dnMjEvZG9jcy9wYXBlcnMvMjAwOC9uMjc2MC5odG0=" title="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2760.htm">http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2760.htm<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly9ncm91cHMuZ29vZ2xlLmNvbS9mb3J1bS8jIXRvcGljL2NvbXAudW5peC5zb2xhcmlzL2JCX3RnRldYTElZ" title="https://groups.google.com/forum/#!topic/comp.unix.solaris/bB_tgFWXLIY">https://groups.google.com/forum/#!topic/comp.unix.solaris/bB_tgFWXLIY<i class="fa fa-external-link"></i></span><ul>
+<li><code>ReadPage</code>，<code>WritePage</code>不是线程安全的</li>
+</ul>
+</li>
+<li>从实现上看<code>AllocatePage</code>和<code>DeallocatePage</code>是线程安全的</li>
+</ul>
+<p><br></p>
+<ul>
+<li>因此buffer manager需要给disk manager上一把线程锁<ul>
+<li>最好是disk manager单独拥有一把锁，用于read write, 因为这些I/O需要时间很久。在这些I/O发生的时间里面，我们最好能继续使用buffer manager去做一些和disk manager(的线程锁)无关的事情，提高buffer manager的并行程度。</li>
+</ul>
+</li>
+</ul>
+<h2 id="使用例子"><a href="#使用例子" class="headerlink" title="使用例子"></a>使用例子</h2><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>{</span><br><span class="line">  <span class="comment">// 0. Init a disk manager to create a temporary file  </span></span><br><span class="line">  <span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> db_name = <span class="string">"test.db"</span>;</span><br><span class="line">  <span class="keyword">auto</span> *disk_manager = <span class="keyword">new</span> DiskManager(db_name);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 1. Use disk_manager to do the work</span></span><br><span class="line">  <span class="comment">//    here can be multithreading - but use a mutex to do write+read</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 2. All threads joined here</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 3. Shutdown the disk manager and remove the temporary file we created.</span></span><br><span class="line">  disk_manager-&gt;ShutDown();</span><br><span class="line">  <span class="built_in">remove</span>(<span class="string">"test.db"</span>);</span><br><span class="line">  <span class="keyword">delete</span> disk_manager;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<p>引用:</p>
+<ul>
+<li>Database Implementation For Modern Hardware. Chapter 2: Storage - Thomas Neumann: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvc3MyMC9tb2Rlcm5kYnMvY2hhcHRlcjIucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/ss20/moderndbs/chapter2.pdf?lang=de">https://db.in.tum.de/teaching/ss20/moderndbs/chapter2.pdf?lang=de<i class="fa fa-external-link"></i></span></li>
+<li>Bustub - CMU Database Group: <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NtdS1kYi9idXN0dWI=" title="https://github.com/cmu-db/bustub">https://github.com/cmu-db/bustub<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p>推荐的阅读:</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvNTI2ODMwNy90aHJlYWQtc2FmZXR5LW9mLXJlYWQtcHJlYWQtc3lzdGVtLWNhbGxzLzUyNjg1NzgjNTI2ODU3OA==" title="https://stackoverflow.com/questions/5268307/thread-safety-of-read-pread-system-calls/5268578#5268578">https://stackoverflow.com/questions/5268307/thread-safety-of-read-pread-system-calls/5268578#5268578<i class="fa fa-external-link"></i></span></li>
+</ul>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/08/17/CMU-15445-19-Projet1-disk-manager/" title="[CMU-15445]19_Projet1_disk_manager">https://cakebytheoceanluo.github.io/2020/08/17/CMU-15445-19-Projet1-disk-manager/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Disk-Manager/" rel="tag"><i class="fa fa-tag"></i> Disk Manager</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/05/20/CMU-15445-17-18-Project1-2/" rel="prev" title="[CMU-15445]17_18_Project1_2">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]17_18_Project1_2
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引入"><span class="nav-number">2.</span> <span class="nav-text">引入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#bustub-DiskManager"><span class="nav-number">3.</span> <span class="nav-text">bustub::DiskManager</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#attributes"><span class="nav-number">3.0.1.</span> <span class="nav-text">attributes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#methods"><span class="nav-number">3.0.2.</span> <span class="nav-text">methods</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#private-method"><span class="nav-number">3.0.2.1.</span> <span class="nav-text">private method</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#public-methods"><span class="nav-number">3.0.2.2.</span> <span class="nav-text">public methods</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Log相关methods"><span class="nav-number">3.0.2.2.1.</span> <span class="nav-text">Log相关methods</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#接口"><span class="nav-number">4.1.</span> <span class="nav-text">接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程安全性"><span class="nav-number">4.2.</span> <span class="nav-text">线程安全性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用例子"><span class="nav-number">4.3.</span> <span class="nav-text">使用例子</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">85</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">423k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:24</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/08/17/CMU-15445-19-Projet1-disk-manager/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
