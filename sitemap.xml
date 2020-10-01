@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/10/01/B-Tree-Exercise/</loc>
+    
+    <lastmod>2020-10-01T14:32:48.466Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/</loc>
+    
+    <lastmod>2020-10-01T14:32:22.354Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/09/29/CMU-15445-Lec08/</loc>
     
     <lastmod>2020-09-30T06:42:48.981Z</lastmod>
@@ -117,13 +131,6 @@
     <loc>https://cakebytheoceanluo.github.io/2020/03/18/CMU-15445-Lec06/</loc>
     
     <lastmod>2020-04-12T18:58:06.128Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/</loc>
-    
-    <lastmod>2020-04-12T18:56:28.707Z</lastmod>
     
   </url>
   
