@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="数据库的索引基本分为两种类型:  Hash Index Tree Index  我们今天来看一看PostgreSQL中的这两种索引会如何帮助我们的query。">
+  <meta name="description" content="这篇文章服务于[CMU-15445] Lec08 Tree Indexes Part II - 树索引 II 数据库的索引基本分为两种类型:  Hash Index Tree Index  我们今天来看一看PostgreSQL中的这两种索引会如何帮助我们的query。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[DBMS]Hash Index与Tree Index">
 <meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/index.html">
 <meta property="og:site_name" content="关于数据库的一切">
-<meta property="og:description" content="数据库的索引基本分为两种类型:  Hash Index Tree Index  我们今天来看一看PostgreSQL中的这两种索引会如何帮助我们的query。">
+<meta property="og:description" content="这篇文章服务于[CMU-15445] Lec08 Tree Indexes Part II - 树索引 II 数据库的索引基本分为两种类型:  Hash Index Tree Index  我们今天来看一看PostgreSQL中的这两种索引会如何帮助我们的query。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-04-13T10:37:01.000Z">
-<meta property="article:modified_time" content="2020-04-13T10:43:01.014Z">
+<meta property="article:modified_time" content="2020-10-02T13:16:12.790Z">
 <meta property="article:author" content="罗济高">
 <meta property="article:tag" content="PostgreSQL">
 <meta property="article:tag" content="Indexing">
@@ -240,10 +240,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-04-13 12:37:01 / 修改时间：12:43:01" itemprop="dateCreated datePublished" datetime="2020-04-13T12:37:01+02:00">2020-04-13</time>
+              <time title="创建时间：2020-04-13 12:37:01" itemprop="dateCreated datePublished" datetime="2020-04-13T12:37:01+02:00">2020-04-13</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-02 15:16:12" itemprop="dateModified" datetime="2020-10-02T15:16:12+02:00">2020-10-02</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -291,7 +297,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>8.1k</span>
+              <span>8.2k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -310,7 +316,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>数据库的索引基本分为两种类型:</p>
+        <p>这篇文章服务于<a href="https://cakebytheoceanluo.github.io/2020/09/29/CMU-15445-Lec08/">[CMU-15445] Lec08 Tree Indexes Part II - 树索引 II</a></p>
+<p>数据库的索引基本分为两种类型:</p>
 <ul>
 <li>Hash Index</li>
 <li>Tree Index</li>
@@ -384,7 +391,7 @@
 <p>我们可以自己去尝试，实际上直到<code>p%</code>都是用sequtial scan的:</p>
 <figure class="highlight c"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">testdb=# EXPLAIN SELECT * FROM emails WHERE email &gt; 'p%';</span><br><span class="line">                           QUERY PLAN                           </span><br><span class="line">----------------------------------------------------------------</span><br><span class="line"> <span class="function">Seq Scan on <span class="title">emails</span>  <span class="params">(cost=<span class="number">0.00</span>.<span class="number">.19655</span><span class="number">.00</span> rows=<span class="number">311110</span> <span class="built_in">width</span>=<span class="number">26</span>)</span></span></span><br><span class="line">   Filter: ((email)::text &gt; 'p%'::text)</span><br><span class="line">(<span class="number">2</span> rows)</span><br><span class="line"></span><br><span class="line">Time: <span class="number">0.298</span> ms</span><br></pre></td></tr></tbody></table></figure>
 <p><br></p>
-<p>另外提一下，我在上面都是用<strong>可能</strong>这个次去描述各种途径。但是在数据库内部有一个很重要的组件 - 优化器 Query Optimizer - 它实际上是客观的去预估每一中Query Plan的成本，选择出成本最低的方式， 然后执行这个成本最低的方式。我们之前这些尝试中获得的Query Plan， 都是Query Optimizer计算出的’最低成本’的方式。Query Optimizer会在这门课Lec14, Lec15课中提到。它注定是数据库中最繁琐，最难以解决的部分。</p>
+<p>另外提一下，我在上面都是用<strong>可能</strong>这个次去描述各种途径。但是在数据库内部有一个很重要的组件 - 优化器 Query Optimizer - 它实际上是客观的去预估每一中Query Plan的成本，Cost Model选择出成本最低的方式， 然后执行这个成本最低的方式。我们之前这些尝试中获得的Query Plan， 都是Query Optimizer计算出的 <em>最低成本</em> 的方式。Query Optimizer会在这门课Lec14, Lec15课中提到。它注定是数据库中最繁琐，最难以解决的部分。</p>
 <p><br></p>
 <p>然后我们回过头看看我们之前给出的猜测, 来对它进行修正: </p>
 <p>如果Tree Index和Hash Index都存在</p>

@@ -2,6 +2,27 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/04/15/DBMS-Cluster-Index/</loc>
+    
+    <lastmod>2020-10-02T13:38:51.181Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/04/14/DBMS-Tree-Index-pageinspect/</loc>
+    
+    <lastmod>2020-10-02T13:28:25.446Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/</loc>
+    
+    <lastmod>2020-10-02T13:16:12.790Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/09/29/CMU-15445-Lec08/</loc>
     
     <lastmod>2020-10-02T07:40:08.702Z</lastmod>
@@ -86,20 +107,6 @@
   </url>
   
   <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/04/15/DBMS-Cluster-Index/</loc>
-    
-    <lastmod>2020-04-16T10:01:41.791Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/04/14/DBMS-Tree-Index-pageinspect/</loc>
-    
-    <lastmod>2020-04-15T17:25:55.134Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/03/11/DBMS-PostgreSQL-PageLayout/</loc>
     
     <lastmod>2020-04-14T18:38:34.196Z</lastmod>
@@ -117,13 +124,6 @@
     <loc>https://cakebytheoceanluo.github.io/2020/03/15/DBMS-PostgreSQL%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE%E9%9B%86/</loc>
     
     <lastmod>2020-04-13T21:05:01.941Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/</loc>
-    
-    <lastmod>2020-04-13T10:43:01.014Z</lastmod>
     
   </url>
   
