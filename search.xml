@@ -1,6 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[CMU-15445]Lec08 - Fall18 - Skip List - 跳表</title>
+    <url>/2020/10/03/CMU-15445-Lec08-fall18/</url>
+    <content><![CDATA[<p>Tree Indexes Part II - 树索引 II<br>Skip List - 跳表</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgvc2xpZGVzLzA4LXRyZWVzMi5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2018/slides/08-trees2.pdf">https://15445.courses.cs.cmu.edu/fall2018/slides/08-trees2.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgvbm90ZXMvMDgtdHJlZXMyLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2018/notes/08-trees2.pdf">https://15445.courses.cs.cmu.edu/fall2018/notes/08-trees2.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 11.1-11.4</p>
+<p>这次只是对Lec08进行一个补充，因为Fall19没有讲Skip List, 但是之前Fall18提过它。它也是一个很重要的数据结构，一个很典型的概率型数据结构。</p>
+<a id="more"></a>
+<h1 id="Observation"><a href="#Observation" class="headerlink" title="Observation"></a>Observation</h1><p>我们知道Sorted Linked List中的查找需要$O(n)$的复杂度.</p>
+<p>复杂度并不满足我们的要求, 是否能让这个线性搜索更快一些. 一个简单的想法是在每个节点多存储一些指针pointer, 让从每个节点可以跳得更远。</p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-5ab301fc821101a1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_22.jpg"></p>
+<h1 id="Skip-List-跳表"><a href="#Skip-List-跳表" class="headerlink" title="Skip List 跳表"></a>Skip List 跳表</h1><blockquote>
+<p>A skip list is a sorted linked list with multiple levels of extra points that skip over intermediate nodes. In general, a level has half the keys of the level below it. It provides approximately $O(\log(n))$ searches.</p>
+</blockquote>
+<p>Skip List是一个很有名而且典型的概率型数据结构 probabilistic data structure</p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-9d62531663b3d553.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_23.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-c56239780eb1d1f9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_24.jpg"></p>
+<h2 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h2><p>我们想象Skip List有很多层，每一层可以看成是一个Sorted Linked List, 但是每层存储的元素不一定相同, 另外每层的搜索到元素的平均概率也不一样. </p>
+<ul>
+<li>最下面的一层, 存储了所有的元素, 因此在这一层100%能搜索到查找的元素, 这一层的Linked List也最长.</li>
+<li>除了最下面的一层, 其他的层只存储指针, 而不存储元素本身的copy. 像下图中, 高层的节点有指向低层节点的指针, 在垂直方向形成了一个Tower. </li>
+</ul>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-67238883731277ed.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_25.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-6e69482cf10fcabe.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_26.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-fb2284419d7ce363.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_27.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-ead7013d4f5afed8.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_28.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-96ab1ef0df762622.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_29.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-9c184bc867fd6ff8.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_30.jpg"></p>
+<h2 id="Insert-Key-5"><a href="#Insert-Key-5" class="headerlink" title="Insert Key 5"></a>Insert Key 5</h2><p>这里我们想插入元素5, 我们100%将5插入到最下面的一层. 但是随机选择其他的层, 去插入. 在下图的例子中, 概率事件是我们选择了中间层和最高层, 自然其他不同的概率事件也可以发生.</p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-0a6949a8c7683a9f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_31.jpg"></p>
+<p>下图中, 我们先新建这三个节点, 并让它们指向对应层的对应元素, 注意这时候它们并未真正被插入到Skip List中, 因为我们从左侧开始是搜索不到这三个新元素的. 对于外界, 这三个新元素是<strong>不可见</strong>的:</p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-c639f4806bbe0748.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_32.jpg"></p>
+<p>接下来, 我们开始真正的插入. 先从最下面一层开始, 我们使用<span class="exturl" data-url="aHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvQ29tcGFyZS1hbmQtc3dhcA==" title="https://en.wikipedia.org/wiki/Compare-and-swap">Compare and Swap<i class="fa fa-external-link"></i></span>去将Key 5插入到最下面那层. 然后再<strong>从下到上</strong>, 完成我们所有节点中对应层数的插入:</p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-f7657df51c999e6a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_33.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-a3081966160b73bb.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_34.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-79da24ed688b9f4f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_35.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-91f988bbd98c00d2.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_36.jpg"></p>
+<h2 id="Find-Key-3"><a href="#Find-Key-3" class="headerlink" title="Find Key 3"></a>Find Key 3</h2><p>查找的顺序是从上到下, 最上层搜索成功的概率最小, 但是它的长度也最短, 查找最快. 我们在查找中利用特性: 每一层已经被排序:</p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-65eec6b8a0a9e391.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_37.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-bb53bf59f82e89d8.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_38.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-49aa0eee506c6252.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_39.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-c21ed7ec8b5bdda9.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_40.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-a8298cfe0188dc59.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_41.jpg"></p>
+<h2 id="Delete-Key-5"><a href="#Delete-Key-5" class="headerlink" title="Delete Key 5"></a>Delete Key 5</h2><p>对于删除我们区分两种情况:</p>
+<ul>
+<li>logically 逻辑上删除: 仅仅将一个flag设置成false, 这样对应元素依然存在并可见, 只是即使我们查找到了它, 但是它在应用层面是一个无效的元素</li>
+<li>physically 物理上删除: 将对应元素从列表中抹除, 并释放对应的内存区域. 这之后元素就消失了. 这里工作量更大一些, 因为我们要在每一层保证内存安全和线程安全</li>
+</ul>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-8ce91c44aeae18b1.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_42.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-62b636824b7fea1a.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_43.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-13857fb418d1d72b.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_44.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-2368eb92010e7075.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_45.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-31e400ec8cdbcdee.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_46.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-14506ee8c7d00825.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_47.jpg"></p>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-d211062bcdbcb3ae.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_48.jpg"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-b18aeae4432b8c65.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="fall18_49.jpg"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>CMU-15445</category>
+        <category>Data Structure</category>
+        <category>Access Methods</category>
+        <category>Indexing</category>
+        <category>Skip List</category>
+      </categories>
+      <tags>
+        <tag>Indexing</tag>
+        <tag>Skip List</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>B Tree 练习</title>
     <url>/2020/10/01/B-Tree-Exercise/</url>
     <content><![CDATA[<p>这篇文章对我见过的B Tree的练习题进行了收录。</p>
