@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Index Concurrency Control - 索引并发控制 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;09-indexconcurrency.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;09-indexconcurrency.pdfReadings:">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec09 Index Concurrency Control - 索引并发控制">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/10/04/CMU-15445-Lec09/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Index Concurrency Control - 索引并发控制 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;09-indexconcurrency.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;09-indexconcurrency.pdfReadings:">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec091.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec093.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec094.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec095.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec096.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec097.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec098.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec099.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0910.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0911.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0912.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0913.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0914.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0915.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0916.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0917.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0918.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0919.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0920.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0921.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0922.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0923.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0924.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0925.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0926.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0927.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0928.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0929.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0930.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0931.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0932.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0933.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0934.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0935.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0936.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0937.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0938.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0940.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0941.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0942.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0943.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0944.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0945.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0946.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0947.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0948.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0949.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0950.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0951.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0952.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0953.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0954.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0955.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0956.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0957.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0958.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0959.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0960.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0961.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0962.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0963.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0964.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0965.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0966.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0967.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0968.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0969.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0970.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0971.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0972.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0973.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0974.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0975.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0976.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0984.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0977.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0978.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0979.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0980.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0981.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0982.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0983.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0985.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09102.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0986.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0987.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0988.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0989.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0990.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0991.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0992.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0993.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0994.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0995.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0996.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0997.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0998.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec0999.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09100.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09101.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09103.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09104.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09105.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09106.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09107.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09108.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09109.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09110.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09111.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09112.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09113.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09114.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09115.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09116.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09117.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09118.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec09119.jpg">
+<meta property="article:published_time" content="2020-10-04T19:18:51.000Z">
+<meta property="article:modified_time" content="2020-10-04T19:26:15.638Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Indexing">
+<meta property="article:tag" content="B Tree">
+<meta property="article:tag" content="Lock">
+<meta property="article:tag" content="Latch">
+<meta property="article:tag" content="Latch Coupling">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec091.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/10/04/CMU-15445-Lec09/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec09 Index Concurrency Control - 索引并发控制 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">65</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">28</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">89</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/10/04/CMU-15445-Lec09/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec09 Index Concurrency Control - 索引并发控制
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-04 21:18:51 / 修改时间：21:26:15" itemprop="dateCreated datePublished" datetime="2020-10-04T21:18:51+02:00">2020-10-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hash-Table/" itemprop="url" rel="index"><span itemprop="name">Hash Table</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/B-Tree/" itemprop="url" rel="index"><span itemprop="name">B Tree</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Operating-System/" itemprop="url" rel="index"><span itemprop="name">Operating System</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Lock/" itemprop="url" rel="index"><span itemprop="name">Lock</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Multithreading/" itemprop="url" rel="index"><span itemprop="name">Multithreading</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/10/04/CMU-15445-Lec09/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec09 Index Concurrency Control - 索引并发控制" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>9 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Index Concurrency Control - 索引并发控制</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzA5LWluZGV4Y29uY3VycmVuY3kucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/slides/09-indexconcurrency.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/09-indexconcurrency.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDktaW5kZXhjb25jdXJyZW5jeS5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/notes/09-indexconcurrency.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/09-indexconcurrency.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 15.10</p>
+<p>我们在之前的课程中已经学了一些数据库中的索引数据结构，主要有Hash Table和B+树。我们已经了解过它们中的操作，性能，使用范围。这次我们对它们做并发控制的研究 - 并发能给数据库带来很大的性能提升。绝大多数的数据库(以及数据库组件)都需要做到多线程，来提高性能。</p>
+<a id="more"></a>
+<p><img data-src="/images/CMU1544564/Lec091.jpg" alt="1.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec093.jpg" alt="3.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec094.jpg" alt="4.jpg"></p>
+<ul>
+<li>上图中:</li>
+<li>Logical Correctness: 指这个数据结构在并发的读出与写入都是正确的。即数据结构逻辑角度。<blockquote>
+<p>This means that the thread is able to read values that it should be allowed to read.</p>
+</blockquote>
+</li>
+<li>Physical Correctness: 指并发过程中，不能造成Segment Fault等内存不安全的操作。即代码正确性角度(当然也可以称为硬件角度)。<blockquote>
+<p>This means that there are not pointers in our data structure that will cause a thread to read invalid memory locations.</p>
+</blockquote>
+</li>
+</ul>
+<p><br></p>
+<p><img data-src="/images/CMU1544564/Lec095.jpg" alt="5.jpg"></p>
+<h1 id="Latch"><a href="#Latch" class="headerlink" title="Latch"></a>Latch</h1><h2 id="Lock-vs-Latch"><a href="#Lock-vs-Latch" class="headerlink" title="Lock vs. Latch"></a>Lock vs. Latch</h2><p>我们在数据库的语境下比较Lock和Latch。</p>
+<ul>
+<li>Lock特指transaction事务中的事务锁，由事务锁的协议提供， 比如Two-Phase Locking――2PL。</li>
+<li>Latch指程序或伪程序层面，对critical section部分代码线程安全的控制类。比如互斥锁mutex。它往往是或者象征着<br>代码的类，比如<code>std::mutex</code>。</li>
+</ul>
+<p>更多的细节参考下面两页课件，这部分总结得非常好:</p>
+<p><img data-src="/images/CMU1544564/Lec096.jpg" alt="6.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec097.jpg" alt="7.jpg"></p>
+<ul>
+<li>A Survey of B-Tree Locking Techniques - Goetz Graefe :<span class="exturl" data-url="aHR0cHM6Ly8xNTcyMS5jb3Vyc2VzLmNzLmNtdS5lZHUvc3ByaW5nMjAxOS9wYXBlcnMvMDYtaW5kZXhlcy9hMTYtZ3JhZWZlLnBkZg==" title="https://15721.courses.cs.cmu.edu/spring2019/papers/06-indexes/a16-graefe.pdf">https://15721.courses.cs.cmu.edu/spring2019/papers/06-indexes/a16-graefe.pdf<i class="fa fa-external-link"></i></span></li>
+</ul>
+<h2 id="Latch-Modes"><a href="#Latch-Modes" class="headerlink" title="Latch Modes"></a>Latch Modes</h2><p><img data-src="/images/CMU1544564/Lec098.jpg" alt="8.jpg"></p>
+<h2 id="Latch-Implementations"><a href="#Latch-Implementations" class="headerlink" title="Latch Implementations"></a>Latch Implementations</h2><p>这部分内容属于系统编程和操作系统。</p>
+<blockquote>
+<p>The underlying primitive that we can use to implement a latch is through <strong>an atomic compare-and-swap (CAS) instruction</strong> that modern CPUs provide. With this, <strong>a thread can check the contents of a memory location to see whether it has a certain value. If it does, then the CPU will swap the old value with a new one. Otherwise the memory location remains unmodified.</strong></p>
+<p>There are several approaches to implementing a latch in a DBMS. Each approach have different tradeoffs in terms of engineering complexity and runtime performance. These test-and-set steps are performed atomically (i.e., no other thread can update the value after one thread checks it but before it updates it).</p>
+</blockquote>
+<ul>
+<li>test-and-set: 指assembly汇编的 <code>TSL RAX, [LOCK]</code></li>
+<li>compare-and-swap (CAS): 指assembly汇编的 <code>CMPXCHG &lt;MEM&gt;, RBX</code></li>
+</ul>
+<h3 id="Blocking-OS-Mutex"><a href="#Blocking-OS-Mutex" class="headerlink" title="Blocking OS Mutex"></a>Blocking OS Mutex</h3><blockquote>
+<p>Use the OS built-in mutex infrastructure as a latch. The <strong>futex</strong> (fast user-space mutex) is comprised of (1) a spin latch in user-space and (2) a OS-level mutex. If the DBMS can acquire the user-space latch, then the latch is set. It appears as a single latch to the DBMS even though it contains two internal latches. If the DBMS fails to acquire the user-space latch, then it goes down into the kernel and tries to acquire a more expensive mutex. If the DBMS fails to acquire this second mutex, then the thread notifies the OS that it is<br>blocked on the lock and then it is descheduled.</p>
+<p><strong>OS mutex is generally a bad idea inside of DBMSs as it is managed by OS and has large overhead.</strong></p>
+<ul>
+<li><strong>Advantages</strong>: Simple to use and requires no additional coding in DBMS.</li>
+<li><strong>Disadvantages</strong>: Expensive and non-scalable (about 25 ns per lock/unlock invocation) because of <strong>OS scheduling</strong>.</li>
+</ul>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec099.jpg" alt="9.jpg"></p>
+<h3 id="Test-and-Set-Spin-Latch-TAS"><a href="#Test-and-Set-Spin-Latch-TAS" class="headerlink" title="Test-and-Set Spin Latch (TAS)"></a>Test-and-Set Spin Latch (TAS)</h3><blockquote>
+<p><strong>Spin latches</strong> are a more efficient alternative to an OS mutex as it is controlled by the DBMSs. A spin latch is essentially <strong>a location in memory that threads try to update (e.g., setting a boolean value to true)</strong>. A thread performs CAS to attempt to update the memory location. <strong>If it cannot, then it spins in a while loop forever trying to update it.</strong></p>
+<ul>
+<li><strong>Advantages</strong>: Latch/unlatch operations are <strong>efficient (single instruction to lock/unlock)</strong>.</li>
+<li><strong>Disadvantages</strong>: Not scalable nor cache friendly because with multiple threads, the CAS instructions will be executed multiple times in different threads. These wasted instructions will pile up in high contention environments; the threads look busy to the OS even though they are not doing useful work. <strong>This leads to cache coherence problems because threads are polling cache lines on other CPUs.</strong></li>
+</ul>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec0910.jpg" alt="10.jpg"></p>
+<p>另外针对这个while循环，我们可以从中做决定:</p>
+<ul>
+<li>Retry: 如果等待的时间不长，继续等待</li>
+<li>Yield, Abort: 如果等待的时间很长，直接放弃等待。做其他的事情，做完以后资源可能就空闲了。</li>
+</ul>
+<h3 id="Reader-Writer-Latches"><a href="#Reader-Writer-Latches" class="headerlink" title="Reader-Writer Latches"></a>Reader-Writer Latches</h3><blockquote>
+<p>Mutexes and Spin Latches do not differentiate between reads / writes (i.e., they <strong>do not support different modes</strong>). We need a way to allow for concurrent reads, so if the application has heavy reads it will have better performance because readers can share resources instead of waiting.<br>A Reader-Writer Latch <strong>allows a latch to be held in either read or write mode</strong>. It keeps track of how many threads hold the latch and are waiting to acquire the latch in each mode.</p>
+<ul>
+<li>Example: This is implemented on top of Spin Latches.</li>
+<li><strong>Advantages</strong>: Allows for concurrent readers.</li>
+<li><strong>Disadvantages</strong>: The DBMS has to manage read/write queues to avoid starvation. Larger storage overhead than Spin Latches due to additional meta-data.</li>
+</ul>
+</blockquote>
+<p>下面的图示中，我们能看到读写锁会记录:</p>
+<ul>
+<li>正在读的数量</li>
+<li>正在写与否(0或1)</li>
+<li>等待读的数量</li>
+<li>等待写的数量</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0911.jpg" alt="11.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0912.jpg" alt="12.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0913.jpg" alt="13.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0914.jpg" alt="14.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0915.jpg" alt="15.jpg"></p>
+<ul>
+<li>上图情况是有一个读和一个写在等，目前锁模式的读。后面可能发生如下两种情况:<ul>
+<li>可能1: 读的锁不等待，直接和其他两个线程一起读。这样会让写线程一直等，如果一直有新的读线程生成并<em>插队</em>的话。即 读线程优先。</li>
+<li>可能2: 读的锁需要等待写线程的完成。这样会让本可以共享的三次读操作不能同时完成。即 写线程优先。</li>
+</ul>
+</li>
+<li>具体是哪一种应对方式需要看锁的具体实现，也需要看程序中是并行读还是并行写多，需要给谁优先权。</li>
+</ul>
+<p>推荐论文: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvfmJvZXR0Y2hlci9sb2NraW5nLnBkZg==" title="https://db.in.tum.de/~boettcher/locking.pdf">Scalable and Robust Latches for Database Systems, Böttcher et al.<i class="fa fa-external-link"></i></span></p>
+<p><br><br><br><br><br></p>
+<h1 id="Hash-Table-Latching"><a href="#Hash-Table-Latching" class="headerlink" title="Hash Table Latching"></a>Hash Table Latching</h1><blockquote>
+<p>It is <strong>easy</strong> to support concurrent access in a <strong>static hash table</strong> due to the limited ways threads access the data structure. For example, <strong>all threads move in the same direction when moving from slot to the next (i.e., top-down). Threads also only access a single page/slot at a time.</strong> Thus,<strong> deadlocks are not possible</strong> in this situation because no two threads could be competing for latches held by the other. <strong>To resize the table, take a global latch on the entire table (i.e., in the header page).</strong></p>
+</blockquote>
+<p>这部分中我们主要讨论static hash scheme中的linear probing hashing。</p>
+<blockquote>
+<p>Latching in a dynamic hashing scheme (e.g., extendible) is slightly more complicated because there is more shared state to update, but the general approach is the same.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec0916.jpg" alt="16.jpg"></p>
+<p><br></p>
+<p><img data-src="/images/CMU1544564/Lec0917.jpg" alt="17.jpg"></p>
+<blockquote>
+<ul>
+<li><strong>Page Latches</strong>: This <strong>decreases parallelism</strong> because potentially only one thread can access a page at a time, but <strong>accessing multiple slots in a page will be fast</strong> because a thread only has to acquire a single latch.</li>
+<li><strong>Slot Latches</strong>: This <strong>increases parallelism</strong> because <strong>two threads can access different slots in the same page</strong>. But it <strong>increases the storage and computational overhead of accessing the table</strong> because threads have to acquire a latch for every slot they access. The DBMS can use a single mode latch (i.e., Spin Latch) to reduce meta-data and computational overhead.</li>
+</ul>
+</blockquote>
+<p>即使上面有两种方式，它们锁粒度的不一样，造成其他地方很多也不一样。但是对并行控制的核心想法是一致的:</p>
+<ul>
+<li>所有的线程总是以<strong>从前往后</strong>固定的方向去获得数据 (获得下一个page / 获得下一个slot)</li>
+<li>因此每一个线程可以保证线程安全:<ul>
+<li>1.先松开当前 page / slot 的latch</li>
+<li>2.再去获得下一个 page / slot 的latch</li>
+</ul>
+</li>
+<li>上面两步之间可能会有其他的线程先拿走了下一个 page / slot, 但是这样的行为不影响我们的线程安全性。</li>
+</ul>
+<p>我们下面有足够篇幅的例子去解释上面这部分的描述。例子中默认每个page有两个slot，另外我们使用read-write latch。</p>
+<h2 id="Page-Latches"><a href="#Page-Latches" class="headerlink" title="Page Latches"></a>Page Latches</h2><p><img data-src="/images/CMU1544564/Lec0918.jpg" alt="18.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0919.jpg" alt="19.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0920.jpg" alt="20.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0921.jpg" alt="21.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0922.jpg" alt="22.jpg"></p>
+<ul>
+<li>上图中<code>T1</code>完成第一步: <strong>先松开当前 page1 的latch</strong></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0923.jpg" alt="23.jpg"></p>
+<ul>
+<li>上图中<code>T1</code>完成第二步: <strong>再去获得 page2 的latch</strong></li>
+<li>上图中<code>T2</code>获得page1的latch</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0924.jpg" alt="24.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0925.jpg" alt="25.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0926.jpg" alt="26.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0927.jpg" alt="27.jpg"></p>
+<p><br></p>
+<h2 id="Slot-Latches"><a href="#Slot-Latches" class="headerlink" title="Slot Latches"></a>Slot Latches</h2><p><img data-src="/images/CMU1544564/Lec0928.jpg" alt="28.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0929.jpg" alt="29.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0930.jpg" alt="30.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0931.jpg" alt="31.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0932.jpg" alt="32.jpg"></p>
+<ul>
+<li>上图中<code>T1</code>完成第一步: <strong>先松开当前 slot 的latch</strong></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0933.jpg" alt="33.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0934.jpg" alt="34.jpg"></p>
+<ul>
+<li>上图中<code>T1</code>完成第二步: <strong>再去获得下一个 slot 的latch</strong></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0935.jpg" alt="35.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0936.jpg" alt="36.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0937.jpg" alt="37.jpg"></p>
+<p><br><br><br><br><br></p>
+<hr>
+<h1 id="B-Tree-Concurrency-Control"><a href="#B-Tree-Concurrency-Control" class="headerlink" title="B+ Tree Concurrency Control"></a>B+ Tree Concurrency Control</h1><p><img data-src="/images/CMU1544564/Lec0938.jpg" alt="38.jpg"></p>
+<ul>
+<li>上图中最后一点中: 如果不线程安全，可能导致触碰到不再有效的内存区域invalid memory location, 产生segment fault段错误。</li>
+</ul>
+<h2 id="线程不安全-Example"><a href="#线程不安全-Example" class="headerlink" title="线程不安全 - Example"></a>线程不安全 - Example</h2><p>下面我们用一个线程不安全的反例，来说明在B+ Tree中线程安全的重要意义。</p>
+<h3 id="T1-running"><a href="#T1-running" class="headerlink" title="T1 running"></a>T1 running</h3><p><img data-src="/images/CMU1544564/Lec0940.jpg" alt="40.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0941.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0942.jpg" alt="42.jpg"></p>
+<ul>
+<li>直到上图，<code>T1</code>从leaf node中删除了<code>44</code>，<code>T1</code>发现leaf node没有满足一半填满(less half full)的状态，需要继续rebalance (from sibling)。这时<code>T1: delete 44</code>尚未完成。但是thread scheudler选择暂停<code>T1</code>。</li>
+</ul>
+<h3 id="T1-stalled-T2-running"><a href="#T1-stalled-T2-running" class="headerlink" title="T1 stalled, T2 running"></a>T1 stalled, T2 running</h3><p><img data-src="/images/CMU1544564/Lec0943.jpg" alt="43.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0944.jpg" alt="44.jpg"></p>
+<ul>
+<li>直到上图，<code>T2</code>找到了<code>Node D</code>，并从它中得知并获得了<code>41</code>对应leaf node的指针，即指向<code>Node H</code>的指针(图中的蓝色箭头)。这时<code>T2: find 41</code>尚未完成。但是thread scheudler选择暂停<code>T2</code>。</li>
+</ul>
+<h3 id="T1-running-T2-stalled"><a href="#T1-running-T2-stalled" class="headerlink" title="T1 running, T2 stalled"></a>T1 running, T2 stalled</h3><p><img data-src="/images/CMU1544564/Lec0945.jpg" alt="45.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0946.jpg" alt="46.jpg"></p>
+<ul>
+<li>直到上图，<code>T1</code>继续rebalance, 将<code>41</code>从sibling <code>Node H</code>中换到<code>Node I</code>。这时<code>T1: delete 44</code>尚未完成，但是delete部分已经完成，只是还没有return回主函数。这时thread scheudler选择暂停<code>T1</code>。</li>
+</ul>
+<h3 id="T1-stalled-T2-running-1"><a href="#T1-stalled-T2-running-1" class="headerlink" title="T1 stalled, T2 running"></a>T1 stalled, T2 running</h3><p><img data-src="/images/CMU1544564/Lec0947.jpg" alt="47.jpg"></p>
+<ul>
+<li>直到上图，<code>T2</code>使用之前获得的指向<code>Node H</code>的指针(图中的蓝色箭头)， 并成功到达<code>Node H</code>。只是<code>Node H</code>中没有<code>41</code>，这时<code>T2: find 41</code>完成，只是return false，说明B+ Tree中不存在<code>41</code>。</li>
+<li>这明显是 <strong>False Positive</strong>, 因为树中真实存在<code>41</code>, <code>T2</code>判断错误。</li>
+</ul>
+<p><br><br><br><br><br></p>
+<h2 id="Latch-Crabbing-Coupling-Protocol"><a href="#Latch-Crabbing-Coupling-Protocol" class="headerlink" title="Latch Crabbing / Coupling Protocol"></a>Latch Crabbing / Coupling Protocol</h2><blockquote>
+<p>Lock crabbing / coupling is a protocol to allow multiple threads to access/modify B+Tree at the same time.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec0948.jpg" alt="48.jpg"></p>
+<p>要取保先取得child latch并确认它是safe, 才能松开parent latch。就是说存在一个时刻，一个线程会有多于一个latch的可能。</p>
+<h3 id="Basic-Latch-Crabbing-Protocol"><a href="#Basic-Latch-Crabbing-Protocol" class="headerlink" title="Basic Latch Crabbing Protocol"></a>Basic Latch Crabbing Protocol</h3><p><img data-src="/images/CMU1544564/Lec0949.jpg" alt="49.jpg"></p>
+<h4 id="Example1-Find-38"><a href="#Example1-Find-38" class="headerlink" title="Example1 - Find 38"></a>Example1 - Find 38</h4><p><img data-src="/images/CMU1544564/Lec0950.jpg" alt="50.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0951.jpg" alt="51.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0952.jpg" alt="52.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0953.jpg" alt="53.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0954.jpg" alt="54.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0955.jpg" alt="55.jpg"></p>
+<h4 id="Example2-Delete-38"><a href="#Example2-Delete-38" class="headerlink" title="Example2 - Delete 38"></a>Example2 - Delete 38</h4><p><img data-src="/images/CMU1544564/Lec0956.jpg" alt="56.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0957.jpg" alt="57.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0958.jpg" alt="58.jpg"></p>
+<ul>
+<li>在上图中，我们找到了<code>38</code>, 发现删除了它，<code>Inner Node D</code>依然是safe的。这之后我们决定松开<code>Node A</code>的latch，和松开<code>Node B</code>的latch。</li>
+<li>松开<code>Node A</code>和<code>Node B</code>latch的先后并不影响正确性。但是<code>Node A</code>下覆盖的节点更多，潜在地有更多线程想要获得<code>Node A</code>的latch。因此先松开<code>Node A</code>的latch，再松开<code>Node B</code>的latch，性能更好。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0959.jpg" alt="59.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0960.jpg" alt="60.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0961.jpg" alt="61.jpg"></p>
+<h4 id="Example3-Insert-45"><a href="#Example3-Insert-45" class="headerlink" title="Example3 - Insert 45"></a>Example3 - Insert 45</h4><p><img data-src="/images/CMU1544564/Lec0962.jpg" alt="62.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0963.jpg" alt="63.jpg"></p>
+<ul>
+<li>在上图中，我们发现<code>Node B</code>是safe的。这之后我们决定松开<code>Node A</code>的latch。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0964.jpg" alt="64.jpg"></p>
+<ul>
+<li>在上图中，我们发现<code>Node D</code>是满的，对insertion不是safe的。我们决定保持<code>Node B</code>的latch。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0965.jpg" alt="65.jpg"></p>
+<ul>
+<li>在上图中，我们发现<code>Node I</code>是safe的。这之后我们决定松开<code>Node B</code>的latch，和松开<code>Node D</code>的latch。</li>
+<li>松开<code>Node B</code>和<code>Node D</code>latch的先后并不影响正确性。但是<code>Node B</code>下覆盖的节点更多，潜在地有更多线程想要获得<code>Node D</code>的latch。因此先松开<code>Node B</code>的latch，再松开<code>Node D</code>的latch，性能更好。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0966.jpg" alt="66.jpg"></p>
+<h4 id="Example4-Insert-25"><a href="#Example4-Insert-25" class="headerlink" title="Example4 - Insert 25"></a>Example4 - Insert 25</h4><p><img data-src="/images/CMU1544564/Lec0967.jpg" alt="67.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0968.jpg" alt="68.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0969.jpg" alt="69.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0970.jpg" alt="70.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0971.jpg" alt="71.jpg"></p>
+<ul>
+<li>在上图中，我们发现<code>Node F</code>是满的，对insertion不是safe的。我们决定保持<code>Node C</code>的latch。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0972.jpg" alt="72.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0973.jpg" alt="73.jpg"></p>
+<ul>
+<li>在上图中，只有当前线程才能访问新建的节点，其他的线程甚至只能排队等去访问<code>Node C</code>。这种情况下，新建节点不需要上锁，可以节省开销。</li>
+</ul>
+<p><br></p>
+<p>从上面所有的例子中， 我们可以发现，我们需要有一个<strong>FIFO list</strong>去记录一路上获得的latch。先获得的latch， 可以先松开， 因此是使用FIFO数据结构。</p>
+<p><br><br><br></p>
+<h3 id="Improved-Lock-Crabbing-Protocol"><a href="#Improved-Lock-Crabbing-Protocol" class="headerlink" title="Improved Lock Crabbing Protocol"></a>Improved Lock Crabbing Protocol</h3><h4 id="Observation"><a href="#Observation" class="headerlink" title="Observation"></a>Observation</h4><blockquote>
+<p>The problem with the basic latch crabbing algorithm is that transactions always acquire an <strong>exclusive latch on the root for every insert/delete operation</strong>. <strong>This limits parallelism</strong>.</p>
+<p>Instead, we can <strong>assume that having to resize (i.e., split/merge nodes) is rare, and thus transactions can acquire shared latches down to the leaf nodes</strong>. Each transaction will assume that the path to the target leaf node is safe, and <strong>use READ latches and crabbing to reach it, and verify. If any node in the path is not safe, then do previous algorithm (i.e., acquire WRITE latches).</strong></p>
+</blockquote>
+<p>我们发现对应写操作(Insert和Delete)一开始，必须获得root node的latch。那样的话，其他的想要进行读操作或者写操作的线程必须等待这个获得root node latch的线程松开这个latch。这个地方会造成很多线程的等待，是并行B+ Tree性能的一个瓶颈 bottleneck。</p>
+<p><img data-src="/images/CMU1544564/Lec0974.jpg" alt="74.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0975.jpg" alt="75.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0976.jpg" alt="76.jpg"></p>
+<ul>
+<li>Concurrency of operations on B-trees - R. Bayer &amp; M. Schkolnick: <span class="exturl" data-url="aHR0cHM6Ly9saW5rLnNwcmluZ2VyLmNvbS9hcnRpY2xlLzEwLjEwMDcvQkYwMDI2Mzc2Mg==" title="https://link.springer.com/article/10.1007/BF00263762">https://link.springer.com/article/10.1007/BF00263762<i class="fa fa-external-link"></i></span> </li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec0984.jpg" alt="84.jpg"></p>
+<ul>
+<li>(上图中这页课件，被我从后面提前至此)</li>
+</ul>
+<blockquote>
+<ul>
+<li><strong>Search</strong>: Same algorithm as before.</li>
+<li><strong>Insert/Delete</strong>: <strong>Set READ latches as if for search, go to leaf, and set WRITE latch on leaf. If leaf is not safe, release all previous latches, and restart transaction using previous Insert/Delete protocol.</strong></li>
+</ul>
+</blockquote>
+<h4 id="Example2-Delete-38-New-Version"><a href="#Example2-Delete-38-New-Version" class="headerlink" title="Example2 - Delete 38 - New Version"></a>Example2 - Delete 38 - New Version</h4><p><img data-src="/images/CMU1544564/Lec0977.jpg" alt="77.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0978.jpg" alt="78.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0979.jpg" alt="79.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0980.jpg" alt="80.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0981.jpg" alt="81.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0982.jpg" alt="82.jpg"></p>
+<h4 id="Example4-Insert-25-New-Version"><a href="#Example4-Insert-25-New-Version" class="headerlink" title="Example4 - Insert 25 - New Version"></a>Example4 - Insert 25 - New Version</h4><p><img data-src="/images/CMU1544564/Lec0983.jpg" alt="83.jpg"></p>
+<ul>
+<li>在上图中，我们发现<code>Node F</code>是满的，对insertion不是safe的。这个线程需要松开<code>Node F</code>的latch。重新开始，从Root Node开始，用write mode latch去进行<code>Insert 25</code>这个操作。</li>
+</ul>
+<p><br><br><br><br><br></p>
+<h2 id="Leaf-Node-Scans"><a href="#Leaf-Node-Scans" class="headerlink" title="Leaf Node Scans"></a>Leaf Node Scans</h2><p><img data-src="/images/CMU1544564/Lec0985.jpg" alt="85.jpg"></p>
+<blockquote>
+<p>The threads in these protocols acquire latches in a “top-down” manner. This means that a thread can only acquire a latch from a node that is below its current node. If the desired latch is unavailable, the thread must wait until it becomes available. <strong>Given this, there can never be deadlocks.</strong><br><strong>Leaf node scans are susceptible to deadlocks</strong> because now we have threads trying to acquire locks in two different directions at the same time (i.e., <strong>left-to-right and right-to-left</strong>). Index latches do not support deadlock detection or avoidance.<br>Thus, the only way we can deal with this problem is through coding discipline. <strong>The leaf node sibling latch acquisition protocol must support a “no-wait” mode</strong>. That is, B+tree code <strong>must cope with failed latch acquisitions</strong>. This means that <strong>if a thread tries to acquire a latch on a leaf node but that latch is unavailable, then it will immediately abort its operation (releasing any latches that it holds) and then restart the operation</strong>.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec09102.jpg" alt="102.jpg"></p>
+<ul>
+<li>(上图中这页课件，被我从后面提前至此)</li>
+</ul>
+<h3 id="Leaf-Node-Scan-Example1"><a href="#Leaf-Node-Scan-Example1" class="headerlink" title="Leaf Node Scan Example1"></a>Leaf Node Scan Example1</h3><p>right-to-left leaf node scan. Read mode latch</p>
+<p><img data-src="/images/CMU1544564/Lec0986.jpg" alt="86.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0987.jpg" alt="87.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0988.jpg" alt="88.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0989.jpg" alt="89.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0990.jpg" alt="90.jpg"></p>
+<h3 id="Leaf-Node-Scan-Example2"><a href="#Leaf-Node-Scan-Example2" class="headerlink" title="Leaf Node Scan Example2"></a>Leaf Node Scan Example2</h3><p>T1: right-to-left leaf node scan. Read mode latch<br>T2: left-to-right leaf node scan. Read mode latch</p>
+<p><img data-src="/images/CMU1544564/Lec0991.jpg" alt="91.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0992.jpg" alt="92.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0993.jpg" alt="93.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0994.jpg" alt="94.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0995.jpg" alt="95.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0996.jpg" alt="96.jpg"></p>
+<h3 id="Leaf-Node-Scan-Example3"><a href="#Leaf-Node-Scan-Example3" class="headerlink" title="Leaf Node Scan Example3"></a>Leaf Node Scan Example3</h3><p>T1: top-to-bottom tree traversal scan. Write mode latch<br>T2: left-to-right leaf node scan. Read mode latch</p>
+<p><img data-src="/images/CMU1544564/Lec0997.jpg" alt="97.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0998.jpg" alt="98.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec0999.jpg" alt="99.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09100.jpg" alt="100.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09101.jpg" alt="101.jpg"></p>
+<p>DEAKLOCK!</p>
+<ul>
+<li>因为<code>T2</code>并不和<code>T1</code>进行线程通信，因此它们不知道对方在进行什么操作。<code>T2</code>有几种不同可能的作法:<ul>
+<li><code>T2</code>立即放弃获得<code>Node C</code>的latch, 重新开始，重头开始。</li>
+<li><code>T2</code>让<code>T1</code>放弃<code>Node C</code>的latch, <code>T2</code>获得<code>Node C</code>的latch。而<code>T1</code>重新开始，重头开始。</li>
+<li><code>T2</code>等待<code>Node C</code>的latch。但是为了避免deadlock。等完timeout就放弃获得<code>Node C</code>的latch, 重新开始，重头开始。</li>
+</ul>
+</li>
+</ul>
+<p><br><br><br><br><br></p>
+<h2 id="Delayed-Parent-Updates"><a href="#Delayed-Parent-Updates" class="headerlink" title="Delayed Parent Updates"></a>Delayed Parent Updates</h2><p><img data-src="/images/CMU1544564/Lec09103.jpg" alt="103.jpg"></p>
+<h3 id="Example4-Insert-25-New-New-Version"><a href="#Example4-Insert-25-New-New-Version" class="headerlink" title="Example4 - Insert 25 - New New Version"></a>Example4 - Insert 25 - New New Version</h3><h4 id="T1-Insert-25"><a href="#T1-Insert-25" class="headerlink" title="T1: Insert 25"></a>T1: Insert 25</h4><p><img data-src="/images/CMU1544564/Lec09104.jpg" alt="104.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09105.jpg" alt="105.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09106.jpg" alt="106.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09107.jpg" alt="107.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09108.jpg" alt="108.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09109.jpg" alt="109.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09110.jpg" alt="110.jpg"></p>
+<ul>
+<li>上图中: <code>T1</code>推迟对<code>Node C</code>中写入<code>31</code>这个操作。<code>T1</code>将这件事情记录在一个global table中，推迟到下一次对<code>Node C</code>有Write latch的时候。</li>
+</ul>
+<h4 id="T2-Find-31"><a href="#T2-Find-31" class="headerlink" title="T2: Find 31"></a>T2: Find 31</h4><p><img data-src="/images/CMU1544564/Lec09111.jpg" alt="111.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09112.jpg" alt="112.jpg"></p>
+<h4 id="T3-Insert-33"><a href="#T3-Insert-33" class="headerlink" title="T3: Insert 33"></a>T3: Insert 33</h4><p><img data-src="/images/CMU1544564/Lec09113.jpg" alt="113.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09114.jpg" alt="114.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09115.jpg" alt="115.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09116.jpg" alt="116.jpg"></p>
+<ul>
+<li>上图中: <code>T3</code>从global table中发现，在对<code>Node C</code>有Write latch的时候有一个操作被推迟过。<code>T3</code>完成这个事件: 向<code>Node C</code>中写入<code>31</code>. 这样我们捎带piggyback一个之前的插入操作到一个新的插入操作, 均摊了性能花销.</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec09117.jpg" alt="117.jpg"></p>
+<p>另外一个发现是Parent Node的信息可以延迟更新, 即处在一个信息过期的状态, 这不影响在Leaf Node的查找.</p>
+<ul>
+<li>因此我们删除的时候也可以延迟更新: 先删除Leaf Node中的元素, 之后延迟再删除Parent Node的元素(如果有对应的话)</li>
+</ul>
+<p><br><br><br><br><br></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img data-src="/images/CMU1544564/Lec09118.jpg" alt="118.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec09119.jpg" alt="119.jpg"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/10/04/CMU-15445-Lec09/" title="[CMU-15445]Lec09 Index Concurrency Control - 索引并发控制">https://cakebytheoceanluo.github.io/2020/10/04/CMU-15445-Lec09/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Indexing/" rel="tag"><i class="fa fa-tag"></i> Indexing</a>
+              <a href="/tags/B-Tree/" rel="tag"><i class="fa fa-tag"></i> B Tree</a>
+              <a href="/tags/Lock/" rel="tag"><i class="fa fa-tag"></i> Lock</a>
+              <a href="/tags/Latch/" rel="tag"><i class="fa fa-tag"></i> Latch</a>
+              <a href="/tags/Latch-Coupling/" rel="tag"><i class="fa fa-tag"></i> Latch Coupling</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/03/CMU-15445-Lec08-fall18/" rel="prev" title="[CMU-15445]Lec08 - Fall18 - Skip List - 跳表">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec08 - Fall18 - Skip List - 跳表
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Latch"><span class="nav-number">1.</span> <span class="nav-text">Latch</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Lock-vs-Latch"><span class="nav-number">1.1.</span> <span class="nav-text">Lock vs. Latch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Latch-Modes"><span class="nav-number">1.2.</span> <span class="nav-text">Latch Modes</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Latch-Implementations"><span class="nav-number">1.3.</span> <span class="nav-text">Latch Implementations</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Blocking-OS-Mutex"><span class="nav-number">1.3.1.</span> <span class="nav-text">Blocking OS Mutex</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Test-and-Set-Spin-Latch-TAS"><span class="nav-number">1.3.2.</span> <span class="nav-text">Test-and-Set Spin Latch (TAS)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reader-Writer-Latches"><span class="nav-number">1.3.3.</span> <span class="nav-text">Reader-Writer Latches</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Hash-Table-Latching"><span class="nav-number">2.</span> <span class="nav-text">Hash Table Latching</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Page-Latches"><span class="nav-number">2.1.</span> <span class="nav-text">Page Latches</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Slot-Latches"><span class="nav-number">2.2.</span> <span class="nav-text">Slot Latches</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#B-Tree-Concurrency-Control"><span class="nav-number">3.</span> <span class="nav-text">B+ Tree Concurrency Control</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#线程不安全-Example"><span class="nav-number">3.1.</span> <span class="nav-text">线程不安全 - Example</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#T1-running"><span class="nav-number">3.1.1.</span> <span class="nav-text">T1 running</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#T1-stalled-T2-running"><span class="nav-number">3.1.2.</span> <span class="nav-text">T1 stalled, T2 running</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#T1-running-T2-stalled"><span class="nav-number">3.1.3.</span> <span class="nav-text">T1 running, T2 stalled</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#T1-stalled-T2-running-1"><span class="nav-number">3.1.4.</span> <span class="nav-text">T1 stalled, T2 running</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Latch-Crabbing-Coupling-Protocol"><span class="nav-number">3.2.</span> <span class="nav-text">Latch Crabbing &#x2F; Coupling Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic-Latch-Crabbing-Protocol"><span class="nav-number">3.2.1.</span> <span class="nav-text">Basic Latch Crabbing Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Example1-Find-38"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">Example1 - Find 38</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example2-Delete-38"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">Example2 - Delete 38</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example3-Insert-45"><span class="nav-number">3.2.1.3.</span> <span class="nav-text">Example3 - Insert 45</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example4-Insert-25"><span class="nav-number">3.2.1.4.</span> <span class="nav-text">Example4 - Insert 25</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Improved-Lock-Crabbing-Protocol"><span class="nav-number">3.2.2.</span> <span class="nav-text">Improved Lock Crabbing Protocol</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Observation"><span class="nav-number">3.2.2.1.</span> <span class="nav-text">Observation</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example2-Delete-38-New-Version"><span class="nav-number">3.2.2.2.</span> <span class="nav-text">Example2 - Delete 38 - New Version</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Example4-Insert-25-New-Version"><span class="nav-number">3.2.2.3.</span> <span class="nav-text">Example4 - Insert 25 - New Version</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Leaf-Node-Scans"><span class="nav-number">3.3.</span> <span class="nav-text">Leaf Node Scans</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Leaf-Node-Scan-Example1"><span class="nav-number">3.3.1.</span> <span class="nav-text">Leaf Node Scan Example1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leaf-Node-Scan-Example2"><span class="nav-number">3.3.2.</span> <span class="nav-text">Leaf Node Scan Example2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leaf-Node-Scan-Example3"><span class="nav-number">3.3.3.</span> <span class="nav-text">Leaf Node Scan Example3</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Delayed-Parent-Updates"><span class="nav-number">3.4.</span> <span class="nav-text">Delayed Parent Updates</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example4-Insert-25-New-New-Version"><span class="nav-number">3.4.1.</span> <span class="nav-text">Example4 - Insert 25 - New New Version</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#T1-Insert-25"><span class="nav-number">3.4.1.1.</span> <span class="nav-text">T1: Insert 25</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#T2-Find-31"><span class="nav-number">3.4.1.2.</span> <span class="nav-text">T2: Find 31</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#T3-Insert-33"><span class="nav-number">3.4.1.3.</span> <span class="nav-text">T3: Insert 33</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">65</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">444k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:43</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/10/04/CMU-15445-Lec09/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
