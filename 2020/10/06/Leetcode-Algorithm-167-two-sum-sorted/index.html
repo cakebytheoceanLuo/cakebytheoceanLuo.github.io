@@ -22,21 +22,23 @@
     var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="题目176.Second Highest Salary SQL Schema: 123456-- MySQLCreate table If Not Exists Employee (Id int, Salary int)Truncate table Employeeinsert into Employee (Id, Salary) values (&#39;1&#39;, &#39;100&#39;)insert into Em">
+  <meta name="description" content="Two Sum II - Input array is sorted  Given an array of integers that is already sorted in ascending order, find two numbers such that they add up to a specific target number. The function twoSum shoul">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[Leetcode-SQL] 176.second.highest.salary">
-<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/03/09/SQL-Leetcode-176-second-highest-salary/index.html">
+<meta property="og:title" content="[Leetcode-Algorithm] 167.two-sum-sorted">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/index.html">
 <meta property="og:site_name" content="关于数据库的一切">
-<meta property="og:description" content="题目176.Second Highest Salary SQL Schema: 123456-- MySQLCreate table If Not Exists Employee (Id int, Salary int)Truncate table Employeeinsert into Employee (Id, Salary) values (&#39;1&#39;, &#39;100&#39;)insert into Em">
+<meta property="og:description" content="Two Sum II - Input array is sorted  Given an array of integers that is already sorted in ascending order, find two numbers such that they add up to a specific target number. The function twoSum shoul">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-03-09T10:58:02.000Z">
-<meta property="article:modified_time" content="2020-03-10T14:14:11.044Z">
+<meta property="og:image" content="https://github.com/MisterBooo/LeetCodeAnimation/raw/master/0167-Two-Sum-II-Input-array-is-sorted/Animation/Animation.gif">
+<meta property="article:published_time" content="2020-10-06T21:57:02.000Z">
+<meta property="article:modified_time" content="2020-10-06T21:57:58.070Z">
 <meta property="article:author" content="罗济高">
-<meta property="article:tag" content="SQL">
 <meta property="article:tag" content="Leetcode">
+<meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/MisterBooo/LeetCodeAnimation/raw/master/0167-Two-Sum-II-Input-array-is-sorted/Animation/Animation.gif">
 
-<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/03/09/SQL-Leetcode-176-second-highest-salary/">
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/">
 
 
 <script id="page-configurations">
@@ -48,7 +50,7 @@
   };
 </script>
 
-  <title>[Leetcode-SQL] 176.second.highest.salary | 关于数据库的一切</title>
+  <title>[Leetcode-Algorithm] 167.two-sum-sorted | 关于数据库的一切</title>
   
 
 
@@ -217,7 +219,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/09/SQL-Leetcode-176-second-highest-salary/">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.jpeg">
@@ -230,7 +232,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          [Leetcode-SQL] 176.second.highest.salary
+          [Leetcode-Algorithm] 167.two-sum-sorted
         </h2>
 
         <div class="post-meta">
@@ -239,23 +241,17 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-03-09 11:58:02" itemprop="dateCreated datePublished" datetime="2020-03-09T11:58:02+01:00">2020-03-09</time>
+              <time title="创建时间：2020-10-06 23:57:02 / 修改时间：23:57:58" itemprop="dateCreated datePublished" datetime="2020-10-06T23:57:02+02:00">2020-10-06</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-10 15:14:11" itemprop="dateModified" datetime="2020-03-10T15:14:11+01:00">2020-03-10</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -264,7 +260,7 @@
             </span>
 
           
-            <span id="/2020/03/09/SQL-Leetcode-176-second-highest-salary/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-SQL] 176.second.highest.salary" title="阅读次数">
+            <span id="/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-Algorithm] 167.two-sum-sorted" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -276,7 +272,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -295,32 +291,61 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h1><p>176.Second Highest Salary</p>
-<p>SQL Schema:</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- MySQL</span></span><br><span class="line"><span class="keyword">Create</span> <span class="keyword">table</span> <span class="keyword">If</span> <span class="keyword">Not</span> <span class="keyword">Exists</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, Salary <span class="built_in">int</span>)</span><br><span class="line"><span class="keyword">Truncate</span> <span class="keyword">table</span> Employee</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, Salary) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'100'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, Salary) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'200'</span>)</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, Salary) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'300'</span>)</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- PostgreSQL</span></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">table</span> <span class="keyword">if</span> <span class="keyword">exists</span> Employee;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> Employee (<span class="keyword">Id</span> <span class="built_in">int</span>, Salary <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, Salary) <span class="keyword">values</span> (<span class="string">'1'</span>, <span class="string">'100'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, Salary) <span class="keyword">values</span> (<span class="string">'2'</span>, <span class="string">'200'</span>);</span><br><span class="line"><span class="keyword">insert</span> <span class="keyword">into</span> Employee (<span class="keyword">Id</span>, Salary) <span class="keyword">values</span> (<span class="string">'3'</span>, <span class="string">'300'</span>);</span><br></pre></td></tr></tbody></table></figure>
-<p>Write a SQL query to get the second highest salary from the <code>Employee</code> table.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">----+--------+</span></span><br><span class="line">| Id | Salary |</span><br><span class="line">+<span class="comment">----+--------+</span></span><br><span class="line">| 1  | 100    |</span><br><span class="line">| 2  | 200    |</span><br><span class="line">| 3  | 300    |</span><br><span class="line">+<span class="comment">----+--------+</span></span><br></pre></td></tr></tbody></table></figure>
-<p>For example, given the above <code>Employee</code> table, the query should return <code>200</code> as the second highest salary. If there is no second highest salary, then the query should return <code>null</code>.</p>
-<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">| SecondHighestSalary |</span><br><span class="line">+<span class="comment">---------------------+</span></span><br><span class="line">| 200                 |</span><br><span class="line">+<span class="comment">---------------------+</span></span><br></pre></td></tr></tbody></table></figure>
-<a id="more"></a>
-<hr>
-<h1 id="解法１"><a href="#解法１" class="headerlink" title="解法１"></a>解法１</h1><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> (</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">distinct</span> e.salary</span><br><span class="line">    <span class="keyword">from</span> Employee e</span><br><span class="line">    <span class="keyword">where</span> <span class="number">1</span> = (</span><br><span class="line">        <span class="keyword">select</span> <span class="keyword">count</span>(*) </span><br><span class="line">        <span class="keyword">from</span> Employee top </span><br><span class="line">        <span class="keyword">where</span> top.salary &gt; e.salary</span><br><span class="line">    )</span><br><span class="line">) <span class="keyword">as</span> SecondHighestSalary;</span><br></pre></td></tr></tbody></table></figure>
+        <ol>
+<li>Two Sum II - Input array is sorted</li>
+</ol>
+<p>Given an array of integers that is already <strong>sorted in ascending order</strong>, find two numbers such that they add up to a specific target number.</p>
+<p>The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2.</p>
+<p><strong>Note:</strong></p>
 <ul>
-<li><code>distinct</code>是为了将并列的第二数值聚合为同一个数字。</li>
-<li><code>distinct</code>也使这个解法的运行时间变慢。</li>
+<li>Your returned answers (both index1 and index2) are not zero-based.</li>
+<li>You may assume that each input would have <em>exactly</em> one solution and you may not use the <em>same</em> element twice.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: numbers = [2,7,11,15], target = 9</span><br><span class="line">Output: [1,2]</span><br><span class="line">Explanation: The sum of 2 and 7 is 9. Therefore index1 = 1, index2 = 2.</span><br></pre></td></tr></tbody></table></figure>
+<a id="more"></a>
+<h1 id="解法-双指针-Two-Pointer"><a href="#解法-双指针-Two-Pointer" class="headerlink" title="解法 - 双指针 Two Pointer"></a>解法 - 双指针 Two Pointer</h1><p>关键点：</p>
+<ul>
+<li>已经排列</li>
+<li><p>保证一定有解</p>
+</li>
+<li><p>初始化左指针 <code>l</code> 指向数组起始，初始化右指针 <code>r</code>使用binary search找到对应的位置。</p>
+</li>
+<li>处理<code>l</code>和<code>r</code>之前的元素:<ul>
+<li>和等于 target ，则返回 <code>l + 1</code> 和 <code>r + 1</code>。（注意以 1 为起始下标）</li>
+<li>和大于<code>target</code>, <code>r</code>左移, 使得和变小    </li>
+<li>和小于<code>target</code>, <code>l</code>右移, 使得和变大   </li>
+</ul>
+</li>
+</ul>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cassert&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> {</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; <span class="title">twoSum</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; numbers, <span class="keyword">int</span> target)</span> </span>{</span><br><span class="line">        <span class="comment">// assert(std::is_sorted(numbers.begin(), numbers.end()) &amp;&amp; "The pre-condition is the vector is sorted!");</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">int</span> max_complement = target - numbers.front();</span><br><span class="line">        <span class="keyword">auto</span> r = <span class="built_in">std</span>::upper_bound(numbers.<span class="built_in">begin</span>(), numbers.<span class="built_in">end</span>(), max_complement);</span><br><span class="line">        r--;</span><br><span class="line">        <span class="comment">// assert(r != numbers.end() &amp;&amp; "We assume there exists at least one two-sum pair!");</span></span><br><span class="line">        <span class="keyword">auto</span> l = numbers.<span class="built_in">begin</span>();</span><br><span class="line">        <span class="keyword">while</span> (l &lt; r) {</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">int</span> result = *l + *r;</span><br><span class="line">            <span class="keyword">if</span> (result == target) {</span><br><span class="line">                <span class="keyword">return</span> {<span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(<span class="built_in">std</span>::distance(numbers.<span class="built_in">begin</span>(), l)) + <span class="number">1</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(<span class="built_in">std</span>::distance(numbers.<span class="built_in">begin</span>(), r)) + <span class="number">1</span>};</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">if</span> (result &gt; target) {</span><br><span class="line">                r--;</span><br><span class="line">            } <span class="keyword">else</span> {</span><br><span class="line">                l++;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> {};</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<p>重点:</p>
+<ul>
+<li><code>auto r = std::upper_bound(numbers.begin(), numbers.end(), max_complement);</code> 基本是一个binary search的实现。查到我们需要处理的最大的值，即最右边并且有必要查看的值。想象这个vector非常大，后面的部分的数值都大于<code>target</code>。</li>
+<li><code>std::upper_bound</code>组合<code>r--;</code>是因为有如下的test: <code>[0, 0, 3, 4]\n0</code>需要输出<code>[0, 1]</code>。 我原来使用的只是<code>std::lower_bound</code>，卡在如上test。这俩函数实际非常类似，时间复杂度也是一样的。</li>
+<li>我个人觉可以使用这个binary search。我在下面链接的其他答案没有使用这个点，从头一个元素和最后一个元素开始检查。</li>
+</ul>
+<p>其他小的地方:</p>
+<ul>
+<li><code>assert</code>好像会影响Leetcode上面runtime, memory usage的性能。</li>
+</ul>
+<p>复杂度:</p>
+<ul>
+<li>时间复杂度：$O(N)$</li>
+<li>空间复杂度：$O(1)$</li>
 </ul>
 <p><br></p>
-<h1 id="解法２"><a href="#解法２" class="headerlink" title="解法２"></a>解法２</h1><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">max</span>(e2.salary) <span class="keyword">as</span> SecondHighestSalary </span><br><span class="line"><span class="keyword">from</span> employee e1 <span class="keyword">left</span> <span class="keyword">outer</span> <span class="keyword">join</span> employee e2 </span><br><span class="line"><span class="keyword">on</span> e1.salary &gt; e2.salary;</span><br></pre></td></tr></tbody></table></figure>
-<p>如果我们的数据量非常大，这个解法的运行时间也会很慢。</p>
-<p><br></p>
-<h1 id="解法３"><a href="#解法３" class="headerlink" title="解法３"></a>解法３</h1><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    (<span class="keyword">SELECT</span> <span class="keyword">DISTINCT</span></span><br><span class="line">            Salary</span><br><span class="line">        <span class="keyword">FROM</span></span><br><span class="line">            Employee</span><br><span class="line">        <span class="keyword">ORDER</span> <span class="keyword">BY</span> Salary <span class="keyword">DESC</span></span><br><span class="line">        <span class="keyword">LIMIT</span> <span class="number">1</span> <span class="keyword">OFFSET</span> <span class="number">1</span>) <span class="keyword">AS</span> SecondHighestSalary</span><br><span class="line">;</span><br></pre></td></tr></tbody></table></figure>
-<p>这个解法的运行时间较好，但是<code>limit</code>没有被ANSI SQL Standard收录。(甚至在我们学校本科生数据库考试中不算分)　<br><!-- TODO: LIMIT ANSI --></p>
-<p><br></p>
 <p>引用和推荐的阅读：</p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvMTUyODYwNC9ob3ctdW5pdmVyc2FsLWlzLXRoZS1saW1pdC1zdGF0ZW1lbnQtaW4tc3Fs" title="https://stackoverflow.com/questions/1528604/how-universal-is-the-limit-statement-in-sql">https://stackoverflow.com/questions/1528604/how-universal-is-the-limit-statement-in-sql<i class="fa fa-external-link"></i></span></p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9kYmEuc3RhY2tleGNoYW5nZS5jb20vcXVlc3Rpb25zLzIxNDM2Ny93aGF0LWlzLXRoZS1zcWwtc3RhbmRhcmQtbWV0aG9kLW9mLWRvaW5nLWxpbWl0LW9mZnNldA==" title="https://dba.stackexchange.com/questions/214367/what-is-the-sql-standard-method-of-doing-limit-offset">https://dba.stackexchange.com/questions/214367/what-is-the-sql-standard-method-of-doing-limit-offset<i class="fa fa-external-link"></i></span></p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9xdWVzdGlvbnMvNTk1MTIzL2lzLXRoZXJlLWFuLWFuc2ktc3FsLWFsdGVybmF0aXZlLXRvLXRoZS1teXNxbC1saW1pdC1rZXl3b3Jk" title="https://stackoverflow.com/questions/595123/is-there-an-ansi-sql-alternative-to-the-mysql-limit-keyword">https://stackoverflow.com/questions/595123/is-there-an-ansi-sql-alternative-to-the-mysql-limit-keyword<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2FsZ29yaXRobS9sb3dlcl9ib3VuZA==" title="https://en.cppreference.com/w/cpp/algorithm/lower_bound">https://en.cppreference.com/w/cpp/algorithm/lower_bound<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2FsZ29yaXRobS91cHBlcl9ib3VuZA==" title="https://en.cppreference.com/w/cpp/algorithm/upper_bound">https://en.cppreference.com/w/cpp/algorithm/upper_bound<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvdHdvLXN1bS1paS1pbnB1dC1hcnJheS1pcy1zb3J0ZWQ=" title="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted">https://leetcode.com/problems/two-sum-ii-input-array-is-sorted<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvdHdvLXN1bS1paS1pbnB1dC1hcnJheS1pcy1zb3J0ZWQvZGlzY3Vzcy81MTI1My9BLXNpbXBsZS1PKG4pLXNvbHV0aW9u" title="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/discuss/51253/A-simple-O(n)-solution">https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/discuss/51253/A-simple-O(n)-solution<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FwYWNoZWNuL0ludGVydmlldy9ibG9iL21hc3Rlci9kb2NzL0FsZ29yaXRobS9MZWV0Y29kZS9DJTJCJTJCLzAwMDEuX1R3b19TdW0ubWQ=" title="https://github.com/apachecn/Interview/blob/master/docs/Algorithm/Leetcode/C%2B%2B/0001._Two_Sum.md">https://github.com/apachecn/Interview/blob/master/docs/Algorithm/Leetcode/C%2B%2B/0001._Two_Sum.md<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hhb2VsL2xlZXRjb2RlL2Jsb2IvbWFzdGVyL2FsZ29yaXRobXMvY3BwL3R3b1N1bS90d29TdW0uSUkuY3Bw" title="https://github.com/haoel/leetcode/blob/master/algorithms/cpp/twoSum/twoSum.II.cpp">https://github.com/haoel/leetcode/blob/master/algorithms/cpp/twoSum/twoSum.II.cpp<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24vYmxvYi9tYXN0ZXIvMDE2Ny1Ud28tU3VtLUlJLUlucHV0LWFycmF5LWlzLXNvcnRlZC9BcnRpY2xlLzAxNjctVHdvLVN1bS1JSS1JbnB1dC1hcnJheS1pcy1zb3J0ZWQubWQ=" title="https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0167-Two-Sum-II-Input-array-is-sorted/Article/0167-Two-Sum-II-Input-array-is-sorted.md">https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0167-Two-Sum-II-Input-array-is-sorted/Article/0167-Two-Sum-II-Input-array-is-sorted.md<i class="fa fa-external-link"></i></span></p>
+<ul>
+<li>不使用binary search:<br><img data-src="https://github.com/MisterBooo/LeetCodeAnimation/raw/master/0167-Two-Sum-II-Input-array-is-sorted/Animation/Animation.gif" alt="Demo 引用自 https://github.com/MisterBooo/LeetCodeAnimation "></li>
+</ul>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -354,7 +379,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://cakebytheoceanluo.github.io/2020/03/09/SQL-Leetcode-176-second-highest-salary/" title="[Leetcode-SQL] 176.second.highest.salary">https://cakebytheoceanluo.github.io/2020/03/09/SQL-Leetcode-176-second-highest-salary/</a>
+    <a href="https://cakebytheoceanluo.github.io/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/" title="[Leetcode-Algorithm] 167.two-sum-sorted">https://cakebytheoceanluo.github.io/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
@@ -385,8 +410,8 @@
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/tags/SQL/" rel="tag"><i class="fa fa-tag"></i> SQL</a>
               <a href="/tags/Leetcode/" rel="tag"><i class="fa fa-tag"></i> Leetcode</a>
+              <a href="/tags/C/" rel="tag"><i class="fa fa-tag"></i> C++</a>
           </div>
 
         
@@ -400,13 +425,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/09/SQL-Leetcode-175-combine-two-tables/" rel="prev" title="[Leetcode-SQL] 175.combine.two.tables">
-      <i class="fa fa-chevron-left"></i> [Leetcode-SQL] 175.combine.two.tables
+    <a href="/2020/10/06/Leetcode-Algorithm-1-two-sum/" rel="prev" title="[Leetcode-Algorithm] 1.two-sum">
+      <i class="fa fa-chevron-left"></i> [Leetcode-Algorithm] 1.two-sum
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/03/09/SQL-Leetcode-177-nth-highest-salary/" rel="next" title="[Leetcode-SQL] 177.nth.highest.salary">
-      [Leetcode-SQL] 177.nth.highest.salary <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -473,7 +495,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#题目"><span class="nav-number">1.</span> <span class="nav-text">题目</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解法１"><span class="nav-number">2.</span> <span class="nav-text">解法１</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解法２"><span class="nav-number">3.</span> <span class="nav-text">解法２</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解法３"><span class="nav-number">4.</span> <span class="nav-text">解法３</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解法-双指针-Two-Pointer"><span class="nav-number">1.</span> <span class="nav-text">解法 - 双指针 Two Pointer</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -767,6 +789,59 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
   <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
@@ -775,7 +850,7 @@
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/03/09/SQL-Leetcode-176-second-highest-salary/',]
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/',]
       });
       });
   </script>
