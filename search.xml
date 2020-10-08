@@ -1,11 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[CMU-15445]Homeowk2_19Fall</title>
+    <url>/2020/10/08/CMU-15445-Homeowk2-19Fall/</url>
+    <content><![CDATA[<p>2019 Fall: HOMEWORK #2 - Indexes</p>
+<p>Homework: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvZmlsZXMvaHcyLWNsZWFuLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/files/hw2-clean.pdf">https://15445.courses.cs.cmu.edu/fall2019/files/hw2-clean.pdf<i class="fa fa-external-link"></i></span><br>Solution: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvZmlsZXMvaHcyLXNvbHMucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/files/hw2-sols.pdf">https://15445.courses.cs.cmu.edu/fall2019/files/hw2-sols.pdf<i class="fa fa-external-link"></i></span></p>
+<a id="more"></a>
+<h1 id="Question-1-Cuckoo-Hashing"><a href="#Question-1-Cuckoo-Hashing" class="headerlink" title="Question 1: Cuckoo Hashing"></a>Question 1: Cuckoo Hashing</h1><h2 id="a-Insert-12-10"><a href="#a-Insert-12-10" class="headerlink" title="a) Insert 12, 10"></a>a) Insert 12, 10</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/1_1.png" alt=""></p>
+<h2 id="b-Delete-14-Insert-8"><a href="#b-Delete-14-Insert-8" class="headerlink" title="b) Delete 14, Insert 8"></a>b) Delete 14, Insert 8</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/1_2.png" alt=""></p>
+<h2 id="c-Insert-28"><a href="#c-Insert-28" class="headerlink" title="c) Insert 28"></a>c) Insert 28</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/1_3.png" alt=""></p>
+<h2 id="d"><a href="#d" class="headerlink" title="d)"></a>d)</h2><script type="math/tex; mode=display">
+6 = 0b\;0110, h_1(6)=01, h_2(6)=10</script><hr>
+<h1 id="Question-2-B-Tree"><a href="#Question-2-B-Tree" class="headerlink" title="Question 2: B+Tree"></a>Question 2: B+Tree</h1><h2 id="a-Insert-10"><a href="#a-Insert-10" class="headerlink" title="a) Insert 10"></a>a) Insert 10</h2><p>这次insertion会让我们的树增加一个level</p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/2_1.png" alt=""></p>
+<h2 id="b"><a href="#b" class="headerlink" title="b)"></a>b)</h2><p>下图中 我注出了四个指针:</p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/2_2.png" alt=""></p>
+<h2 id="c-Delete-23"><a href="#c-Delete-23" class="headerlink" title="c) Delete 23"></a>c) Delete 23</h2><p>这次deletion会让我们的树减少一个level</p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/2_3.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/2_4.png" alt=""></p>
+<h2 id="d-Insert-4-Delete-11"><a href="#d-Insert-4-Delete-11" class="headerlink" title="d) Insert 4, Delete 11"></a>d) Insert 4, Delete 11</h2><p>实际上我们有两种答案</p>
+<ul>
+<li>第一种如下图: 从左兄弟节点中获取7, 更新父节点也为7</li>
+<li>第二种: 从右兄弟节点中获取13, 更新父节点为17</li>
+</ul>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/2_5.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/2_6.png" alt=""></p>
+<hr>
+<h1 id="Question-3-Extendible-Hashing"><a href="#Question-3-Extendible-Hashing" class="headerlink" title="Question 3: Extendible Hashing"></a>Question 3: Extendible Hashing</h1><ul>
+<li>$t$: global depth</li>
+<li>$t’$: local depth</li>
+</ul>
+<h2 id="a-Insert-15-3-7-14"><a href="#a-Insert-15-3-7-14" class="headerlink" title="a) Insert 15, 3, 7, 14"></a>a) Insert 15, 3, 7, 14</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>binary</th>
+<th>inverse binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>15</td>
+<td>0b 1111</td>
+<td>1111</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0b 0011</td>
+<td>1100</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0b 0111</td>
+<td>1110</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0b 1110</td>
+<td>0111</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_1.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_2.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_3.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_4.png" alt=""></p>
+<h2 id="b-Insert-1-9-23-11-17"><a href="#b-Insert-1-9-23-11-17" class="headerlink" title="b) Insert 1, 9, 23, 11, 17"></a>b) Insert 1, 9, 23, 11, 17</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>binary</th>
+<th>inverse binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>0b 0001</td>
+<td>1000</td>
+</tr>
+<tr>
+<td>9</td>
+<td>0b 1001</td>
+<td>1001</td>
+</tr>
+<tr>
+<td>23</td>
+<td>0b10111</td>
+<td>11101</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0b 1011</td>
+<td>1101</td>
+</tr>
+<tr>
+<td>17</td>
+<td>0b 10001</td>
+<td>10001</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_5.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_6.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_7.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_8.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_9.png" alt=""></p>
+<h2 id="c-Delete-2-7-13-15-29"><a href="#c-Delete-2-7-13-15-29" class="headerlink" title="c) Delete 2, 7, 13, 15, 29"></a>c) Delete 2, 7, 13, 15, 29</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_10.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_11.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_12.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_13.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_14.png" alt=""></p>
+<h1 id="Question-4-Suffix-Trees"><a href="#Question-4-Suffix-Trees" class="headerlink" title="Question 4: Suffix Trees"></a>Question 4: Suffix Trees</h1><p>这题非常简单, 不做额外解释</p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/4_1.png" alt=""></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>CMU-15445</category>
+        <category>Data Structure</category>
+        <category>Access Methods</category>
+        <category>Hash Table</category>
+        <category>Indexing</category>
+        <category>Trie / Radix Tree</category>
+      </categories>
+      <tags>
+        <tag>Dynamic Hashing Scheme</tag>
+        <tag>Extendible Hashing</tag>
+        <tag>Indexing</tag>
+        <tag>Cuckoo Hashing</tag>
+        <tag>B Tree</tag>
+        <tag>Trie / Radix Tree</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[Leetcode-Algorithm] 167.two-sum-sorted</title>
     <url>/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/</url>
-    <content><![CDATA[<ol>
-<li>Two Sum II - Input array is sorted</li>
-</ol>
+    <content><![CDATA[<p>167.Two Sum II - Input array is sorted</p>
 <p>Given an array of integers that is already <strong>sorted in ascending order</strong>, find two numbers such that they add up to a specific target number.</p>
 <p>The function twoSum should return indices of the two numbers such that they add up to the target, where index1 must be less than index2.</p>
 <p><strong>Note:</strong></p>
