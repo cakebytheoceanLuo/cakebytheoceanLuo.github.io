@@ -1,6 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[CMU-15445]Lec10 Sorting &amp; Aggregations - 排序与聚合</title>
+    <url>/2020/10/10/CMU-15445-Lec10/</url>
+    <content><![CDATA[<p>Sorting &amp; Aggregations - 排序与聚合</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzEwLXNvcnRpbmcucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/slides/10-sorting.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/10-sorting.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMTAtc29ydGluZy5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/notes/10-sorting.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/10-sorting.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 12.4-12.5</p>
+<p>我们开始学习Operator Execution执行引擎部分。这次我们关注排序和聚合是如何在数据库中完成的。同时也思考，如果内存容量不够，如何进行排序和聚合。</p>
+<a id="more"></a>
+<p><img data-src="/images/CMU1544564/Lec10/1.jpg" alt="1.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/3.jpg" alt="3.jpg"></p>
+<ul>
+<li>Logical Query Plan:<br><img data-src="/images/CMU1544564/Lec10/4.jpg" alt="4.jpg"></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/5.jpg" alt="5.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/6.jpg" alt="6.jpg"></p>
+<p><br><br><br></p>
+<h1 id="Sort"><a href="#Sort" class="headerlink" title="Sort"></a>Sort</h1><blockquote>
+<p>We need sorting because in the relation model, <strong>tuples in a table have no specific order Sorting</strong> is (potentially) used in <em>ORDER BY</em>, <em>GROUP BY</em>, <em>JOIN</em>, and <em>DISTINCT</em> operators. </p>
+<p>We can accelerate sorting using a <strong>clustered B+tree</strong> by scanning the leaf nodes from left to right. This is a bad idea, however, if we use an unclustered B+tree to sort because it causes a lot of I/O reads (random access through pointer chasing). </p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/7.jpg" alt="7.jpg"></p>
+<ul>
+<li>Bulkloading: <a href="https://cakebytheoceanluo.github.io/2020/03/19/CMU-15445-Lec07/#Bulk-Insert">aka. Bulk Insert</a></li>
+</ul>
+<p><br><br><br><br><br></p>
+<p><img data-src="/images/CMU1544564/Lec10/8.jpg" alt="8.jpg"></p>
+<blockquote>
+<ul>
+<li>If the data that we need to sort fits in memory, then the DBMS can use a standard sorting algorithms (e.g., quicksort). </li>
+<li>If the data does not fit, then the DBMS needs to use external sorting that is able to spill to disk as needed and prefers sequential over random I/O.</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>quick-sort只适用在纯内存环境下</strong>. 因为如果在磁盘环境下，每次选取pivot, 不管我们是随机选还是选中位数(median)都非常可能会引起random I/O甚至page fault。这会导致性能非常低效。</li>
+</ul>
+<p><br></p>
+<h2 id="External-Merge-Sort"><a href="#External-Merge-Sort" class="headerlink" title="External Merge Sort"></a>External Merge Sort</h2><blockquote>
+<p>Divide-and-conquer sorting algorithm that splits the data set into separate <em>runs</em> and then sorts them individually. It can spill runs to disk as needed then read them back in one at a time.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/9.jpg" alt="9.jpg"></p>
+<ul>
+<li>Phase #1 – Sorting: Sort <strong>small chunks of data (them called as a run)</strong> that fit in main memory, and then write back to disk.</li>
+<li>Phase #2 – Merge: Combine sorted sub-files into a larger single file.</li>
+</ul>
+<p><br></p>
+<h2 id="2-Way-External-Merge-Sort"><a href="#2-Way-External-Merge-Sort" class="headerlink" title="2-Way External Merge Sort"></a>2-Way External Merge Sort</h2><p><img data-src="/images/CMU1544564/Lec10/10.jpg" alt="10.jpg"></p>
+<ul>
+<li><em>N</em>, <em>B</em>都是已知的。</li>
+</ul>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><h4 id="Pass-0-Sort-Runs-in-place-sort"><a href="#Pass-0-Sort-Runs-in-place-sort" class="headerlink" title="Pass #0: Sort Runs (in-place sort)"></a>Pass #0: Sort Runs (in-place sort)</h4><blockquote>
+<p>Each sorted set of pages is called <strong>a run</strong>.</p>
+</blockquote>
+<p>下面几张图代表Pass #0: </p>
+<ul>
+<li>每次从硬盘上读入<em>B</em>个page进入我们固定大小的内存缓存区。在内存中对它们排序，再将这些数量的page写回硬盘。(<em>例子中写回在硬盘的另外一个位置，但是实际上可以写回同一个位置，去覆盖未排序的数据。</em>) 这样的一次 <strong>读入-排序-写回</strong> 循环，被我们称为run。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/11.jpg" alt="11.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/12.jpg" alt="12.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/13.jpg" alt="13.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/14.jpg" alt="14.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/15.jpg" alt="15.jpg"></p>
+<p><br></p>
+<h4 id="Pass-1-2-3…-Merge-Runs-non-in-place-sort"><a href="#Pass-1-2-3…-Merge-Runs-non-in-place-sort" class="headerlink" title="Pass #1,2,3…: Merge Runs (non in-place sort)"></a>Pass #1,2,3…: Merge Runs (non in-place sort)</h4><p>然后开始merge， 我们需要<strong>至少3个page</strong>在内存中: </p>
+<ul>
+<li>从硬盘上读入进入2个page，然后剩一个page是缓存最终排序结果并准备写入硬盘。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/16.jpg" alt="16.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/17.jpg" alt="17.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/18.jpg" alt="18.jpg"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img data-src="/images/CMU1544564/Lec10/19.jpg" alt="19.jpg"></p>
+<ul>
+<li>上图中Number of passes中的<code>1</code>: <em>Pass #0</em></li>
+<li>上图中Total I/O cost中的<code>2</code>: 每次循环都需要从硬盘中<em>读出和写入</em>进硬盘。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/20.jpg" alt="20.jpg"></p>
+<ul>
+<li>上图中，即使有更多的缓存区，也不能帮助2-Way External Merge Sort， 最后造成的I/O次数依然是一样的。</li>
+</ul>
+<p><br><br><br></p>
+<h2 id="Double-Buffering-Optimization"><a href="#Double-Buffering-Optimization" class="headerlink" title="Double Buffering Optimization"></a>Double Buffering Optimization</h2><blockquote>
+<p><strong>Prefetch the next run in the background</strong> and store it in a second buffer while the system is processing the current run. <strong>This reduces the wait time for I/O requests</strong> at each step by continuously utilizing the disk.</p>
+</blockquote>
+<p>Double Buffering Optimization主要让I/O一直在操作，一个线程在排序的时候，<strong>另外一个线程</strong>依然在做 async I/O - prefetching。这样让硬盘一直在进行I/O操作, 隐藏 <strong>hide the I/O latency</strong>.</p>
+<p>下图中的例子中:</p>
+<ul>
+<li>Memory中上面的是当前sort的run (Page#1)</li>
+<li>Memory中下面那个是prefetching的用于下一次的run (Page#2)</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/21.jpg" alt="21.jpg"></p>
+<p><br><br><br></p>
+<h2 id="General-K-way-Merge-Sort"><a href="#General-K-way-Merge-Sort" class="headerlink" title="General (K-way) Merge Sort"></a>General (K-way) Merge Sort</h2><p><img data-src="/images/CMU1544564/Lec10/24.jpg" alt="24.jpg"></p>
+<ul>
+<li>上图中Number of passes中的<code>1+...</code>: <em>Pass #0</em></li>
+<li>上图中的<code>B-1</code>: Merge时B-1个input page, 1个output page</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/25.jpg" alt="25.jpg"></p>
+<ul>
+<li>Pass #0: Sort (inplace sort)</li>
+<li>Pass #1,2,3: Merge (non in-place sort)</li>
+</ul>
+<p><strong>有一点优化的点: 我们可以在在内存里面缓存每次run的(min, max)这个对，这样有助于排序skewed的数据。</strong></p>
+<p><br></p>
+<p>External Sort的更多资料 (以后会额外写博客):</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvc3MxOS9tb2Rlcm5kYnMvY2hhcHRlcjEucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/ss19/moderndbs/chapter1.pdf?lang=de">Database Implementation For Modern Hardware, Lec01<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvc3MxOS9tb2Rlcm5kYnMvZXh0ZXJuYWwtc29ydC5wZGY/bGFuZz1kZQ==" title="https://db.in.tum.de/teaching/ss19/moderndbs/external-sort.pdf?lang=de">Database Implementation For Modern Hardware, Exercise01<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br><br><br><br><br></p>
+<h2 id="Using-B-Tree-For-Sorting-Clustered-B-Tree"><a href="#Using-B-Tree-For-Sorting-Clustered-B-Tree" class="headerlink" title="　Using B+ Tree For Sorting - Clustered B+ Tree"></a>　Using B+ Tree For Sorting - Clustered B+ Tree</h2><p>如果SQL要求一个字段key，而这个字段正好是B+ Tree索引的key。那么这个顺序我们可以直接从索引中获得。</p>
+<p><img data-src="/images/CMU1544564/Lec10/26.jpg" alt="26.jpg"></p>
+<h3 id="Case1-Clustered-B-Tree"><a href="#Case1-Clustered-B-Tree" class="headerlink" title="Case1: Clustered B+ Tree"></a>Case1: Clustered B+ Tree</h3><p><strong>Physical location of tuple on page matches sort order in the index.</strong></p>
+<p><img data-src="/images/CMU1544564/Lec10/27.jpg" alt="27.jpg"></p>
+<h3 id="Case2-Un-clustered-B-Tree"><a href="#Case2-Un-clustered-B-Tree" class="headerlink" title="Case2: Un-clustered B+ Tree"></a>Case2: Un-clustered B+ Tree</h3><p>这个情况非常不好，下一个tuple很可能被存储在另外一个无关联的page, 寻找它变成了一次random I/O。如果每一次寻找一个tuple,　都会是一次random I/O的话，性能会非常垃圾。</p>
+<p><img data-src="/images/CMU1544564/Lec10/28.jpg" alt="28.jpg"></p>
+<p><br><br><br><br><br><br><br></p>
+<h1 id="Aggregations"><a href="#Aggregations" class="headerlink" title="Aggregations"></a>Aggregations</h1><blockquote>
+<p>An aggregation operator in a query plan collapses the values of one or more tuples into a single scalar value.</p>
+</blockquote>
+<p>Aggregations对应SQL中的关键字:</p>
+<ul>
+<li><code>MIN, MAX, COUNT ...</code></li>
+<li><code>GROUP BY</code></li>
+<li><code>DISTINCT</code></li>
+<li>…</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/29.jpg" alt="29.jpg"></p>
+<h2 id="Sorting-Aggregate"><a href="#Sorting-Aggregate" class="headerlink" title="Sorting Aggregate"></a>Sorting Aggregate</h2><blockquote>
+<p>The DBMS first sorts the tuples on the <em>GROUP BY</em> key(s). It can use either an in-memory sorting algorithm if everything fits in the buffer pool (e.g., quicksort) or the external merge sort algorithm if the size of the data exceeds memory.<br>The DBMS then performs a sequential scan over the sorted data to compute the aggregation. The output of the operator will be sorted on the keys.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/30.jpg" alt="30.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/31.jpg" alt="31.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/32.jpg" alt="32.jpg"></p>
+<p><br></p>
+<p><img data-src="/images/CMU1544564/Lec10/33.jpg" alt="33.jpg"></p>
+<ul>
+<li>Sorting is expensive: $O(n\log{n})$</li>
+</ul>
+<p><br></p>
+<h2 id="Hashing-Aggregate"><a href="#Hashing-Aggregate" class="headerlink" title="Hashing Aggregate"></a>Hashing Aggregate</h2><blockquote>
+<p>Hashing can be <strong>computationally cheaper</strong> than sorting for computing aggregations. The DBMS populates an ephemeral hash table as it scans the table. For each record, check whether there is already an entry in the hash table and perform the appropriate modification.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/34.jpg" alt="34.jpg"></p>
+<h3 id="External-Hashing-Aggregate"><a href="#External-Hashing-Aggregate" class="headerlink" title="External Hashing Aggregate"></a>External Hashing Aggregate</h3><p><img data-src="/images/CMU1544564/Lec10/35.jpg" alt="35.jpg"></p>
+<ul>
+<li>整体上hashing会是更好的办法，它可以<strong>最小化sequential I/O的次数</strong>。获得一个page, 使用完所有上面的tuple, 然后再也不会用到它。接下来去使用下一个page。</li>
+<li>(实际上这里的操作很像Hash Join with Hash Partitions)</li>
+</ul>
+<h4 id="Phase-1-–-Partition"><a href="#Phase-1-–-Partition" class="headerlink" title="Phase #1 – Partition"></a>Phase #1 – Partition</h4><blockquote>
+<p>Use a hash function h1 to split tuples into partitions on disk based on target hash key. This will put all tuples that match into the same partition. The DBMS spills partitions to disk via output buffers.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/36.jpg" alt="36.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/37.jpg" alt="37.jpg"></p>
+<p>Partition结束之后，各个B-1个buffer里面的tuple都有相同的hash value。通过Partition我们获得这种<strong>locality</strong>，我们获得了不同的buffer, 而<strong>每一个buffer page里面的值有非常大的可能是相同，或者相似，或者有相似特征的</strong>。</p>
+<h4 id="Phase-2-–-ReHash"><a href="#Phase-2-–-ReHash" class="headerlink" title="Phase #2 – ReHash"></a>Phase #2 – ReHash</h4><p>前后两个hash function: h1, h2不需要相同。</p>
+<p><img data-src="/images/CMU1544564/Lec10/38.jpg" alt="38.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/39.jpg" alt="39.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/40.jpg" alt="40.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/41.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/42.jpg" alt="42.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/43.jpg" alt="43.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/44.jpg" alt="44.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/45.jpg" alt="45.jpg"></p>
+<p>结束之后(以及在ReHash的过程中)，中间的hash table是暂时的，如果用完了它，就可以直接销毁/释放。</p>
+<p><br></p>
+<h4 id="Hashing-Summarization"><a href="#Hashing-Summarization" class="headerlink" title="Hashing Summarization"></a>Hashing Summarization</h4><p><img data-src="/images/CMU1544564/Lec10/46.jpg" alt="46.jpg"></p>
+<p>Hashing Summarization可以帮助我们计算最后的Aggregate Function: 比如<code>sum, count, avg, min, max</code>。下面例子中的<code>value</code>是<code>(running count, running sum)</code>:</p>
+<p><img data-src="/images/CMU1544564/Lec10/47.jpg" alt="47.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/48.jpg" alt="48.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/49.jpg" alt="49.jpg"></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p><img data-src="/images/CMU1544564/Lec10/50.jpg" alt="50.jpg"></p>
+<p><br><br><br><br><br></p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p><img data-src="/images/CMU1544564/Lec10/51.jpg" alt="51.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/57.jpg" alt="57.jpg"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>CMU-15445</category>
+        <category>Operator Execution</category>
+        <category>Sorting</category>
+        <category>Aggregation</category>
+      </categories>
+      <tags>
+        <tag>B Tree</tag>
+        <tag>Clustered Index</tag>
+        <tag>External Sort</tag>
+        <tag>Sorting Aggregate</tag>
+        <tag>Hashing Aggregate</tag>
+        <tag>External Hashing Aggregate</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[CMU-15445]Homeowk2_19Fall</title>
     <url>/2020/10/08/CMU-15445-Homeowk2-19Fall/</url>
     <content><![CDATA[<p>2019 Fall: HOMEWORK #2 - Indexes</p>
@@ -109,8 +315,8 @@
 <p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_6.png" alt=""></p>
 <p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_7.png" alt=""></p>
 <p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_8.png" alt=""></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_9.png" alt=""></p>
-<h2 id="c-Delete-2-7-13-15-29"><a href="#c-Delete-2-7-13-15-29" class="headerlink" title="c) Delete 2, 7, 13, 15, 29"></a>c) Delete 2, 7, 13, 15, 29</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_10.png" alt=""></p>
+<h2 id="c-Delete-2-7-13-15-29"><a href="#c-Delete-2-7-13-15-29" class="headerlink" title="c) Delete 2, 7, 13, 15, 29"></a>c) Delete 2, 7, 13, 15, 29</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_9.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_10.png" alt=""></p>
 <p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_11.png" alt=""></p>
 <p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_12.png" alt=""></p>
 <p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall19/3_13.png" alt=""></p>

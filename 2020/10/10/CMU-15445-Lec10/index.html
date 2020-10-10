@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Sorting &amp; Aggregations - 排序与聚合 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;10-sorting.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;10-sorting.pdfReadings:  Chapter 12.4-12.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec10 Sorting &amp; Aggregations - 排序与聚合">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/10/10/CMU-15445-Lec10/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Sorting &amp; Aggregations - 排序与聚合 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;10-sorting.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;10-sorting.pdfReadings:  Chapter 12.4-12.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/1.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/3.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/4.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/5.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/6.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/7.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/8.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/9.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/10.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/11.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/12.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/13.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/14.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/15.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/16.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/17.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/18.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/19.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/20.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/21.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/24.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/25.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/26.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/27.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/28.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/29.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/30.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/31.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/32.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/33.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/34.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/35.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/36.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/37.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/38.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/39.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/40.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/41.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/42.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/43.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/44.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/45.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/46.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/47.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/48.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/49.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/50.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/51.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/57.jpg">
+<meta property="article:published_time" content="2020-10-10T10:41:24.000Z">
+<meta property="article:modified_time" content="2020-10-10T10:45:50.502Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="B Tree">
+<meta property="article:tag" content="Clustered Index">
+<meta property="article:tag" content="External Sort">
+<meta property="article:tag" content="Sorting Aggregate">
+<meta property="article:tag" content="Hashing Aggregate">
+<meta property="article:tag" content="External Hashing Aggregate">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec10/1.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/10/10/CMU-15445-Lec10/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec10 Sorting & Aggregations - 排序与聚合 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">69</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">31</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">93</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/10/10/CMU-15445-Lec10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec10 Sorting & Aggregations - 排序与聚合
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-10 12:41:24 / 修改时间：12:45:50" itemprop="dateCreated datePublished" datetime="2020-10-10T12:41:24+02:00">2020-10-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Operator-Execution/" itemprop="url" rel="index"><span itemprop="name">Operator Execution</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Sorting/" itemprop="url" rel="index"><span itemprop="name">Sorting</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Aggregation/" itemprop="url" rel="index"><span itemprop="name">Aggregation</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/10/10/CMU-15445-Lec10/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec10 Sorting & Aggregations - 排序与聚合" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Sorting &amp; Aggregations - 排序与聚合</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzEwLXNvcnRpbmcucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/slides/10-sorting.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/10-sorting.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMTAtc29ydGluZy5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/notes/10-sorting.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/10-sorting.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 12.4-12.5</p>
+<p>我们开始学习Operator Execution执行引擎部分。这次我们关注排序和聚合是如何在数据库中完成的。同时也思考，如果内存容量不够，如何进行排序和聚合。</p>
+<a id="more"></a>
+<p><img data-src="/images/CMU1544564/Lec10/1.jpg" alt="1.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/3.jpg" alt="3.jpg"></p>
+<ul>
+<li>Logical Query Plan:<br><img data-src="/images/CMU1544564/Lec10/4.jpg" alt="4.jpg"></li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/5.jpg" alt="5.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/6.jpg" alt="6.jpg"></p>
+<p><br><br><br></p>
+<h1 id="Sort"><a href="#Sort" class="headerlink" title="Sort"></a>Sort</h1><blockquote>
+<p>We need sorting because in the relation model, <strong>tuples in a table have no specific order Sorting</strong> is (potentially) used in <em>ORDER BY</em>, <em>GROUP BY</em>, <em>JOIN</em>, and <em>DISTINCT</em> operators. </p>
+<p>We can accelerate sorting using a <strong>clustered B+tree</strong> by scanning the leaf nodes from left to right. This is a bad idea, however, if we use an unclustered B+tree to sort because it causes a lot of I/O reads (random access through pointer chasing). </p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/7.jpg" alt="7.jpg"></p>
+<ul>
+<li>Bulkloading: <a href="https://cakebytheoceanluo.github.io/2020/03/19/CMU-15445-Lec07/#Bulk-Insert">aka. Bulk Insert</a></li>
+</ul>
+<p><br><br><br><br><br></p>
+<p><img data-src="/images/CMU1544564/Lec10/8.jpg" alt="8.jpg"></p>
+<blockquote>
+<ul>
+<li>If the data that we need to sort fits in memory, then the DBMS can use a standard sorting algorithms (e.g., quicksort). </li>
+<li>If the data does not fit, then the DBMS needs to use external sorting that is able to spill to disk as needed and prefers sequential over random I/O.</li>
+</ul>
+</blockquote>
+<ul>
+<li><strong>quick-sort只适用在纯内存环境下</strong>. 因为如果在磁盘环境下，每次选取pivot, 不管我们是随机选还是选中位数(median)都非常可能会引起random I/O甚至page fault。这会导致性能非常低效。</li>
+</ul>
+<p><br></p>
+<h2 id="External-Merge-Sort"><a href="#External-Merge-Sort" class="headerlink" title="External Merge Sort"></a>External Merge Sort</h2><blockquote>
+<p>Divide-and-conquer sorting algorithm that splits the data set into separate <em>runs</em> and then sorts them individually. It can spill runs to disk as needed then read them back in one at a time.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/9.jpg" alt="9.jpg"></p>
+<ul>
+<li>Phase #1 – Sorting: Sort <strong>small chunks of data (them called as a run)</strong> that fit in main memory, and then write back to disk.</li>
+<li>Phase #2 – Merge: Combine sorted sub-files into a larger single file.</li>
+</ul>
+<p><br></p>
+<h2 id="2-Way-External-Merge-Sort"><a href="#2-Way-External-Merge-Sort" class="headerlink" title="2-Way External Merge Sort"></a>2-Way External Merge Sort</h2><p><img data-src="/images/CMU1544564/Lec10/10.jpg" alt="10.jpg"></p>
+<ul>
+<li><em>N</em>, <em>B</em>都是已知的。</li>
+</ul>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><h4 id="Pass-0-Sort-Runs-in-place-sort"><a href="#Pass-0-Sort-Runs-in-place-sort" class="headerlink" title="Pass #0: Sort Runs (in-place sort)"></a>Pass #0: Sort Runs (in-place sort)</h4><blockquote>
+<p>Each sorted set of pages is called <strong>a run</strong>.</p>
+</blockquote>
+<p>下面几张图代表Pass #0: </p>
+<ul>
+<li>每次从硬盘上读入<em>B</em>个page进入我们固定大小的内存缓存区。在内存中对它们排序，再将这些数量的page写回硬盘。(<em>例子中写回在硬盘的另外一个位置，但是实际上可以写回同一个位置，去覆盖未排序的数据。</em>) 这样的一次 <strong>读入-排序-写回</strong> 循环，被我们称为run。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/11.jpg" alt="11.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/12.jpg" alt="12.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/13.jpg" alt="13.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/14.jpg" alt="14.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/15.jpg" alt="15.jpg"></p>
+<p><br></p>
+<h4 id="Pass-1-2-3…-Merge-Runs-non-in-place-sort"><a href="#Pass-1-2-3…-Merge-Runs-non-in-place-sort" class="headerlink" title="Pass #1,2,3…: Merge Runs (non in-place sort)"></a>Pass #1,2,3…: Merge Runs (non in-place sort)</h4><p>然后开始merge， 我们需要<strong>至少3个page</strong>在内存中: </p>
+<ul>
+<li>从硬盘上读入进入2个page，然后剩一个page是缓存最终排序结果并准备写入硬盘。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/16.jpg" alt="16.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/17.jpg" alt="17.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/18.jpg" alt="18.jpg"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img data-src="/images/CMU1544564/Lec10/19.jpg" alt="19.jpg"></p>
+<ul>
+<li>上图中Number of passes中的<code>1</code>: <em>Pass #0</em></li>
+<li>上图中Total I/O cost中的<code>2</code>: 每次循环都需要从硬盘中<em>读出和写入</em>进硬盘。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/20.jpg" alt="20.jpg"></p>
+<ul>
+<li>上图中，即使有更多的缓存区，也不能帮助2-Way External Merge Sort， 最后造成的I/O次数依然是一样的。</li>
+</ul>
+<p><br><br><br></p>
+<h2 id="Double-Buffering-Optimization"><a href="#Double-Buffering-Optimization" class="headerlink" title="Double Buffering Optimization"></a>Double Buffering Optimization</h2><blockquote>
+<p><strong>Prefetch the next run in the background</strong> and store it in a second buffer while the system is processing the current run. <strong>This reduces the wait time for I/O requests</strong> at each step by continuously utilizing the disk.</p>
+</blockquote>
+<p>Double Buffering Optimization主要让I/O一直在操作，一个线程在排序的时候，<strong>另外一个线程</strong>依然在做 async I/O - prefetching。这样让硬盘一直在进行I/O操作, 隐藏 <strong>hide the I/O latency</strong>.</p>
+<p>下图中的例子中:</p>
+<ul>
+<li>Memory中上面的是当前sort的run (Page#1)</li>
+<li>Memory中下面那个是prefetching的用于下一次的run (Page#2)</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/21.jpg" alt="21.jpg"></p>
+<p><br><br><br></p>
+<h2 id="General-K-way-Merge-Sort"><a href="#General-K-way-Merge-Sort" class="headerlink" title="General (K-way) Merge Sort"></a>General (K-way) Merge Sort</h2><p><img data-src="/images/CMU1544564/Lec10/24.jpg" alt="24.jpg"></p>
+<ul>
+<li>上图中Number of passes中的<code>1+...</code>: <em>Pass #0</em></li>
+<li>上图中的<code>B-1</code>: Merge时B-1个input page, 1个output page</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/25.jpg" alt="25.jpg"></p>
+<ul>
+<li>Pass #0: Sort (inplace sort)</li>
+<li>Pass #1,2,3: Merge (non in-place sort)</li>
+</ul>
+<p><strong>有一点优化的点: 我们可以在在内存里面缓存每次run的(min, max)这个对，这样有助于排序skewed的数据。</strong></p>
+<p><br></p>
+<p>External Sort的更多资料 (以后会额外写博客):</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvc3MxOS9tb2Rlcm5kYnMvY2hhcHRlcjEucGRmP2xhbmc9ZGU=" title="https://db.in.tum.de/teaching/ss19/moderndbs/chapter1.pdf?lang=de">Database Implementation For Modern Hardware, Lec01<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvc3MxOS9tb2Rlcm5kYnMvZXh0ZXJuYWwtc29ydC5wZGY/bGFuZz1kZQ==" title="https://db.in.tum.de/teaching/ss19/moderndbs/external-sort.pdf?lang=de">Database Implementation For Modern Hardware, Exercise01<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br><br><br><br><br></p>
+<h2 id="Using-B-Tree-For-Sorting-Clustered-B-Tree"><a href="#Using-B-Tree-For-Sorting-Clustered-B-Tree" class="headerlink" title="　Using B+ Tree For Sorting - Clustered B+ Tree"></a>　Using B+ Tree For Sorting - Clustered B+ Tree</h2><p>如果SQL要求一个字段key，而这个字段正好是B+ Tree索引的key。那么这个顺序我们可以直接从索引中获得。</p>
+<p><img data-src="/images/CMU1544564/Lec10/26.jpg" alt="26.jpg"></p>
+<h3 id="Case1-Clustered-B-Tree"><a href="#Case1-Clustered-B-Tree" class="headerlink" title="Case1: Clustered B+ Tree"></a>Case1: Clustered B+ Tree</h3><p><strong>Physical location of tuple on page matches sort order in the index.</strong></p>
+<p><img data-src="/images/CMU1544564/Lec10/27.jpg" alt="27.jpg"></p>
+<h3 id="Case2-Un-clustered-B-Tree"><a href="#Case2-Un-clustered-B-Tree" class="headerlink" title="Case2: Un-clustered B+ Tree"></a>Case2: Un-clustered B+ Tree</h3><p>这个情况非常不好，下一个tuple很可能被存储在另外一个无关联的page, 寻找它变成了一次random I/O。如果每一次寻找一个tuple,　都会是一次random I/O的话，性能会非常垃圾。</p>
+<p><img data-src="/images/CMU1544564/Lec10/28.jpg" alt="28.jpg"></p>
+<p><br><br><br><br><br><br><br></p>
+<h1 id="Aggregations"><a href="#Aggregations" class="headerlink" title="Aggregations"></a>Aggregations</h1><blockquote>
+<p>An aggregation operator in a query plan collapses the values of one or more tuples into a single scalar value.</p>
+</blockquote>
+<p>Aggregations对应SQL中的关键字:</p>
+<ul>
+<li><code>MIN, MAX, COUNT ...</code></li>
+<li><code>GROUP BY</code></li>
+<li><code>DISTINCT</code></li>
+<li>…</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec10/29.jpg" alt="29.jpg"></p>
+<h2 id="Sorting-Aggregate"><a href="#Sorting-Aggregate" class="headerlink" title="Sorting Aggregate"></a>Sorting Aggregate</h2><blockquote>
+<p>The DBMS first sorts the tuples on the <em>GROUP BY</em> key(s). It can use either an in-memory sorting algorithm if everything fits in the buffer pool (e.g., quicksort) or the external merge sort algorithm if the size of the data exceeds memory.<br>The DBMS then performs a sequential scan over the sorted data to compute the aggregation. The output of the operator will be sorted on the keys.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/30.jpg" alt="30.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/31.jpg" alt="31.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/32.jpg" alt="32.jpg"></p>
+<p><br></p>
+<p><img data-src="/images/CMU1544564/Lec10/33.jpg" alt="33.jpg"></p>
+<ul>
+<li>Sorting is expensive: $O(n\log{n})$</li>
+</ul>
+<p><br></p>
+<h2 id="Hashing-Aggregate"><a href="#Hashing-Aggregate" class="headerlink" title="Hashing Aggregate"></a>Hashing Aggregate</h2><blockquote>
+<p>Hashing can be <strong>computationally cheaper</strong> than sorting for computing aggregations. The DBMS populates an ephemeral hash table as it scans the table. For each record, check whether there is already an entry in the hash table and perform the appropriate modification.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/34.jpg" alt="34.jpg"></p>
+<h3 id="External-Hashing-Aggregate"><a href="#External-Hashing-Aggregate" class="headerlink" title="External Hashing Aggregate"></a>External Hashing Aggregate</h3><p><img data-src="/images/CMU1544564/Lec10/35.jpg" alt="35.jpg"></p>
+<ul>
+<li>整体上hashing会是更好的办法，它可以<strong>最小化sequential I/O的次数</strong>。获得一个page, 使用完所有上面的tuple, 然后再也不会用到它。接下来去使用下一个page。</li>
+<li>(实际上这里的操作很像Hash Join with Hash Partitions)</li>
+</ul>
+<h4 id="Phase-1-–-Partition"><a href="#Phase-1-–-Partition" class="headerlink" title="Phase #1 – Partition"></a>Phase #1 – Partition</h4><blockquote>
+<p>Use a hash function h1 to split tuples into partitions on disk based on target hash key. This will put all tuples that match into the same partition. The DBMS spills partitions to disk via output buffers.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec10/36.jpg" alt="36.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/37.jpg" alt="37.jpg"></p>
+<p>Partition结束之后，各个B-1个buffer里面的tuple都有相同的hash value。通过Partition我们获得这种<strong>locality</strong>，我们获得了不同的buffer, 而<strong>每一个buffer page里面的值有非常大的可能是相同，或者相似，或者有相似特征的</strong>。</p>
+<h4 id="Phase-2-–-ReHash"><a href="#Phase-2-–-ReHash" class="headerlink" title="Phase #2 – ReHash"></a>Phase #2 – ReHash</h4><p>前后两个hash function: h1, h2不需要相同。</p>
+<p><img data-src="/images/CMU1544564/Lec10/38.jpg" alt="38.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/39.jpg" alt="39.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/40.jpg" alt="40.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/41.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/42.jpg" alt="42.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/43.jpg" alt="43.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/44.jpg" alt="44.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/45.jpg" alt="45.jpg"></p>
+<p>结束之后(以及在ReHash的过程中)，中间的hash table是暂时的，如果用完了它，就可以直接销毁/释放。</p>
+<p><br></p>
+<h4 id="Hashing-Summarization"><a href="#Hashing-Summarization" class="headerlink" title="Hashing Summarization"></a>Hashing Summarization</h4><p><img data-src="/images/CMU1544564/Lec10/46.jpg" alt="46.jpg"></p>
+<p>Hashing Summarization可以帮助我们计算最后的Aggregate Function: 比如<code>sum, count, avg, min, max</code>。下面例子中的<code>value</code>是<code>(running count, running sum)</code>:</p>
+<p><img data-src="/images/CMU1544564/Lec10/47.jpg" alt="47.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/48.jpg" alt="48.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/49.jpg" alt="49.jpg"></p>
+<h3 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h3><p><img data-src="/images/CMU1544564/Lec10/50.jpg" alt="50.jpg"></p>
+<p><br><br><br><br><br></p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p><img data-src="/images/CMU1544564/Lec10/51.jpg" alt="51.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec10/57.jpg" alt="57.jpg"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/10/10/CMU-15445-Lec10/" title="[CMU-15445]Lec10 Sorting &amp; Aggregations - 排序与聚合">https://cakebytheoceanluo.github.io/2020/10/10/CMU-15445-Lec10/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/B-Tree/" rel="tag"><i class="fa fa-tag"></i> B Tree</a>
+              <a href="/tags/Clustered-Index/" rel="tag"><i class="fa fa-tag"></i> Clustered Index</a>
+              <a href="/tags/External-Sort/" rel="tag"><i class="fa fa-tag"></i> External Sort</a>
+              <a href="/tags/Sorting-Aggregate/" rel="tag"><i class="fa fa-tag"></i> Sorting Aggregate</a>
+              <a href="/tags/Hashing-Aggregate/" rel="tag"><i class="fa fa-tag"></i> Hashing Aggregate</a>
+              <a href="/tags/External-Hashing-Aggregate/" rel="tag"><i class="fa fa-tag"></i> External Hashing Aggregate</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/08/CMU-15445-Homeowk2-19Fall/" rel="prev" title="[CMU-15445]Homeowk2_19Fall">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Homeowk2_19Fall
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Sort"><span class="nav-number">1.</span> <span class="nav-text">Sort</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#External-Merge-Sort"><span class="nav-number">1.1.</span> <span class="nav-text">External Merge Sort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Way-External-Merge-Sort"><span class="nav-number">1.2.</span> <span class="nav-text">2-Way External Merge Sort</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example"><span class="nav-number">1.2.1.</span> <span class="nav-text">Example</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Pass-0-Sort-Runs-in-place-sort"><span class="nav-number">1.2.1.1.</span> <span class="nav-text">Pass #0: Sort Runs (in-place sort)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Pass-1-2-3…-Merge-Runs-non-in-place-sort"><span class="nav-number">1.2.1.2.</span> <span class="nav-text">Pass #1,2,3…: Merge Runs (non in-place sort)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">1.2.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Double-Buffering-Optimization"><span class="nav-number">1.3.</span> <span class="nav-text">Double Buffering Optimization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#General-K-way-Merge-Sort"><span class="nav-number">1.4.</span> <span class="nav-text">General (K-way) Merge Sort</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-B-Tree-For-Sorting-Clustered-B-Tree"><span class="nav-number">1.5.</span> <span class="nav-text">　Using B+ Tree For Sorting - Clustered B+ Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Case1-Clustered-B-Tree"><span class="nav-number">1.5.1.</span> <span class="nav-text">Case1: Clustered B+ Tree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Case2-Un-clustered-B-Tree"><span class="nav-number">1.5.2.</span> <span class="nav-text">Case2: Un-clustered B+ Tree</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Aggregations"><span class="nav-number">2.</span> <span class="nav-text">Aggregations</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sorting-Aggregate"><span class="nav-number">2.1.</span> <span class="nav-text">Sorting Aggregate</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hashing-Aggregate"><span class="nav-number">2.2.</span> <span class="nav-text">Hashing Aggregate</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#External-Hashing-Aggregate"><span class="nav-number">2.2.1.</span> <span class="nav-text">External Hashing Aggregate</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase-1-–-Partition"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Phase #1 – Partition</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase-2-–-ReHash"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Phase #2 – ReHash</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hashing-Summarization"><span class="nav-number">2.2.1.3.</span> <span class="nav-text">Hashing Summarization</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Conclusion"><span class="nav-number">2.3.</span> <span class="nav-text">Conclusion</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">93</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">69</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">454k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">6:53</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/10/10/CMU-15445-Lec10/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
