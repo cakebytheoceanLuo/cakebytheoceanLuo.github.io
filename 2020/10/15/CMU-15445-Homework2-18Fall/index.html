@@ -22,46 +22,59 @@
     var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 Database System Concepts 精读 [11.6-11.7] Hashing">
+  <meta name="description" content="2018 Fall: HOMEWORK #2 - Indexes Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;files&#x2F;hw2-clean.pdfSolution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;files&#x2F;hw2-sols.pdf">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Extendable Hashing 练习">
-<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/index.html">
+<meta property="og:title" content="[CMU-15445]Homework2_18Fall">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/10/15/CMU-15445-Homework2-18Fall/index.html">
 <meta property="og:site_name" content="关于数据库的一切">
-<meta property="og:description" content="这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 Database System Concepts 精读 [11.6-11.7] Hashing">
+<meta property="og:description" content="2018 Fall: HOMEWORK #2 - Indexes Homework: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;files&#x2F;hw2-clean.pdfSolution: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2018&#x2F;files&#x2F;hw2-sols.pdf">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_2.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_3.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_4.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_5.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_6.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_7.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_8.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_2.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_3.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_4.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_5.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_6.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_7.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_8.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_9.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_10.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_3_1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/DSC/11.S1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/DSC/11.S2.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/DSC/11.S3.png">
-<meta property="article:published_time" content="2020-04-12T18:52:43.000Z">
-<meta property="article:modified_time" content="2020-10-01T14:32:22.354Z">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_01.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_02.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_03.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_04.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_05.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_06.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_07.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_08.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_09.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_10.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_11.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_12.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_13.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_14.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_02.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_03.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_04.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_05.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_3.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_4.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_5.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_6.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_01.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_02.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_03.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_04.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_05.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_06.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_07.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/4_01.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/4_02.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/4_03.png">
+<meta property="article:published_time" content="2020-10-15T13:46:49.000Z">
+<meta property="article:modified_time" content="2020-10-15T13:51:48.285Z">
 <meta property="article:author" content="罗济高">
 <meta property="article:tag" content="Dynamic Hashing Scheme">
 <meta property="article:tag" content="Extendible Hashing">
 <meta property="article:tag" content="Indexing">
-<meta property="article:tag" content="Books">
+<meta property="article:tag" content="Linear Hashing">
+<meta property="article:tag" content="B Tree">
+<meta property="article:tag" content="Trie &#x2F; Radix Tree">
+<meta property="article:tag" content="Skip List">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_1.png">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_01.png">
 
-<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/">
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/10/15/CMU-15445-Homework2-18Fall/">
 
 
 <script id="page-configurations">
@@ -73,7 +86,7 @@
   };
 </script>
 
-  <title>Extendable Hashing 练习 | 关于数据库的一切</title>
+  <title>[CMU-15445]Homework2_18Fall | 关于数据库的一切</title>
   
 
 
@@ -242,7 +255,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/10/15/CMU-15445-Homework2-18Fall/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.jpeg">
@@ -255,7 +268,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          Extendable Hashing 练习
+          [CMU-15445]Homework2_18Fall
         </h2>
 
         <div class="post-meta">
@@ -264,21 +277,19 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-04-12 20:52:43" itemprop="dateCreated datePublished" datetime="2020-04-12T20:52:43+02:00">2020-04-12</time>
+              <time title="创建时间：2020-10-15 15:46:49 / 修改时间：15:51:48" itemprop="dateCreated datePublished" datetime="2020-10-15T15:46:49+02:00">2020-10-15</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-01 16:32:22" itemprop="dateModified" datetime="2020-10-01T16:32:22+02:00">2020-10-01</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
                 </span>
@@ -294,10 +305,18 @@
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
                 </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Trie-Radix-Tree/" itemprop="url" rel="index"><span itemprop="name">Trie / Radix Tree</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Skip-List/" itemprop="url" rel="index"><span itemprop="name">Skip List</span></a>
+                </span>
             </span>
 
           
-            <span id="/2020/04/12/Extendable-Hashing-Exercise/" class="post-meta-item leancloud_visitors" data-flag-title="Extendable Hashing 练习" title="阅读次数">
+            <span id="/2020/10/15/CMU-15445-Homework2-18Fall/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Homework2_18Fall" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -309,14 +328,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.5k</span>
+              <span>689</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -328,112 +347,152 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
+        <p>2018 Fall: HOMEWORK #2 - Indexes</p>
+<p>Homework: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgvZmlsZXMvaHcyLWNsZWFuLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2018/files/hw2-clean.pdf">https://15445.courses.cs.cmu.edu/fall2018/files/hw2-clean.pdf<i class="fa fa-external-link"></i></span><br>Solution: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTgvZmlsZXMvaHcyLXNvbHMucGRm" title="https://15445.courses.cs.cmu.edu/fall2018/files/hw2-sols.pdf">https://15445.courses.cs.cmu.edu/fall2018/files/hw2-sols.pdf<i class="fa fa-external-link"></i></span></p>
 <a id="more"></a>
-<h1 id="TUM数据库课程练习课"><a href="#TUM数据库课程练习课" class="headerlink" title="TUM数据库课程练习课"></a>TUM数据库课程练习课</h1><p>在TUM的例子中global depth从1开始</p>
-<h2 id="例题一-1"><a href="#例题一-1" class="headerlink" title="例题一 1"></a>例题一 <sup><a href="#fn1">1</a></sup></h2><p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_1.png" alt="hash value"></p>
-<ul>
-<li>KundenNr 顾客号码</li>
-<li>Binär 二进制表达</li>
-<li>Umgekehrt Binär 倒置的二进制表达，<strong>这个是我们的hash key</strong></li>
-</ul>
-<p><br></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_2.png" alt="Init: global depth = 1."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_3.png" alt="Insert 010100 Müller, 100110 Meier."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_4.png" alt="Insert 011110 Schmidt."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_5.png" alt="Global depth = 2."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_6.png" alt="Local depth = 2."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_7.png" alt="Global depth = 3."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_8.png" alt="Insert 010010 Krause, 000101 Schulz, 101101 Kaufman."></p>
-<h2 id="例题二-2"><a href="#例题二-2" class="headerlink" title="例题二 2"></a>例题二 <sup><a href="#fn2">2</a></sup></h2><p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_1.png" alt="hash value"></p>
-<ul>
-<li>MatrNr 学号</li>
-<li>Binär 二进制表达</li>
-<li>Umgekehrt Binär 倒置的二进制表达，<strong>这个是我们的hash key</strong></li>
-</ul>
-<p><br></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_2.png" alt="Init: global depth = 1."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_3.png" alt="Insert 2 Müller, 8 Schmidt."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_4.png" alt="Insert 19 Fischer."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_5.png" alt="Global depth = 2."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_6.png" alt="Local depth = 2. Insert 16 Huber."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_7.png" alt="Global depth = 3."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_8.png" alt="Local depth = 3. Insert 20 Bauer."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_9.png" alt="Insert 34 Schneider."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_10.png" alt="Local depth = 3. Insert 30 Wagner."></p>
-<h2 id="例题三-3"><a href="#例题三-3" class="headerlink" title="例题三 3"></a>例题三 <sup><a href="#fn3">3</a></sup></h2><p>用在extendable hash table存储十亿人(10,000,000,000)的信息:</p>
-<ul>
-<li>税号: 10B，对每一个人都唯一，作为hash key</li>
-<li>其他信息: 名字，国家，城市，邮编，地址, 一共 100B</li>
-</ul>
-<p><br></p>
-<ul>
-<li>hash table的key是税号, value是PID(page id, 8B), 即对应一个bucket。Bucket所在的page页的大小是4KiB。我们假设每一个bucket对应的page的75%的容量被使用。</li>
-<li>hash bucket中保存每一个对应的TID (8B), 这个TID对应一个页上的位置，存储着这个人的其他信息。</li>
-<li>问: 存储这个hash table需要多少存储容量?</li>
-</ul>
-<p>答案:</p>
-<ul>
-<li>bucket/page的每一个条目是税号和这个人对应的TID。一个bucket中有: $n = \frac{4\mathrm{KiB}}{10 \mathrm{B} + 8 \mathrm{B}} = 170$个条目。</li>
-<li>需要的bucket/page数量: $p = \frac{10^{10}}{n} = 58 * 10^{6}$</li>
-<li>引用这些page至少需要的bit数量: $\lceil\log_2 p \rceil = 26$</li>
-<li>至少需要的bucket/page数量: $2^{26}$</li>
-<li>每一个bucket/page的PID引用都存储在hash table中: $8B * 2^{26} = 512 \mathrm{MiB}$ 即存储这个hash table需要的存储容量</li>
-</ul>
-<p><br></p>
-<ul>
-<li>注意: 100B其他信息存储在其他page中，我们不需要关心这些page。只需要关心这些page的PID， 大小是8B。</li>
-</ul>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_3_1.png" alt="图解."></p>
-<ul>
-<li>上图中只有bucket pointer存储在hash table中。左侧的index in Bits并不需要存储。</li>
-<li>上图中绿色和蓝色也不存储在hash table中。绿色只是形象化bucket pointer。蓝色是存储着18B(税号和TID)的bucket，即bucket pointer所指向的地方。</li>
-</ul>
-<!-- # CMU
-
-TODO:
-
-# P1T1
-
-TODO:link -->
-<h1 id="Database-System-Concepts-Practice-Exercise-4"><a href="#Database-System-Concepts-Practice-Exercise-4" class="headerlink" title="Database System Concepts - Practice Exercise 4"></a>Database System Concepts - Practice Exercise <sup><a href="#fn4">4</a></sup></h1><h2 id="11-6"><a href="#11-6" class="headerlink" title="11.6"></a>11.6</h2><p>Suppose that we are using extendable hashing on a file that contains records with the following search-key values: <code>2, 3, 5, 7, 11, 17, 19, 23, 29, 31</code></p>
-<p>Show the extendable hash structure for this file if the hash function is <code>h(x) = x mod 8</code> and buckets can hold three records</p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S1.png" alt="11.6."></p>
-<p>右侧同一个bucket中的hash value相同, 即余数相同。</p>
-<p><br></p>
-<h2 id="11-7"><a href="#11-7" class="headerlink" title="11.7"></a>11.7</h2><p>Show how the extendable hash structure of Practice Exercise 11.6 changes as the result of each of the following steps:</p>
-<ul>
-<li>a. Delete 11.</li>
-<li>b. Delete 31.</li>
-<li>c. Insert 1.</li>
-<li>d. Insert 15.</li>
-</ul>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S2.png" alt="11.6."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S3.png" alt="11.6."></p>
-<h2 id="11-9"><a href="#11-9" class="headerlink" title="11.9"></a>11.9</h2><p>Give pseudocode for deletion of entries from an extendable hash structure, including details of when and how to coalesce buckets. Do not bother about reducing the size of the bucket address table.</p>
-<p>见另一篇文章, <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
-<h2 id="11-10"><a href="#11-10" class="headerlink" title="11.10"></a>11.10</h2><p>Suggest an efficient way to test if the <em>bucket address table</em> in extendable hashing can be reduced in size, by storing an extra count with the <em>bucket address table</em>. Give details of how the count should be maintained when buckets are split, coalesced, or deleted. </p>
-<p>(Note: Reducing the size of the <em>bucket address table</em> is an <strong>expensive</strong> operation, and subsequent inserts may cause the table to grow again. Therefore, it is best not to reduce the size as soon as it is possible to do so, but instead do it only if the number of index entries becomes small compared to the bucket-address-table size.)</p>
-<p><br></p>
-<p>Answer: </p>
-<p>If the hash table is currently using $i$ bits of the hash value, then maintain a count of buckets for which the length of common hash prefix is exactly $i$.</p>
-<p>Consider a bucket $j$ with length of common hash prefix $i_j$. If the bucket is being split, and $i_j$ is equal to $i$, then reset the count to 1. If the bucket is being split and $i_j$ is one less that $i$, then increase the count by 1. It the bucket if being coalesced, and $i_j$ is equal to $i$ then decrease the count by 1. If the count becomes 0, then the bucket address table can be reduced in size at that point.</p>
-<p>However, note that if the bucket address table is not reduced at that point, then the count has no significance afterwards. If we want to postpone the reduction, we have to keep an array of counts, i.e. a count for each value of common hash prefix. The array has to be updated in a similar fashion. The bucket address table can be reduced if the $i^{th}$ entry of the array is 0, where $i$ is the number of bits the table is using. Since bucket table reduction is an expensive operation, it is not always advisable to reduce the table. It should be reduced only when sufficient number of entries at the end of count array become 0.</p>
-<!-- # 实现
-
-TODO: link -->
+<h1 id="Question-1-Extendible-Hashing"><a href="#Question-1-Extendible-Hashing" class="headerlink" title="Question 1: Extendible Hashing"></a>Question 1: Extendible Hashing</h1><h2 id="a"><a href="#a" class="headerlink" title="a)"></a>a)</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>0b 1000</td>
+</tr>
+<tr>
+<td>16</td>
+<td>0b10000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0b 0100</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0b 0011</td>
+</tr>
+<tr>
+<td>11</td>
+<td>0b 1011</td>
+</tr>
+<tr>
+<td>12</td>
+<td>0b 1100</td>
+</tr>
+<tr>
+<td>18</td>
+<td>0b10010</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Insert-8"><a href="#Insert-8" class="headerlink" title="Insert 8"></a>Insert 8</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_01.png" alt=""></p>
+<h3 id="Insert-16"><a href="#Insert-16" class="headerlink" title="Insert 16"></a>Insert 16</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_02.png" alt=""></p>
+<h3 id="Insert-4"><a href="#Insert-4" class="headerlink" title="Insert 4"></a>Insert 4</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_03.png" alt=""></p>
+<h3 id="Insert-3"><a href="#Insert-3" class="headerlink" title="Insert 3"></a>Insert 3</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_04.png" alt=""></p>
+<h3 id="Insert-11"><a href="#Insert-11" class="headerlink" title="Insert 11"></a>Insert 11</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_05.png" alt=""></p>
+<h3 id="Insert-12"><a href="#Insert-12" class="headerlink" title="Insert 12"></a>Insert 12</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_06.png" alt=""></p>
+<h3 id="Insert-18"><a href="#Insert-18" class="headerlink" title="Insert 18"></a>Insert 18</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_07.png" alt=""></p>
+<h2 id="b"><a href="#b" class="headerlink" title="b)"></a>b)</h2><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>binary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20</td>
+<td>0b10100</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0b 0010</td>
+</tr>
+<tr>
+<td>26</td>
+<td>0b11010</td>
+</tr>
+<tr>
+<td>18</td>
+<td>0b10010</td>
+</tr>
+<tr>
+<td>3</td>
+<td>0b 0011</td>
+</tr>
+<tr>
+<td>15</td>
+<td>0b 1111</td>
+</tr>
+<tr>
+<td>7</td>
+<td>0b 0111</td>
+</tr>
+<tr>
+<td>14</td>
+<td>0b 1110</td>
+</tr>
+<tr>
+<td>-</td>
+<td>-</td>
+</tr>
+<tr>
+<td>28</td>
+<td>0b11100</td>
+</tr>
+<tr>
+<td>30</td>
+<td>0b11110</td>
+</tr>
+<tr>
+<td>4</td>
+<td>0b 0100</td>
+</tr>
+<tr>
+<td>8</td>
+<td>0b 1000</td>
+</tr>
+<tr>
+<td>34</td>
+<td>0b100010</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Insert-28"><a href="#Insert-28" class="headerlink" title="Insert 28"></a>Insert 28</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_08.png" alt=""></p>
+<h3 id="Insert-30"><a href="#Insert-30" class="headerlink" title="Insert 30"></a>Insert 30</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_09.png" alt=""></p>
+<h3 id="Insert-4-1"><a href="#Insert-4-1" class="headerlink" title="Insert 4"></a>Insert 4</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_10.png" alt=""></p>
+<h3 id="Insert-8-1"><a href="#Insert-8-1" class="headerlink" title="Insert 8"></a>Insert 8</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_11.png" alt=""></p>
+<h3 id="Insert-34"><a href="#Insert-34" class="headerlink" title="Insert 34"></a>Insert 34</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_12.png" alt=""></p>
+<h2 id="c"><a href="#c" class="headerlink" title="c)"></a>c)</h2><h3 id="Delete-14"><a href="#Delete-14" class="headerlink" title="Delete 14"></a>Delete 14</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_13.png" alt=""></p>
+<h3 id="Delete-20"><a href="#Delete-20" class="headerlink" title="Delete 20"></a>Delete 20</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/1_14.png" alt=""></p>
 <hr>
-<p>引用:</p>
-<ul>
-<li><p><a name="fn1">1</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzA5LnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung09.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung09.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
-</li>
-<li><p><a name="fn2">2</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzEyLnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung12.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung12.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
-</li>
-<li><p><a name="fn3">3</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzEwLnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung10.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung10.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
-</li>
-<li><p><a name="fn4">4</a>: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI2L3ByYWN0aWNlLWV4ZXItZGlyL2luZGV4Lmh0bWw=" title="https://www.db-book.com/db6/practice-exer-dir/index.html">https://www.db-book.com/db6/practice-exer-dir/index.html<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI2L3ByYWN0aWNlLWV4ZXItZGlyLzExcy5wZGY=" title="https://www.db-book.com/db6/practice-exer-dir/11s.pdf">https://www.db-book.com/db6/practice-exer-dir/11s.pdf<i class="fa fa-external-link"></i></span></p>
-</li>
-</ul>
+<h1 id="Question-2-Linear-Hashing"><a href="#Question-2-Linear-Hashing" class="headerlink" title="Question 2: Linear Hashing"></a>Question 2: Linear Hashing</h1><h2 id="a-1"><a href="#a-1" class="headerlink" title="a)"></a>a)</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_02.png" alt=""></p>
+<h2 id="b-1"><a href="#b-1" class="headerlink" title="b)"></a>b)</h2><h3 id="Insert-12-1"><a href="#Insert-12-1" class="headerlink" title="Insert 12"></a>Insert 12</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_03.png" alt=""></p>
+<h3 id="Insert-13"><a href="#Insert-13" class="headerlink" title="Insert 13"></a>Insert 13</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_04.png" alt=""></p>
+<h3 id="Insert-19"><a href="#Insert-19" class="headerlink" title="Insert 19"></a>Insert 19</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_05.png" alt=""></p>
+<h2 id="c-Delete-23"><a href="#c-Delete-23" class="headerlink" title="c) Delete 23"></a>c) Delete 23</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_3.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_4.png" alt=""></p>
+<h2 id="d-Insert-4-Delete-11"><a href="#d-Insert-4-Delete-11" class="headerlink" title="d) Insert 4, Delete 11"></a>d) Insert 4, Delete 11</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_5.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/2_6.png" alt=""></p>
+<hr>
+<h1 id="Question-3-B-Tree"><a href="#Question-3-B-Tree" class="headerlink" title="Question 3: B+ Tree"></a>Question 3: B+ Tree</h1><h2 id="a-2"><a href="#a-2" class="headerlink" title="a)"></a>a)</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_01.png" alt=""></p>
+<h2 id="b-2"><a href="#b-2" class="headerlink" title="b)"></a>b)</h2><h3 id="Insert-10"><a href="#Insert-10" class="headerlink" title="Insert 10"></a>Insert 10</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_02.png" alt=""></p>
+<h3 id="Insert-10-18"><a href="#Insert-10-18" class="headerlink" title="Insert (10), 18"></a>Insert (10), 18</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_03.png" alt=""></p>
+<h3 id="Delete-11"><a href="#Delete-11" class="headerlink" title="Delete 11"></a>Delete 11</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_04.png" alt=""></p>
+<h3 id="Delete-31"><a href="#Delete-31" class="headerlink" title="Delete 31"></a>Delete 31</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_05.png" alt=""></p>
+<h2 id="c-1"><a href="#c-1" class="headerlink" title="c)"></a>c)</h2><h3 id="Insert-28-1"><a href="#Insert-28-1" class="headerlink" title="Insert 28"></a>Insert 28</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_06.png" alt=""></p>
+<h3 id="Delete-3"><a href="#Delete-3" class="headerlink" title="Delete 3"></a>Delete 3</h3><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/3_07.png" alt=""></p>
+<h1 id="Question-4-Skip-Lists-and-Radix-Tree"><a href="#Question-4-Skip-Lists-and-Radix-Tree" class="headerlink" title="Question 4: Skip Lists and Radix Tree"></a>Question 4: Skip Lists and Radix Tree</h1><h2 id="a-3"><a href="#a-3" class="headerlink" title="a)"></a>a)</h2><p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/4_01.png" alt=""></p>
+<h2 id="b-3"><a href="#b-3" class="headerlink" title="b)"></a>b)</h2><p><strong>Not valid</strong></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/4_02.png" alt=""></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/HW2_Fall18/4_03.png" alt=""></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -467,7 +526,7 @@ TODO: link -->
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/" title="Extendable Hashing 练习">https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/</a>
+    <a href="https://cakebytheoceanluo.github.io/2020/10/15/CMU-15445-Homework2-18Fall/" title="[CMU-15445]Homework2_18Fall">https://cakebytheoceanluo.github.io/2020/10/15/CMU-15445-Homework2-18Fall/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
@@ -501,7 +560,10 @@ TODO: link -->
               <a href="/tags/Dynamic-Hashing-Scheme/" rel="tag"><i class="fa fa-tag"></i> Dynamic Hashing Scheme</a>
               <a href="/tags/Extendible-Hashing/" rel="tag"><i class="fa fa-tag"></i> Extendible Hashing</a>
               <a href="/tags/Indexing/" rel="tag"><i class="fa fa-tag"></i> Indexing</a>
-              <a href="/tags/Books/" rel="tag"><i class="fa fa-tag"></i> Books</a>
+              <a href="/tags/Linear-Hashing/" rel="tag"><i class="fa fa-tag"></i> Linear Hashing</a>
+              <a href="/tags/B-Tree/" rel="tag"><i class="fa fa-tag"></i> B Tree</a>
+              <a href="/tags/Trie-Radix-Tree/" rel="tag"><i class="fa fa-tag"></i> Trie / Radix Tree</a>
+              <a href="/tags/Skip-List/" rel="tag"><i class="fa fa-tag"></i> Skip List</a>
           </div>
 
         
@@ -515,13 +577,10 @@ TODO: link -->
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/11/DSC-11-6-11-7-Hashing/" rel="prev" title="Database System Concepts 精读 [11.6-11.7] Hashing">
-      <i class="fa fa-chevron-left"></i> Database System Concepts 精读 [11.6-11.7] Hashing
+    <a href="/2020/10/10/CMU-15445-Lec10/" rel="prev" title="[CMU-15445]Lec10 Sorting & Aggregations - 排序与聚合">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec10 Sorting & Aggregations - 排序与聚合
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/" rel="next" title="[DBMS]Hash Index与Tree Index">
-      [DBMS]Hash Index与Tree Index <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -588,7 +647,7 @@ TODO: link -->
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TUM数据库课程练习课"><span class="nav-number">1.</span> <span class="nav-text">TUM数据库课程练习课</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例题一-1"><span class="nav-number">1.1.</span> <span class="nav-text">例题一 1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例题二-2"><span class="nav-number">1.2.</span> <span class="nav-text">例题二 2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例题三-3"><span class="nav-number">1.3.</span> <span class="nav-text">例题三 3</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Database-System-Concepts-Practice-Exercise-4"><span class="nav-number">2.</span> <span class="nav-text">Database System Concepts - Practice Exercise 4</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#11-6"><span class="nav-number">2.1.</span> <span class="nav-text">11.6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-7"><span class="nav-number">2.2.</span> <span class="nav-text">11.7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-9"><span class="nav-number">2.3.</span> <span class="nav-text">11.9</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-10"><span class="nav-number">2.4.</span> <span class="nav-text">11.10</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Question-1-Extendible-Hashing"><span class="nav-number">1.</span> <span class="nav-text">Question 1: Extendible Hashing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#a"><span class="nav-number">1.1.</span> <span class="nav-text">a)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-8"><span class="nav-number">1.1.1.</span> <span class="nav-text">Insert 8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-16"><span class="nav-number">1.1.2.</span> <span class="nav-text">Insert 16</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-4"><span class="nav-number">1.1.3.</span> <span class="nav-text">Insert 4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-3"><span class="nav-number">1.1.4.</span> <span class="nav-text">Insert 3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-11"><span class="nav-number">1.1.5.</span> <span class="nav-text">Insert 11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-12"><span class="nav-number">1.1.6.</span> <span class="nav-text">Insert 12</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-18"><span class="nav-number">1.1.7.</span> <span class="nav-text">Insert 18</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b"><span class="nav-number">1.2.</span> <span class="nav-text">b)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-28"><span class="nav-number">1.2.1.</span> <span class="nav-text">Insert 28</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-30"><span class="nav-number">1.2.2.</span> <span class="nav-text">Insert 30</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-4-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">Insert 4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-8-1"><span class="nav-number">1.2.4.</span> <span class="nav-text">Insert 8</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-34"><span class="nav-number">1.2.5.</span> <span class="nav-text">Insert 34</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c"><span class="nav-number">1.3.</span> <span class="nav-text">c)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete-14"><span class="nav-number">1.3.1.</span> <span class="nav-text">Delete 14</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete-20"><span class="nav-number">1.3.2.</span> <span class="nav-text">Delete 20</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Question-2-Linear-Hashing"><span class="nav-number">2.</span> <span class="nav-text">Question 2: Linear Hashing</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#a-1"><span class="nav-number">2.1.</span> <span class="nav-text">a)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b-1"><span class="nav-number">2.2.</span> <span class="nav-text">b)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-12-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">Insert 12</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-13"><span class="nav-number">2.2.2.</span> <span class="nav-text">Insert 13</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-19"><span class="nav-number">2.2.3.</span> <span class="nav-text">Insert 19</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c-Delete-23"><span class="nav-number">2.3.</span> <span class="nav-text">c) Delete 23</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#d-Insert-4-Delete-11"><span class="nav-number">2.4.</span> <span class="nav-text">d) Insert 4, Delete 11</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Question-3-B-Tree"><span class="nav-number">3.</span> <span class="nav-text">Question 3: B+ Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#a-2"><span class="nav-number">3.1.</span> <span class="nav-text">a)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b-2"><span class="nav-number">3.2.</span> <span class="nav-text">b)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-10"><span class="nav-number">3.2.1.</span> <span class="nav-text">Insert 10</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-10-18"><span class="nav-number">3.2.2.</span> <span class="nav-text">Insert (10), 18</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete-11"><span class="nav-number">3.2.3.</span> <span class="nav-text">Delete 11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete-31"><span class="nav-number">3.2.4.</span> <span class="nav-text">Delete 31</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#c-1"><span class="nav-number">3.3.</span> <span class="nav-text">c)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Insert-28-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">Insert 28</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Delete-3"><span class="nav-number">3.3.2.</span> <span class="nav-text">Delete 3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Question-4-Skip-Lists-and-Radix-Tree"><span class="nav-number">4.</span> <span class="nav-text">Question 4: Skip Lists and Radix Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#a-3"><span class="nav-number">4.1.</span> <span class="nav-text">a)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#b-3"><span class="nav-number">4.2.</span> <span class="nav-text">b)</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -882,59 +941,6 @@ TODO: link -->
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
   <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
@@ -943,7 +949,7 @@ TODO: link -->
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/',]
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/10/15/CMU-15445-Homework2-18Fall/',]
       });
       });
   </script>
