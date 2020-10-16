@@ -33,30 +33,30 @@
     </summary>
     
     
-      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
-    
-      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
+    
+      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
     
       <category term="Hash Table" scheme="https://cakebytheoceanluo.github.io/categories/Hash-Table/"/>
     
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
+      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
     
-      <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/categories/Trie-Radix-Tree/"/>
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
       <category term="Skip List" scheme="https://cakebytheoceanluo.github.io/categories/Skip-List/"/>
     
+      <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/categories/Trie-Radix-Tree/"/>
+    
+    
+      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+    
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
     
       <category term="Dynamic Hashing Scheme" scheme="https://cakebytheoceanluo.github.io/tags/Dynamic-Hashing-Scheme/"/>
     
       <category term="Extendible Hashing" scheme="https://cakebytheoceanluo.github.io/tags/Extendible-Hashing/"/>
     
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
-    
       <category term="Linear Hashing" scheme="https://cakebytheoceanluo.github.io/tags/Linear-Hashing/"/>
-    
-      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
     
       <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/tags/Trie-Radix-Tree/"/>
     
@@ -122,30 +122,30 @@
     </summary>
     
     
-      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
-    
-      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
+      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
+    
       <category term="Hash Table" scheme="https://cakebytheoceanluo.github.io/categories/Hash-Table/"/>
+    
+      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
       <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/categories/Trie-Radix-Tree/"/>
     
     
+      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+    
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
+    
       <category term="Dynamic Hashing Scheme" scheme="https://cakebytheoceanluo.github.io/tags/Dynamic-Hashing-Scheme/"/>
     
       <category term="Extendible Hashing" scheme="https://cakebytheoceanluo.github.io/tags/Extendible-Hashing/"/>
     
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
+      <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/tags/Trie-Radix-Tree/"/>
     
       <category term="Cuckoo Hashing" scheme="https://cakebytheoceanluo.github.io/tags/Cuckoo-Hashing/"/>
-    
-      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
-    
-      <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/tags/Trie-Radix-Tree/"/>
     
   </entry>
   
@@ -240,15 +240,15 @@
     </summary>
     
     
+      <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
+    
       <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
     
-      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
-    
-      <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
+      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/categories/B-Tree/"/>
     
       <category term="Hash Table" scheme="https://cakebytheoceanluo.github.io/categories/Hash-Table/"/>
     
-      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/categories/B-Tree/"/>
+      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
@@ -259,9 +259,9 @@
       <category term="Multithreading" scheme="https://cakebytheoceanluo.github.io/categories/Multithreading/"/>
     
     
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
-    
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+    
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
     
       <category term="Lock" scheme="https://cakebytheoceanluo.github.io/tags/Lock/"/>
     
@@ -289,11 +289,11 @@
     </summary>
     
     
+      <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
+    
       <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
     
       <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
-    
-      <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
@@ -322,18 +322,18 @@
     </summary>
     
     
-      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/categories/B-Tree/"/>
     
+      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
+    
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
     
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
-    
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+    
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
     
   </entry>
   
@@ -357,22 +357,22 @@
     </summary>
     
     
-      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
-    
-      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
+      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
+    
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/categories/B-Tree/"/>
+    
+      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
       <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/categories/Trie-Radix-Tree/"/>
     
     
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
-    
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+    
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
     
       <category term="Trie / Radix Tree" scheme="https://cakebytheoceanluo.github.io/tags/Trie-Radix-Tree/"/>
     
@@ -519,9 +519,9 @@
     <link href="https://cakebytheoceanluo.github.io/2020/04/20/Leetcode-Algo-146-lru-cache/"/>
     <id>https://cakebytheoceanluo.github.io/2020/04/20/Leetcode-Algo-146-lru-cache/</id>
     <published>2020-04-20T19:08:50.000Z</published>
-    <updated>2020-10-16T08:15:53.191Z</updated>
+    <updated>2020-10-16T08:24:01.469Z</updated>
     
-    <content type="html"><![CDATA[<p>146.LRU Cache</p><p>Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: <code>get</code> and <code>put</code>.</p><p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.<br><code>put(key, value)</code> - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.</p><p>Follow up:<br>Could you do both operations in O(1) time complexity?</p><p>Example:</p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LRUCache cache = <span class="keyword">new</span> LRUCache( <span class="number">2</span> <span class="comment">/* capacity */</span> );</span><br><span class="line"></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">1</span>);       <span class="comment">// returns 1</span></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">3</span>, <span class="number">3</span>);    <span class="comment">// evicts key 2</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">2</span>);       <span class="comment">// returns -1 (not found)</span></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">4</span>, <span class="number">4</span>);    <span class="comment">// evicts key 1</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">1</span>);       <span class="comment">// returns -1 (not found)</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">3</span>);       <span class="comment">// returns 3</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">4</span>);       <span class="comment">// returns 4</span></span><br></pre></td></tr></tbody></table></figure><a id="more"></a><h1 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h1><p>为了<code>put</code>和<code>get</code>有O(1)的时间复杂度，我们使用双向链表std::list和哈希表std::unordered_map作为cache的数据结构。std::list插入删除效率高, std::unordered_map保存每个节点的地址，可以基本保证在O(1)时间内查找节点。</p><p>这里的unordered_map的类型是: <code>std::unordered_map&lt;int, std::list&lt;std::pair&lt;int, int&gt;&gt;::iterator&gt;</code>。</p><ul><li>我尝试过使用<code>std::pair&lt;int, int&gt;*</code>作为value，但是效果不好。这是最合适的是使用list的iterator</li></ul><p><img data-src="images/Leetcode/lru1.webp" alt="图片来源: https://www.jianshu.com/p/74a4efacb0a7"></p><p><img data-src="images/Leetcode/lru-2.jpg" alt="图片来源: https://www.cnblogs.com/kyoner/p/11179766.html"></p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;list&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span> {</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    LRUCache(<span class="keyword">int</span> capacity) : capacity(capacity) {}; </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span> </span>{</span><br><span class="line">        <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">        <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> result = got-&gt;second-&gt;second;</span><br><span class="line">            l.splice(l.<span class="built_in">begin</span>(), l, got-&gt;second); <span class="comment">// 把当前访问的节点移到链表头部,并且更新map中该节点的地址</span></span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>{</span><br><span class="line">        <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">        <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">            got-&gt;second-&gt;second = value;</span><br><span class="line">            l.splice(l.<span class="built_in">begin</span>(), l, got-&gt;second);</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            <span class="comment">// 删除链表尾部节点（最少访问的节点）</span></span><br><span class="line">            <span class="keyword">if</span> (ht.<span class="built_in">size</span>() == capacity) {</span><br><span class="line">                ht.erase(l.back().first);</span><br><span class="line">                l.pop_back();</span><br><span class="line">            }</span><br><span class="line">            <span class="comment">// 插入新节点到链表头部,并且更新map中增加该节点</span></span><br><span class="line">            l.emplace_front(key, value);</span><br><span class="line">            ht[key] = l.<span class="built_in">begin</span>();</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> capacity;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; l;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;::iterator&gt; ht;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><ul><li><code>l.splice(l.begin(), l, got-&gt;second);</code> 可以替换为: <code>l.erase(got-&gt;second); l.emplace_front(key, result); ht[key] = l.begin();</code></li><li><p><code>put</code>也可以是:</p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>{</span><br><span class="line">    <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">    <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">        <span class="comment">// 移除该一出现节点</span></span><br><span class="line">        l.erase(got-&gt;second);</span><br><span class="line">    } <span class="keyword">else</span> {</span><br><span class="line">        <span class="comment">// 删除链表尾部节点（最少访问的节点）</span></span><br><span class="line">        <span class="keyword">if</span> (ht.<span class="built_in">size</span>() == capacity) {</span><br><span class="line">            ht.erase(l.back().first);</span><br><span class="line">            l.pop_back();</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// 插入新节点到链表头部,并且更新map中增加该节点</span></span><br><span class="line">    l.emplace_front(key, value);</span><br><span class="line">    ht[key] = l.<span class="built_in">begin</span>();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></li><li><p><a href="https://cakebytheoceanluo.github.io/2020/04/19/std-list-splice/">std::list::splice 详解</a></p></li></ul><p><br></p><p>引用和推荐的阅读：</p><p><a href="https://cakebytheoceanluo.github.io/2020/04/26/LRU%E7%BB%83%E4%B9%A0/">LRU 练习</a></p><p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvbHJ1LWNhY2hlLw==" title="https://leetcode.com/problems/lru-cache/">https://leetcode.com/problems/lru-cache/<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vVGVub3NEb0l0L3AvMzQxNzE1Ny5odG1s" title="https://www.cnblogs.com/TenosDoIt/p/3417157.html">https://www.cnblogs.com/TenosDoIt/p/3417157.html<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vRGhvdXNlL3AvODYxNTQ4MS5odG1s" title="https://www.cnblogs.com/Dhouse/p/8615481.html">https://www.cnblogs.com/Dhouse/p/8615481.html<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC8zNDEzMzA2Nw==" title="https://zhuanlan.zhihu.com/p/34133067">https://zhuanlan.zhihu.com/p/34133067<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC83NGE0ZWZhY2IwYTc=" title="https://www.jianshu.com/p/74a4efacb0a7">https://www.jianshu.com/p/74a4efacb0a7<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20va3lvbmVyL3AvMTExNzk3NjYuaHRtbA==" title="https://www.cnblogs.com/kyoner/p/11179766.html">https://www.cnblogs.com/kyoner/p/11179766.html<i class="fa fa-external-link"></i></span></p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
+    <content type="html"><![CDATA[<p>146.LRU Cache</p><p>Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: <code>get</code> and <code>put</code>.</p><p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.<br><code>put(key, value)</code> - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.</p><p>Follow up:<br>Could you do both operations in O(1) time complexity?</p><p>Example:</p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LRUCache cache = <span class="keyword">new</span> LRUCache( <span class="number">2</span> <span class="comment">/* capacity */</span> );</span><br><span class="line"></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">1</span>);       <span class="comment">// returns 1</span></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">3</span>, <span class="number">3</span>);    <span class="comment">// evicts key 2</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">2</span>);       <span class="comment">// returns -1 (not found)</span></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">4</span>, <span class="number">4</span>);    <span class="comment">// evicts key 1</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">1</span>);       <span class="comment">// returns -1 (not found)</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">3</span>);       <span class="comment">// returns 3</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">4</span>);       <span class="comment">// returns 4</span></span><br></pre></td></tr></tbody></table></figure><a id="more"></a><h1 id="解法"><a href="#解法" class="headerlink" title="解法"></a>解法</h1><p>为了<code>put</code>和<code>get</code>有O(1)的时间复杂度，我们使用双向链表std::list和哈希表std::unordered_map作为cache的数据结构。std::list插入删除效率高, std::unordered_map保存每个节点的地址，可以基本保证在O(1)时间内查找节点。</p><p>这里的unordered_map的类型是: <code>std::unordered_map&lt;int, std::list&lt;std::pair&lt;int, int&gt;&gt;::iterator&gt;</code>。</p><ul><li>我尝试过使用<code>std::pair&lt;int, int&gt;*</code>作为value，但是效果不好。这是最合适的是使用list的iterator</li></ul><p><img data-src="/images/Leetcode/lru_1.png" alt="图片来源: https://www.jianshu.com/p/74a4efacb0a7"></p><p><img data-src="/images/Leetcode/lru_2.jpg" alt="图片来源: https://www.cnblogs.com/kyoner/p/11179766.html"></p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;list&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span> {</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    LRUCache(<span class="keyword">int</span> capacity) : capacity(capacity) {}; </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span> </span>{</span><br><span class="line">        <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">        <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> result = got-&gt;second-&gt;second;</span><br><span class="line">            l.splice(l.<span class="built_in">begin</span>(), l, got-&gt;second); <span class="comment">// 把当前访问的节点移到链表头部,并且更新map中该节点的地址</span></span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>{</span><br><span class="line">        <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">        <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">            got-&gt;second-&gt;second = value;</span><br><span class="line">            l.splice(l.<span class="built_in">begin</span>(), l, got-&gt;second);</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            <span class="comment">// 删除链表尾部节点（最少访问的节点）</span></span><br><span class="line">            <span class="keyword">if</span> (ht.<span class="built_in">size</span>() == capacity) {</span><br><span class="line">                ht.erase(l.back().first);</span><br><span class="line">                l.pop_back();</span><br><span class="line">            }</span><br><span class="line">            <span class="comment">// 插入新节点到链表头部,并且更新map中增加该节点</span></span><br><span class="line">            l.emplace_front(key, value);</span><br><span class="line">            ht[key] = l.<span class="built_in">begin</span>();</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> capacity;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; l;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;::iterator&gt; ht;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><ul><li><code>l.splice(l.begin(), l, got-&gt;second);</code> 可以替换为: <code>l.erase(got-&gt;second); l.emplace_front(key, result); ht[key] = l.begin();</code></li><li><p><code>put</code>也可以是:</p><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>{</span><br><span class="line">    <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">    <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">        <span class="comment">// 移除该一出现节点</span></span><br><span class="line">        l.erase(got-&gt;second);</span><br><span class="line">    } <span class="keyword">else</span> {</span><br><span class="line">        <span class="comment">// 删除链表尾部节点（最少访问的节点）</span></span><br><span class="line">        <span class="keyword">if</span> (ht.<span class="built_in">size</span>() == capacity) {</span><br><span class="line">            ht.erase(l.back().first);</span><br><span class="line">            l.pop_back();</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="comment">// 插入新节点到链表头部,并且更新map中增加该节点</span></span><br><span class="line">    l.emplace_front(key, value);</span><br><span class="line">    ht[key] = l.<span class="built_in">begin</span>();</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure></li><li><p><a href="https://cakebytheoceanluo.github.io/2020/04/19/std-list-splice/">std::list::splice 详解</a></p></li></ul><p><br></p><p>引用和推荐的阅读：</p><p><a href="https://cakebytheoceanluo.github.io/2020/04/26/LRU%E7%BB%83%E4%B9%A0/">LRU 练习</a></p><p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvbHJ1LWNhY2hlLw==" title="https://leetcode.com/problems/lru-cache/">https://leetcode.com/problems/lru-cache/<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vVGVub3NEb0l0L3AvMzQxNzE1Ny5odG1s" title="https://www.cnblogs.com/TenosDoIt/p/3417157.html">https://www.cnblogs.com/TenosDoIt/p/3417157.html<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vRGhvdXNlL3AvODYxNTQ4MS5odG1s" title="https://www.cnblogs.com/Dhouse/p/8615481.html">https://www.cnblogs.com/Dhouse/p/8615481.html<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC8zNDEzMzA2Nw==" title="https://zhuanlan.zhihu.com/p/34133067">https://zhuanlan.zhihu.com/p/34133067<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuamlhbnNodS5jb20vcC83NGE0ZWZhY2IwYTc=" title="https://www.jianshu.com/p/74a4efacb0a7">https://www.jianshu.com/p/74a4efacb0a7<i class="fa fa-external-link"></i></span></p><p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20va3lvbmVyL3AvMTExNzk3NjYuaHRtbA==" title="https://www.cnblogs.com/kyoner/p/11179766.html">https://www.cnblogs.com/kyoner/p/11179766.html<i class="fa fa-external-link"></i></span></p><script>        document.querySelectorAll('.github-emoji')          .forEach(el => {            if (!el.dataset.src) { return; }            const img = document.createElement('img');            img.style = 'display:none !important;';            img.src = el.dataset.src;            img.addEventListener('error', () => {              img.remove();              el.style.color = 'inherit';              el.style.backgroundImage = 'none';              el.style.background = 'none';            });            img.addEventListener('load', () => {              img.remove();            });            document.body.appendChild(img);          });      </script>]]></content>
     
     <summary type="html">
     
@@ -624,13 +624,13 @@
     </summary>
     
     
-      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
-    
-      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
+      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
+    
       <category term="Hash Table" scheme="https://cakebytheoceanluo.github.io/categories/Hash-Table/"/>
+    
+      <category term="Data Structure" scheme="https://cakebytheoceanluo.github.io/categories/Data-Structure/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
@@ -686,26 +686,26 @@
     </summary>
     
     
-      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
-      <category term="DBMS" scheme="https://cakebytheoceanluo.github.io/categories/DBMS/"/>
+      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
     
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/categories/B-Tree/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
+      <category term="DBMS" scheme="https://cakebytheoceanluo.github.io/categories/DBMS/"/>
+    
       <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/categories/PostgreSQL/"/>
     
+    
+      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+    
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
     
       <category term="Page" scheme="https://cakebytheoceanluo.github.io/tags/Page/"/>
     
       <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/tags/PostgreSQL/"/>
-    
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
-    
-      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
     
       <category term="Clustered Index" scheme="https://cakebytheoceanluo.github.io/tags/Clustered-Index/"/>
     
@@ -738,26 +738,26 @@
     </summary>
     
     
-      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
-      <category term="DBMS" scheme="https://cakebytheoceanluo.github.io/categories/DBMS/"/>
+      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
     
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/categories/B-Tree/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
     
+      <category term="DBMS" scheme="https://cakebytheoceanluo.github.io/categories/DBMS/"/>
+    
       <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/categories/PostgreSQL/"/>
     
+    
+      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+    
+      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
     
       <category term="Page" scheme="https://cakebytheoceanluo.github.io/tags/Page/"/>
     
       <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/tags/PostgreSQL/"/>
-    
-      <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
-    
-      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
     
   </entry>
   
@@ -783,26 +783,26 @@
     </summary>
     
     
-      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
-    
       <category term="Access Methods" scheme="https://cakebytheoceanluo.github.io/categories/Access-Methods/"/>
     
-      <category term="Hash Table" scheme="https://cakebytheoceanluo.github.io/categories/Hash-Table/"/>
-    
-      <category term="DBMS" scheme="https://cakebytheoceanluo.github.io/categories/DBMS/"/>
+      <category term="CMU-15445" scheme="https://cakebytheoceanluo.github.io/categories/CMU-15445/"/>
     
       <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/categories/B-Tree/"/>
     
+      <category term="Hash Table" scheme="https://cakebytheoceanluo.github.io/categories/Hash-Table/"/>
+    
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/categories/Indexing/"/>
+    
+      <category term="DBMS" scheme="https://cakebytheoceanluo.github.io/categories/DBMS/"/>
     
       <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/categories/PostgreSQL/"/>
     
     
-      <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/tags/PostgreSQL/"/>
+      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
     
       <category term="Indexing" scheme="https://cakebytheoceanluo.github.io/tags/Indexing/"/>
     
-      <category term="B Tree" scheme="https://cakebytheoceanluo.github.io/tags/B-Tree/"/>
+      <category term="PostgreSQL" scheme="https://cakebytheoceanluo.github.io/tags/PostgreSQL/"/>
     
   </entry>
   

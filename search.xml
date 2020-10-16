@@ -165,20 +165,20 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
-        <category>Data Structure</category>
         <category>Access Methods</category>
+        <category>CMU-15445</category>
         <category>Hash Table</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
-        <category>Trie / Radix Tree</category>
         <category>Skip List</category>
+        <category>Trie / Radix Tree</category>
       </categories>
       <tags>
+        <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Dynamic Hashing Scheme</tag>
         <tag>Extendible Hashing</tag>
-        <tag>Indexing</tag>
         <tag>Linear Hashing</tag>
-        <tag>B Tree</tag>
         <tag>Trie / Radix Tree</tag>
         <tag>Skip List</tag>
       </tags>
@@ -526,20 +526,20 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
-        <category>Data Structure</category>
         <category>Access Methods</category>
+        <category>CMU-15445</category>
         <category>Hash Table</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
         <category>Trie / Radix Tree</category>
       </categories>
       <tags>
+        <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Dynamic Hashing Scheme</tag>
         <tag>Extendible Hashing</tag>
-        <tag>Indexing</tag>
-        <tag>Cuckoo Hashing</tag>
-        <tag>B Tree</tag>
         <tag>Trie / Radix Tree</tag>
+        <tag>Cuckoo Hashing</tag>
       </tags>
   </entry>
   <entry>
@@ -1057,19 +1057,19 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
-        <category>Data Structure</category>
         <category>Access Methods</category>
-        <category>Hash Table</category>
+        <category>CMU-15445</category>
         <category>B Tree</category>
+        <category>Hash Table</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
         <category>Operating System</category>
         <category>Lock</category>
         <category>Multithreading</category>
       </categories>
       <tags>
-        <tag>Indexing</tag>
         <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Lock</tag>
         <tag>Latch</tag>
         <tag>Latch Coupling</tag>
@@ -1150,9 +1150,9 @@
           });
       </script>]]></content>
       <categories>
+        <category>Access Methods</category>
         <category>CMU-15445</category>
         <category>Data Structure</category>
-        <category>Access Methods</category>
         <category>Indexing</category>
         <category>Skip List</category>
       </categories>
@@ -1287,14 +1287,14 @@
           });
       </script>]]></content>
       <categories>
-        <category>Data Structure</category>
         <category>Access Methods</category>
         <category>B Tree</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
       </categories>
       <tags>
-        <tag>Indexing</tag>
         <tag>B Tree</tag>
+        <tag>Indexing</tag>
       </tags>
   </entry>
   <entry>
@@ -1529,16 +1529,16 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
-        <category>Data Structure</category>
         <category>Access Methods</category>
+        <category>CMU-15445</category>
         <category>B Tree</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
         <category>Trie / Radix Tree</category>
       </categories>
       <tags>
-        <tag>Indexing</tag>
         <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Trie / Radix Tree</tag>
         <tag>Additional Index Usage</tag>
       </tags>
@@ -1999,8 +1999,8 @@
 <ul>
 <li>我尝试过使用<code>std::pair&lt;int, int&gt;*</code>作为value，但是效果不好。这是最合适的是使用list的iterator</li>
 </ul>
-<p><img data-src="images/Leetcode/lru1.webp" alt="图片来源: https://www.jianshu.com/p/74a4efacb0a7"></p>
-<p><img data-src="images/Leetcode/lru-2.jpg" alt="图片来源: https://www.cnblogs.com/kyoner/p/11179766.html"></p>
+<p><img data-src="/images/Leetcode/lru_1.png" alt="图片来源: https://www.jianshu.com/p/74a4efacb0a7"></p>
+<p><img data-src="/images/Leetcode/lru_2.jpg" alt="图片来源: https://www.cnblogs.com/kyoner/p/11179766.html"></p>
 <figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;list&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span> {</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    LRUCache(<span class="keyword">int</span> capacity) : capacity(capacity) {}; </span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">get</span><span class="params">(<span class="keyword">int</span> key)</span> </span>{</span><br><span class="line">        <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">        <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> result = got-&gt;second-&gt;second;</span><br><span class="line">            l.splice(l.<span class="built_in">begin</span>(), l, got-&gt;second); <span class="comment">// 把当前访问的节点移到链表头部,并且更新map中该节点的地址</span></span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">put</span><span class="params">(<span class="keyword">int</span> key, <span class="keyword">int</span> value)</span> </span>{</span><br><span class="line">        <span class="keyword">auto</span> got = ht.<span class="built_in">find</span>(key);</span><br><span class="line">        <span class="keyword">if</span> (got != ht.<span class="built_in">end</span>()) {</span><br><span class="line">            got-&gt;second-&gt;second = value;</span><br><span class="line">            l.splice(l.<span class="built_in">begin</span>(), l, got-&gt;second);</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            <span class="comment">// 删除链表尾部节点（最少访问的节点）</span></span><br><span class="line">            <span class="keyword">if</span> (ht.<span class="built_in">size</span>() == capacity) {</span><br><span class="line">                ht.erase(l.back().first);</span><br><span class="line">                l.pop_back();</span><br><span class="line">            }</span><br><span class="line">            <span class="comment">// 插入新节点到链表头部,并且更新map中增加该节点</span></span><br><span class="line">            l.emplace_front(key, value);</span><br><span class="line">            ht[key] = l.<span class="built_in">begin</span>();</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> capacity;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt; l;</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="built_in">std</span>::<span class="built_in">list</span>&lt;<span class="built_in">std</span>::pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;::iterator&gt; ht;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
 <ul>
 <li><code>l.splice(l.begin(), l, got-&gt;second);</code> 可以替换为: <code>l.erase(got-&gt;second); l.emplace_front(key, result); ht[key] = l.begin();</code></li>
@@ -2381,10 +2381,10 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
-        <category>Data Structure</category>
         <category>Access Methods</category>
+        <category>CMU-15445</category>
         <category>Hash Table</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
       </categories>
       <tags>
@@ -2525,18 +2525,18 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
         <category>Access Methods</category>
-        <category>DBMS</category>
+        <category>CMU-15445</category>
         <category>B Tree</category>
         <category>Indexing</category>
+        <category>DBMS</category>
         <category>PostgreSQL</category>
       </categories>
       <tags>
+        <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Page</tag>
         <tag>PostgreSQL</tag>
-        <tag>Indexing</tag>
-        <tag>B Tree</tag>
         <tag>Clustered Index</tag>
       </tags>
   </entry>
@@ -2596,18 +2596,18 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
         <category>Access Methods</category>
-        <category>DBMS</category>
+        <category>CMU-15445</category>
         <category>B Tree</category>
         <category>Indexing</category>
+        <category>DBMS</category>
         <category>PostgreSQL</category>
       </categories>
       <tags>
+        <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Page</tag>
         <tag>PostgreSQL</tag>
-        <tag>Indexing</tag>
-        <tag>B Tree</tag>
       </tags>
   </entry>
   <entry>
@@ -2717,18 +2717,18 @@
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
         <category>Access Methods</category>
-        <category>Hash Table</category>
-        <category>DBMS</category>
+        <category>CMU-15445</category>
         <category>B Tree</category>
+        <category>Hash Table</category>
         <category>Indexing</category>
+        <category>DBMS</category>
         <category>PostgreSQL</category>
       </categories>
       <tags>
-        <tag>PostgreSQL</tag>
-        <tag>Indexing</tag>
         <tag>B Tree</tag>
+        <tag>Indexing</tag>
+        <tag>PostgreSQL</tag>
       </tags>
   </entry>
   <entry>
@@ -2860,15 +2860,15 @@ TODO: link -->
           });
       </script>]]></content>
       <categories>
-        <category>Data Structure</category>
         <category>Access Methods</category>
         <category>Hash Table</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
       </categories>
       <tags>
+        <tag>Indexing</tag>
         <tag>Dynamic Hashing Scheme</tag>
         <tag>Extendible Hashing</tag>
-        <tag>Indexing</tag>
         <tag>Books</tag>
       </tags>
   </entry>
@@ -3114,11 +3114,11 @@ TODO: link -->
           });
       </script>]]></content>
       <categories>
-        <category>Data Structure</category>
         <category>Access Methods</category>
         <category>Hash Table</category>
-        <category>Database System Concepts</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
+        <category>Database System Concepts</category>
       </categories>
       <tags>
         <tag>Dynamic Hashing Scheme</tag>
@@ -4512,15 +4512,15 @@ TODO: link -->
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
-        <category>Data Structure</category>
         <category>Access Methods</category>
+        <category>CMU-15445</category>
         <category>B Tree</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
       </categories>
       <tags>
-        <tag>Indexing</tag>
         <tag>B Tree</tag>
+        <tag>Indexing</tag>
         <tag>Clustered Index</tag>
         <tag>Variable Length Key</tag>
         <tag>Prefix Compression</tag>
@@ -4827,24 +4827,24 @@ TODO: link -->
           });
       </script>]]></content>
       <categories>
-        <category>CMU-15445</category>
-        <category>Data Structure</category>
         <category>Access Methods</category>
+        <category>CMU-15445</category>
         <category>Hash Table</category>
+        <category>Data Structure</category>
         <category>Indexing</category>
       </categories>
       <tags>
+        <tag>Indexing</tag>
         <tag>Dynamic Hashing Scheme</tag>
         <tag>Extendible Hashing</tag>
-        <tag>Indexing</tag>
+        <tag>Linear Hashing</tag>
+        <tag>Cuckoo Hashing</tag>
         <tag>Hash Function</tag>
         <tag>Hash Scheme</tag>
         <tag>Static Hashing Scheme</tag>
         <tag>Linear Probe Hashing</tag>
         <tag>Robin Hood Hashing</tag>
-        <tag>Cuckoo Hashing</tag>
         <tag>Chained Hashing</tag>
-        <tag>Linear Hashing</tag>
       </tags>
   </entry>
   <entry>
