@@ -22,46 +22,24 @@
     var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 Database System Concepts 精读 [11.6-11.7] Hashing">
+  <meta name="description" content="15.3Sum Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c &#x3D; 0? Find all unique triplets in the array which gives the sum of zero. Note: The solution set must no">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Extendable Hashing 练习">
-<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/index.html">
+<meta property="og:title" content="[Leetcode-Algorithm] 15.3-sum">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/index.html">
 <meta property="og:site_name" content="关于数据库的一切">
-<meta property="og:description" content="这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 Database System Concepts 精读 [11.6-11.7] Hashing">
+<meta property="og:description" content="15.3Sum Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c &#x3D; 0? Find all unique triplets in the array which gives the sum of zero. Note: The solution set must no">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_2.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_3.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_4.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_5.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_6.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_7.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_8.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_2.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_3.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_4.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_5.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_6.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_7.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_8.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_9.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_2_10.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_3_1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/DSC/11.S1.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/DSC/11.S2.png">
-<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/DSC/11.S3.png">
-<meta property="article:published_time" content="2020-04-12T18:52:43.000Z">
-<meta property="article:modified_time" content="2020-10-01T14:32:22.354Z">
+<meta property="og:image" content="https://github.com/MisterBooo/LeetCodeAnimation/raw/master/0015-3Sum/Animation/Animation.gif">
+<meta property="article:published_time" content="2020-10-16T13:02:48.000Z">
+<meta property="article:modified_time" content="2020-10-16T13:04:46.845Z">
 <meta property="article:author" content="罗济高">
-<meta property="article:tag" content="Indexing">
-<meta property="article:tag" content="Dynamic Hashing Scheme">
-<meta property="article:tag" content="Extendible Hashing">
-<meta property="article:tag" content="Books">
+<meta property="article:tag" content="Leetcode">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Two Pointers">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/GDB/EH_1_1.png">
+<meta name="twitter:image" content="https://github.com/MisterBooo/LeetCodeAnimation/raw/master/0015-3Sum/Animation/Animation.gif">
 
-<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/">
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/">
 
 
 <script id="page-configurations">
@@ -73,7 +51,7 @@
   };
 </script>
 
-  <title>Extendable Hashing 练习 | 关于数据库的一切</title>
+  <title>[Leetcode-Algorithm] 15.3-sum | 关于数据库的一切</title>
   
 
 
@@ -242,7 +220,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/uploads/avatar.jpeg">
@@ -255,7 +233,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          Extendable Hashing 练习
+          [Leetcode-Algorithm] 15.3-sum
         </h2>
 
         <div class="post-meta">
@@ -264,40 +242,26 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-04-12 20:52:43" itemprop="dateCreated datePublished" datetime="2020-04-12T20:52:43+02:00">2020-04-12</time>
+              <time title="创建时间：2020-10-16 15:02:48 / 修改时间：15:04:46" itemprop="dateCreated datePublished" datetime="2020-10-16T15:02:48+02:00">2020-10-16</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-01 16:32:22" itemprop="dateModified" datetime="2020-10-01T16:32:22+02:00">2020-10-01</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
                 </span>
                   ，
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hash-Table/" itemprop="url" rel="index"><span itemprop="name">Hash Table</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
                 </span>
             </span>
 
           
-            <span id="/2020/04/12/Extendable-Hashing-Exercise/" class="post-meta-item leancloud_visitors" data-flag-title="Extendable Hashing 练习" title="阅读次数">
+            <span id="/2020/10/16/Leetcode-Algorithm-15-3-sum/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-Algorithm] 15.3-sum" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -309,7 +273,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>3.5k</span>
+              <span>3.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -328,112 +292,72 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>这篇文章对我见过的Extendable Hashing的练习题进行了收录。Extendable Hashing的介绍见我一篇精读文章 <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
+        <p>15.3Sum</p>
+<p>Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.</p>
+<p>Note:</p>
+<p>The solution set must not contain duplicate triplets.</p>
+<p>Example:</p>
+<p>Given array nums = [-1, 0, 1, 2, -1, -4],</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">A solution set is:</span><br><span class="line">[</span><br><span class="line">  [-1, 0, 1],</span><br><span class="line">  [-1, -1, 2]</span><br><span class="line">]</span><br></pre></td></tr></tbody></table></figure>
 <a id="more"></a>
-<h1 id="TUM数据库课程练习课"><a href="#TUM数据库课程练习课" class="headerlink" title="TUM数据库课程练习课"></a>TUM数据库课程练习课</h1><p>在TUM的例子中global depth从1开始</p>
-<h2 id="例题一-1"><a href="#例题一-1" class="headerlink" title="例题一 1"></a>例题一 <sup><a href="#fn1">1</a></sup></h2><p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_1.png" alt="hash value"></p>
+<h1 id="解法-双指针-Two-Pointers"><a href="#解法-双指针-Two-Pointers" class="headerlink" title="解法 - 双指针 Two Pointers"></a>解法 - 双指针 Two Pointers</h1><p>关键点：</p>
 <ul>
-<li>KundenNr 顾客号码</li>
-<li>Binär 二进制表达</li>
-<li>Umgekehrt Binär 倒置的二进制表达，<strong>这个是我们的hash key</strong></li>
+<li>题目需要所有三个数字和为0的不重复可能性<ul>
+<li>特例: 三个数全是 0 的情况</li>
+<li>普遍例子: 会有负数和正数共存的情况，至少一个负数和至少一个正数</li>
 </ul>
-<p><br></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_2.png" alt="Init: global depth = 1."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_3.png" alt="Insert 010100 Müller, 100110 Meier."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_4.png" alt="Insert 011110 Schmidt."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_5.png" alt="Global depth = 2."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_6.png" alt="Local depth = 2."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_7.png" alt="Global depth = 3."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_1_8.png" alt="Insert 010010 Krause, 000101 Schulz, 101101 Kaufman."></p>
-<h2 id="例题二-2"><a href="#例题二-2" class="headerlink" title="例题二 2"></a>例题二 <sup><a href="#fn2">2</a></sup></h2><p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_1.png" alt="hash value"></p>
-<ul>
-<li>MatrNr 学号</li>
-<li>Binär 二进制表达</li>
-<li>Umgekehrt Binär 倒置的二进制表达，<strong>这个是我们的hash key</strong></li>
-</ul>
-<p><br></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_2.png" alt="Init: global depth = 1."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_3.png" alt="Insert 2 Müller, 8 Schmidt."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_4.png" alt="Insert 19 Fischer."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_5.png" alt="Global depth = 2."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_6.png" alt="Local depth = 2. Insert 16 Huber."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_7.png" alt="Global depth = 3."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_8.png" alt="Local depth = 3. Insert 20 Bauer."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_9.png" alt="Insert 34 Schneider."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_2_10.png" alt="Local depth = 3. Insert 30 Wagner."></p>
-<h2 id="例题三-3"><a href="#例题三-3" class="headerlink" title="例题三 3"></a>例题三 <sup><a href="#fn3">3</a></sup></h2><p>用在extendable hash table存储十亿人(10,000,000,000)的信息:</p>
-<ul>
-<li>税号: 10B，对每一个人都唯一，作为hash key</li>
-<li>其他信息: 名字，国家，城市，邮编，地址, 一共 100B</li>
-</ul>
-<p><br></p>
-<ul>
-<li>hash table的key是税号, value是PID(page id, 8B), 即对应一个bucket。Bucket所在的page页的大小是4KiB。我们假设每一个bucket对应的page的75%的容量被使用。</li>
-<li>hash bucket中保存每一个对应的TID (8B), 这个TID对应一个页上的位置，存储着这个人的其他信息。</li>
-<li>问: 存储这个hash table需要多少存储容量?</li>
-</ul>
-<p>答案:</p>
-<ul>
-<li>bucket/page的每一个条目是税号和这个人对应的TID。一个bucket中有: $n = \frac{4\mathrm{KiB}}{10 \mathrm{B} + 8 \mathrm{B}} = 170$个条目。</li>
-<li>需要的bucket/page数量: $p = \frac{10^{10}}{n} = 58 * 10^{6}$</li>
-<li>引用这些page至少需要的bit数量: $\lceil\log_2 p \rceil = 26$</li>
-<li>至少需要的bucket/page数量: $2^{26}$</li>
-<li>每一个bucket/page的PID引用都存储在hash table中: $8B * 2^{26} = 512 \mathrm{MiB}$ 即存储这个hash table需要的存储容量</li>
-</ul>
-<p><br></p>
-<ul>
-<li>注意: 100B其他信息存储在其他page中，我们不需要关心这些page。只需要关心这些page的PID， 大小是8B。</li>
-</ul>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/GDB/EH_3_1.png" alt="图解."></p>
-<ul>
-<li>上图中只有bucket pointer存储在hash table中。左侧的index in Bits并不需要存储。</li>
-<li>上图中绿色和蓝色也不存储在hash table中。绿色只是形象化bucket pointer。蓝色是存储着18B(税号和TID)的bucket，即bucket pointer所指向的地方。</li>
-</ul>
-<!-- # CMU
-
-TODO:
-
-# P1T1
-
-TODO:link -->
-<h1 id="Database-System-Concepts-Practice-Exercise-4"><a href="#Database-System-Concepts-Practice-Exercise-4" class="headerlink" title="Database System Concepts - Practice Exercise 4"></a>Database System Concepts - Practice Exercise <sup><a href="#fn4">4</a></sup></h1><h2 id="11-6"><a href="#11-6" class="headerlink" title="11.6"></a>11.6</h2><p>Suppose that we are using extendable hashing on a file that contains records with the following search-key values: <code>2, 3, 5, 7, 11, 17, 19, 23, 29, 31</code></p>
-<p>Show the extendable hash structure for this file if the hash function is <code>h(x) = x mod 8</code> and buckets can hold three records</p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S1.png" alt="11.6."></p>
-<p>右侧同一个bucket中的hash value相同, 即余数相同。</p>
-<p><br></p>
-<h2 id="11-7"><a href="#11-7" class="headerlink" title="11.7"></a>11.7</h2><p>Show how the extendable hash structure of Practice Exercise 11.6 changes as the result of each of the following steps:</p>
-<ul>
-<li>a. Delete 11.</li>
-<li>b. Delete 31.</li>
-<li>c. Insert 1.</li>
-<li>d. Insert 15.</li>
-</ul>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S2.png" alt="11.6."></p>
-<p><img data-src="https://cakebytheoceanluo.github.io/images/DSC/11.S3.png" alt="11.6."></p>
-<h2 id="11-9"><a href="#11-9" class="headerlink" title="11.9"></a>11.9</h2><p>Give pseudocode for deletion of entries from an extendable hash structure, including details of when and how to coalesce buckets. Do not bother about reducing the size of the bucket address table.</p>
-<p>见另一篇文章, <a href="https://cakebytheoceanluo.github.io/2020/04/11/DSC-11-6-11-7-Hashing/">Database System Concepts 精读 [11.6-11.7] Hashing</a></p>
-<h2 id="11-10"><a href="#11-10" class="headerlink" title="11.10"></a>11.10</h2><p>Suggest an efficient way to test if the <em>bucket address table</em> in extendable hashing can be reduced in size, by storing an extra count with the <em>bucket address table</em>. Give details of how the count should be maintained when buckets are split, coalesced, or deleted. </p>
-<p>(Note: Reducing the size of the <em>bucket address table</em> is an <strong>expensive</strong> operation, and subsequent inserts may cause the table to grow again. Therefore, it is best not to reduce the size as soon as it is possible to do so, but instead do it only if the number of index entries becomes small compared to the bucket-address-table size.)</p>
-<p><br></p>
-<p>Answer: </p>
-<p>If the hash table is currently using $i$ bits of the hash value, then maintain a count of buckets for which the length of common hash prefix is exactly $i$.</p>
-<p>Consider a bucket $j$ with length of common hash prefix $i_j$. If the bucket is being split, and $i_j$ is equal to $i$, then reset the count to 1. If the bucket is being split and $i_j$ is one less that $i$, then increase the count by 1. It the bucket if being coalesced, and $i_j$ is equal to $i$ then decrease the count by 1. If the count becomes 0, then the bucket address table can be reduced in size at that point.</p>
-<p>However, note that if the bucket address table is not reduced at that point, then the count has no significance afterwards. If we want to postpone the reduction, we have to keep an array of counts, i.e. a count for each value of common hash prefix. The array has to be updated in a similar fashion. The bucket address table can be reduced if the $i^{th}$ entry of the array is 0, where $i$ is the number of bits the table is using. Since bucket table reduction is an expensive operation, it is not always advisable to reduce the table. It should be reduced only when sufficient number of entries at the end of count array become 0.</p>
-<!-- # 实现
-
-TODO: link -->
-<hr>
-<p>引用:</p>
-<ul>
-<li><p><a name="fn1">1</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzA5LnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung09.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung09.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
-</li>
-<li><p><a name="fn2">2</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzEyLnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung12.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung12.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
-</li>
-<li><p><a name="fn3">3</a>: <span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzEwLnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung10.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung10.pdf?lang=de<i class="fa fa-external-link"></i></span></p>
-</li>
-<li><p><a name="fn4">4</a>: <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI2L3ByYWN0aWNlLWV4ZXItZGlyL2luZGV4Lmh0bWw=" title="https://www.db-book.com/db6/practice-exer-dir/index.html">https://www.db-book.com/db6/practice-exer-dir/index.html<i class="fa fa-external-link"></i></span>, <span class="exturl" data-url="aHR0cHM6Ly93d3cuZGItYm9vay5jb20vZGI2L3ByYWN0aWNlLWV4ZXItZGlyLzExcy5wZGY=" title="https://www.db-book.com/db6/practice-exer-dir/11s.pdf">https://www.db-book.com/db6/practice-exer-dir/11s.pdf<i class="fa fa-external-link"></i></span></p>
 </li>
 </ul>
+<p>所以一开始先对这个<code>vector</code>排序, 然后开始我们的<strong>循环</strong>:</p>
+<ul>
+<li>从右开始选择一个负数<code>fix</code>。然后再去找<code>fix</code>右边的邻居<code>left</code>,它的正负性不重要。然后再binary search到对应的<code>right</code>,它必须是正数。然后我们依然用<strong>Two Pointer双指针</strong>的方法，让俩指针<code>left, right</code>相互靠近，去检查是否有我们的解。<ul>
+<li><code>Precondition: fix &lt;= 0, right &gt;= 0</code></li>
+<li>左指针<code>left = fix + 1</code>，右指针 <code>right = binary_search(0 - *fix - *left)</code>，当 <code>*left &lt; *right</code> 时，执行循环：<ul>
+<li>当 <code>*fix + *left + *right == 0</code> ，执行循环，判断左指针和右指针是否和下一位置重复，去除重复解。并同时将 <code>left, right</code> 移到下一<strong>无重复的</strong>位置，寻找新的解；</li>
+<li>若和大于 <code>0</code>，说明 <code>*right</code> 太大，<code>right</code> 左移</li>
+<li>若和小于 <code>0</code>，说明 <code>*left</code> 太小，<code>left</code> 右移</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>循环遍历至<code>fix</code>触碰到第一个正数，这时候停止。</li>
+</ul>
+<p>注意点: </p>
+<ul>
+<li><code>vector</code>中允许出现重复数值，因此<code>fix, left, right</code>在处理数据时　均需要注意重复数值。这个是这题的重点。</li>
+<li>返回的结果中，不能有有重复的结果。我们之前对<code>vector</code>排序，再开始从最小值(头一个元素)开始遍历。考虑上一个注意点，我们不必用 hash table去存储结果。如果在处理数据的时候足够仔细，结果存储在<code>std::vector</code>中(其实也是题目的要求)也一样能完成题目。</li>
+</ul>
+<p><img data-src="https://github.com/MisterBooo/LeetCodeAnimation/raw/master/0015-3Sum/Animation/Animation.gif" alt="Source: https://github.com/MisterBooo/LeetCodeAnimation"></p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;cassert&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> {</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; <span class="title">threeSum</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (nums.<span class="built_in">size</span>() &lt; <span class="number">3</span>) <span class="keyword">return</span> {};  <span class="comment">// For test cases.</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; result;</span><br><span class="line">        <span class="built_in">std</span>::sort(nums.<span class="built_in">begin</span>(), nums.<span class="built_in">end</span>());  <span class="comment">// I modify the vector. :D</span></span><br><span class="line">        <span class="keyword">auto</span> fix = nums.<span class="built_in">begin</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Precondition: fix &lt;= 0, right &gt;= 0</span></span><br><span class="line">        <span class="keyword">while</span> (fix + <span class="number">2</span> &lt; nums.<span class="built_in">end</span>() &amp;&amp; *fix &lt;= <span class="number">0</span>) {</span><br><span class="line">            <span class="keyword">auto</span> left = fix + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">int</span> complement = <span class="number">0</span> - *fix - *left;</span><br><span class="line">            <span class="comment">// assert(*fix &lt;= *left);</span></span><br><span class="line">            <span class="keyword">if</span> (complement &lt; *left) {</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            }</span><br><span class="line">            <span class="comment">// assert(*left &lt;= complement);</span></span><br><span class="line">            <span class="keyword">auto</span> right = <span class="built_in">std</span>::upper_bound(left, nums.<span class="built_in">end</span>(), complement);</span><br><span class="line">            right--;</span><br><span class="line">            <span class="comment">// assert(right &gt;= left);</span></span><br><span class="line">            <span class="keyword">if</span> (*right &lt; <span class="number">0</span>) {</span><br><span class="line">                <span class="comment">// fix + left is too large. Thus we stop.</span></span><br><span class="line">                <span class="keyword">return</span> result;</span><br><span class="line">            }</span><br><span class="line">            <span class="keyword">while</span> (left &lt; right &amp;&amp; right &lt; nums.<span class="built_in">end</span>()) {</span><br><span class="line">                <span class="keyword">if</span> (*fix + *left + *right == <span class="number">0</span>) {</span><br><span class="line">                    result.push_back({*fix, *left, *right});</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// ignore all duplicates of *left.</span></span><br><span class="line">                    <span class="keyword">while</span> (left + <span class="number">1</span> &lt; right &amp;&amp; *left == *(left + <span class="number">1</span>)) {</span><br><span class="line">                        ++left;</span><br><span class="line">                    }</span><br><span class="line">                    ++left;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// ignore all duplicates of *fix.</span></span><br><span class="line">                    <span class="keyword">while</span> (fix + <span class="number">1</span> &lt; left &amp;&amp; *fix == *(fix + <span class="number">1</span>)) {</span><br><span class="line">                        ++fix;</span><br><span class="line">                    }</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// ignore all duplicates of *right.</span></span><br><span class="line">                    <span class="keyword">while</span> (left &lt; right - <span class="number">1</span> &amp;&amp; *right == *(right - <span class="number">1</span>)) {</span><br><span class="line">                        --right;</span><br><span class="line">                    }</span><br><span class="line">                    --right;</span><br><span class="line">                } <span class="keyword">else</span> <span class="keyword">if</span> (*fix + *left + *right &gt; <span class="number">0</span>) {</span><br><span class="line">                    --right;</span><br><span class="line">                } <span class="keyword">else</span> {</span><br><span class="line">                    ++left;</span><br><span class="line">                }</span><br><span class="line">            }</span><br><span class="line">            ++fix;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<p>重点:</p>
+<ul>
+<li><code>auto right = std::upper_bound(left, nums.end(), complement);</code> 基本是一个binary search的实现。查到我们需要处理的最大的值，即最右边并且有必要查看的值。想象这个vector非常大，后面的部分的数值很大，都不需要查看。</li>
+<li><code>std::upper_bound</code>组合<code>r--;</code></li>
+<li>我个人觉可以使用这个binary search。我在下面链接的其他答案没有使用这个点，从头一个元素和最后一个元素开始检查。</li>
+</ul>
+<p>其他小的地方:</p>
+<ul>
+<li><code>assert</code>好像会影响Leetcode上面runtime, memory usage的性能。</li>
+</ul>
+<p>复杂度:</p>
+<ul>
+<li>时间复杂度: $O(N^2)$<ul>
+<li>数组排序 $O(NlogN)$, 遍历数组$O(n)$, 双指针遍历 $O(n)$, 总体复杂度为 $O(NlogN) + O(n) * O(n) = O(n^2)$</li>
+</ul>
+</li>
+<li>空间复杂度：$O(N)$</li>
+</ul>
+<p><br></p>
+<p>引用和推荐的阅读：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2FsZ29yaXRobS9sb3dlcl9ib3VuZA==" title="https://en.cppreference.com/w/cpp/algorithm/lower_bound">https://en.cppreference.com/w/cpp/algorithm/lower_bound<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2FsZ29yaXRobS91cHBlcl9ib3VuZA==" title="https://en.cppreference.com/w/cpp/algorithm/upper_bound">https://en.cppreference.com/w/cpp/algorithm/upper_bound<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvM3N1bQ==" title="https://leetcode.com/problems/3sum">https://leetcode.com/problems/3sum<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24vYmxvYi9tYXN0ZXIvMDAxNS0zU3VtL0FydGljbGUvMDAxNS0zU3VtLm1k" title="https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum.md">https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum.md<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24vYmxvYi9tYXN0ZXIvMDAxNS0zU3VtL0FydGljbGUvMDAxNS0zU3VtMi5tZA==" title="https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum2.md">https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum2.md<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0xlb1Npcml1cy9sZWV0Y29kZV9zb2x1dGlvbnMvYmxvYi9tYXN0ZXIvMDAxNV8zU3VtL1NvbHV0aW9uMS5jcHA=" title="https://github.com/LeoSirius/leetcode_solutions/blob/master/0015_3Sum/Solution1.cpp">https://github.com/LeoSirius/leetcode_solutions/blob/master/0015_3Sum/Solution1.cpp<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FwYWNoZWNuL0ludGVydmlldy9ibG9iL21hc3Rlci9kb2NzL0FsZ29yaXRobS9MZWV0Y29kZS9DJTJCJTJCLzAwMTUuXzNzdW0ubWQ=" title="https://github.com/apachecn/Interview/blob/master/docs/Algorithm/Leetcode/C%2B%2B/0015._3sum.md">https://github.com/apachecn/Interview/blob/master/docs/Algorithm/Leetcode/C%2B%2B/0015._3sum.md<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hhb2VsL2xlZXRjb2RlL2Jsb2IvbWFzdGVyL2FsZ29yaXRobXMvY3BwLzNTdW0vM1N1bS5jcHA=" title="https://github.com/haoel/leetcode/blob/master/algorithms/cpp/3Sum/3Sum.cpp">https://github.com/haoel/leetcode/blob/master/algorithms/cpp/3Sum/3Sum.cpp<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2F6bDM5Nzk4NTg1Ni9sZWV0Y29kZS9ibG9iL21hc3Rlci9wcm9ibGVtcy8xNS4zc3VtLm1k" title="https://github.com/azl397985856/leetcode/blob/master/problems/15.3sum.md">https://github.com/azl397985856/leetcode/blob/master/problems/15.3sum.md<i class="fa fa-external-link"></i></span></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -467,7 +391,7 @@ TODO: link -->
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/" title="Extendable Hashing 练习">https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/</a>
+    <a href="https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/" title="[Leetcode-Algorithm] 15.3-sum">https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
@@ -498,10 +422,9 @@ TODO: link -->
       <footer class="post-footer">
           
           <div class="post-tags">
-              <a href="/tags/Indexing/" rel="tag"><i class="fa fa-tag"></i> Indexing</a>
-              <a href="/tags/Dynamic-Hashing-Scheme/" rel="tag"><i class="fa fa-tag"></i> Dynamic Hashing Scheme</a>
-              <a href="/tags/Extendible-Hashing/" rel="tag"><i class="fa fa-tag"></i> Extendible Hashing</a>
-              <a href="/tags/Books/" rel="tag"><i class="fa fa-tag"></i> Books</a>
+              <a href="/tags/Leetcode/" rel="tag"><i class="fa fa-tag"></i> Leetcode</a>
+              <a href="/tags/C/" rel="tag"><i class="fa fa-tag"></i> C++</a>
+              <a href="/tags/Two-Pointers/" rel="tag"><i class="fa fa-tag"></i> Two Pointers</a>
           </div>
 
         
@@ -515,13 +438,10 @@ TODO: link -->
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/04/11/DSC-11-6-11-7-Hashing/" rel="prev" title="Database System Concepts 精读 [11.6-11.7] Hashing">
-      <i class="fa fa-chevron-left"></i> Database System Concepts 精读 [11.6-11.7] Hashing
+    <a href="/2020/10/15/CMU-15445-Homework2-18Fall/" rel="prev" title="[CMU-15445]Homework2_18Fall">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Homework2_18Fall
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/04/13/DBMS-Hash-Index%E4%B8%8ETree-Index/" rel="next" title="[DBMS]Hash Index与Tree Index">
-      [DBMS]Hash Index与Tree Index <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -588,7 +508,7 @@ TODO: link -->
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TUM数据库课程练习课"><span class="nav-number">1.</span> <span class="nav-text">TUM数据库课程练习课</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#例题一-1"><span class="nav-number">1.1.</span> <span class="nav-text">例题一 1</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例题二-2"><span class="nav-number">1.2.</span> <span class="nav-text">例题二 2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#例题三-3"><span class="nav-number">1.3.</span> <span class="nav-text">例题三 3</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Database-System-Concepts-Practice-Exercise-4"><span class="nav-number">2.</span> <span class="nav-text">Database System Concepts - Practice Exercise 4</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#11-6"><span class="nav-number">2.1.</span> <span class="nav-text">11.6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-7"><span class="nav-number">2.2.</span> <span class="nav-text">11.7</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-9"><span class="nav-number">2.3.</span> <span class="nav-text">11.9</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-10"><span class="nav-number">2.4.</span> <span class="nav-text">11.10</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#解法-双指针-Two-Pointers"><span class="nav-number">1.</span> <span class="nav-text">解法 - 双指针 Two Pointers</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -882,59 +802,6 @@ TODO: link -->
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
   <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
@@ -943,7 +810,7 @@ TODO: link -->
       quicklink({
         timeout : 3000,
         priority: true,
-        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/04/12/Extendable-Hashing-Exercise/',]
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/',]
       });
       });
   </script>
