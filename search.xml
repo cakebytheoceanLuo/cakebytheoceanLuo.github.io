@@ -1857,7 +1857,7 @@
 <li><code>F</code>被访问时: cache miss发生, 最近最少使用的<code>B</code>被替换成<code>F</code></li>
 </ul>
 <h2 id="例子一-3"><a href="#例子一-3" class="headerlink" title="例子一 3"></a>例子一 <sup><a href="#fn3">3</a></sup></h2><p>访问的顺序是:  <code>7 0 1 2 0 3 0 4</code>, 另外cache的容量是3</p>
-<p><img data-src="https://upload-images.jianshu.io/upload_images/2176221-485341bf9e2408ba.jpg?imageMogr2/auto-orient/strip|imageView2/2/w/720/format/webp" alt="例子图"></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/Algo/LRU_0.png" alt="例子图"></p>
 <ul>
 <li>上图中先后顺序由队列中顺序显示<ul>
 <li>新加入的元素在队列上面 <code>list.head</code></li>
