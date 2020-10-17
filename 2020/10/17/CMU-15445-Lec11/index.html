@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Join Algorithms - 连接算法 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;11-joins.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;11-joins.pdfReadings:  Chapter 12.4-12.6 我们开始学习Operator">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec11 Join Algorithms - 连接算法">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/10/17/CMU-15445-Lec11/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Join Algorithms - 连接算法 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;11-joins.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;11-joins.pdfReadings:  Chapter 12.4-12.6 我们开始学习Operator">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/1.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/2.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/3.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/4.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/5.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/6.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/7.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/8.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/9.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/10.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/11.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/12.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/13.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/14.jpg">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/20796875-386f6199c33e609d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/16.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/17.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/18.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/19.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/20.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/21.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/22.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/23.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/24.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/25.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/26.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/27.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/28.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/29.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/30.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/31.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/32.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/33.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/34.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/35.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/36.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/37.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/38.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/39.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/40.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/41.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/42.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/43.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/44.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/45.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/46.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/47.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/48.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/49.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/50.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/51.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/52.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/53.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/54.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/55.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/56.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/57.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/58.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/59.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/60.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/61.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf01.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf02.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf03.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf04.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf05.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf06.png">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/62.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/63.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/64.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/65.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/66.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/67.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/68.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/69.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/70.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/71.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/72.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/73.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/74.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/75.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/76.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/77.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/78.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/79.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/80.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/81.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/82.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/83.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/84.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/85.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/86.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/87.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/88.jpg">
+<meta property="article:published_time" content="2020-10-17T11:51:07.000Z">
+<meta property="article:modified_time" content="2020-10-17T11:59:41.561Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="Join">
+<meta property="article:tag" content="Hash Join">
+<meta property="article:tag" content="Sort-Merge Join">
+<meta property="article:tag" content="Nested Loop Join">
+<meta property="article:tag" content="Bloom Filter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/1.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/10/17/CMU-15445-Lec11/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec11 Join Algorithms - 连接算法 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">77</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">33</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">96</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/10/17/CMU-15445-Lec11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec11 Join Algorithms - 连接算法
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-17 13:51:07 / 修改时间：13:59:41" itemprop="dateCreated datePublished" datetime="2020-10-17T13:51:07+02:00">2020-10-17</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Operator-Execution-Query-Processing/" itemprop="url" rel="index"><span itemprop="name">Operator Execution / Query Processing</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Join/" itemprop="url" rel="index"><span itemprop="name">Join</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hash-Join/" itemprop="url" rel="index"><span itemprop="name">Hash Join</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/10/17/CMU-15445-Lec11/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec11 Join Algorithms - 连接算法" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Join Algorithms - 连接算法</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzExLWpvaW5zLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/11-joins.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/11-joins.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMTEtam9pbnMucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/11-joins.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/11-joins.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 12.4-12.6</p>
+<p>我们开始学习Operator Execution执行引擎部分。这次我们Join是如何被实现的。</p>
+<a id="more"></a>
+<p><img data-src="/images/CMU1544564/Lec11/1.jpg" alt="1.jpg"></p>
+<blockquote>
+<p>The goal of a good database design is to minimize the amount of information repetition. <strong>This is why we compose tables based on normalization theory</strong>. Joins are therefore needed to reconstruct original tables.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec11/2.jpg" alt="2.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/3.jpg" alt="3.jpg"></p>
+<h1 id="Join-Operator"><a href="#Join-Operator" class="headerlink" title="Join Operator"></a>Join Operator</h1><p><img data-src="/images/CMU1544564/Lec11/4.jpg" alt="4.jpg"></p>
+<h2 id="Operator-Output"><a href="#Operator-Output" class="headerlink" title="Operator Output"></a>Operator Output</h2><p>Operator Output指join后的结果，需要被传递给关系代数<strong>树</strong>中更高的运算符。</p>
+<p><img data-src="/images/CMU1544564/Lec11/5.jpg" alt="5.jpg"></p>
+<blockquote>
+<p>In reality, contents of output tuples generated by a join operator varies. <strong>It depends on the DBMS’s processing model, storage model, and the query itself:</strong></p>
+</blockquote>
+<h3 id="Data"><a href="#Data" class="headerlink" title="Data"></a>Data</h3><blockquote>
+<p>Copy the values for the attributes in the outer and inner tables into tuples <strong>put into an intermediate result table</strong> just for that operator. </p>
+<ul>
+<li>The <strong>advantage</strong> of this approach is that future operators in the query plan <strong>never need to go back to the base tables to get more data</strong>. </li>
+<li>The <strong>disadvantage</strong> is that this <strong>requires more memory to materialize the entire tuple</strong>.</li>
+</ul>
+</blockquote>
+<p>这里的优点和缺点来自一个原因: 复制数据之后，产生的是无关联的副本，但是<strong>复制的时间和空间开销较大。</strong></p>
+<p><img data-src="/images/CMU1544564/Lec11/6.jpg" alt="6.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/7.jpg" alt="7.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/8.jpg" alt="8.jpg"></p>
+<h3 id="Record-IDs"><a href="#Record-IDs" class="headerlink" title="Record IDs"></a>Record IDs</h3><blockquote>
+<p>The DBMS <strong>only copies the join keys along with the record ids of the matching tuples</strong>.</p>
+</blockquote>
+<p><a href="https://cakebytheoceanluo.github.io/2020/03/11/CMU-15445-Lec03/#Record-ids-%E2%80%94-Unique-identifier">Record IDs</a>相当于一个硬盘上的位置</p>
+<p><img data-src="/images/CMU1544564/Lec11/9.jpg" alt="9.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/10.jpg" alt="10.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/11.jpg" alt="11.jpg"></p>
+<p><br><br><br></p>
+<h2 id="Cost-Analysis"><a href="#Cost-Analysis" class="headerlink" title="Cost Analysis"></a>Cost Analysis</h2><blockquote>
+<p><strong>The cost metric</strong> that we are going to use to analyze the different join algorithms will be <strong>the number of disk I/Os used to compute the join</strong>. This includes I/Os incurred by <strong>reading data</strong> from disk as well as <strong>writing intermediate data</strong> out to disk.</p>
+</blockquote>
+<p>在硬盘数据库中，硬盘的I/O操作次数主导了数据库性能。对于Join性能的评价，我们也<strong>只关心I/O的次数</strong>。而不需要特别关心 cache miss, memory access这些细节。</p>
+<p><img data-src="/images/CMU1544564/Lec11/12.jpg" alt="12.jpg"></p>
+<p><br><br><br><br><br></p>
+<h1 id="Join-Algorithms"><a href="#Join-Algorithms" class="headerlink" title="Join Algorithms"></a>Join Algorithms</h1><p><img data-src="/images/CMU1544564/Lec11/13.jpg" alt="13.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/14.jpg" alt="14.jpg"></p>
+<h2 id="Nested-Loop-Join-NLJ"><a href="#Nested-Loop-Join-NLJ" class="headerlink" title="Nested Loop Join - NLJ"></a>Nested Loop Join - NLJ</h2><p>Nested Loop Join, 简称NLJ，是最简单的一种实现，直接参考下图中的伪代码: nested for loop。</p>
+<p>它最简单，性能也最差，适用情况是其他的Join实现都不适合的时候。</p>
+<blockquote>
+<p>At a high-level, this type of join algorithm is comprised of <strong>two nested for loops</strong> that iterate over the tuples in both tables and compares each unique of them. If the tuples match the join predicate, then output them.　<strong>The table in the outer for loop is called the outer table</strong>, while <strong>the table in the inner for loop is called the　inner table</strong>.</p>
+<p>The DBMS will always want to <strong>use the “smaller” table as the outer table</strong>. Smaller can be in terms of the number of tuples or number of pages. The DBMS will also want to buffer as much of the outer table in memory as possible. If possible, leverage an index to find matches in inner table.</p>
+</blockquote>
+<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-386f6199c33e609d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="15.jpg"><br><br><br><br></p>
+<h3 id="Stupid-Nested-Loop-Join"><a href="#Stupid-Nested-Loop-Join" class="headerlink" title="Stupid Nested Loop Join"></a>Stupid Nested Loop Join</h3><blockquote>
+<p><strong>For each tuple in the outer table</strong>, compare it with each tuple in the inner table.<br>  This is the worst case scenario where you assume that there is one disk I/O to read each tuple (i.e., there is no caching or access locality).</p>
+</blockquote>
+<p>这个方法只是一种对NLJ的解释，性能角度非常不合理: 没有locality - 对每一个左边的tuple m　都需要连接右侧全部的N个page。</p>
+<p><img data-src="/images/CMU1544564/Lec11/16.jpg" alt="16.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/17.jpg" alt="17.jpg"></p>
+<p><br><br><br></p>
+<h3 id="Block-Nested-Loop-Join"><a href="#Block-Nested-Loop-Join" class="headerlink" title="Block Nested Loop Join"></a>Block Nested Loop Join</h3><blockquote>
+<p><strong>For each block in the outer table</strong>, fetch each block from the inner table and compare all the tuples in those　two blocks.<br>  This algorithm performs fewer disk access because we scan the inner table for every outer table block instead of for every tuple.</p>
+</blockquote>
+<ul>
+<li><strong>Block 这里指Page</strong></li>
+<li>Block NLJ对当前的Page进行了<strong>最大利用</strong>。对每一个左边的每个page都需要连接右侧全部的N个page。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec11/18.jpg" alt="18.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/19.jpg" alt="19.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/20.jpg" alt="20.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/21.jpg" alt="21.jpg"></p>
+<h4 id="Buffer-Batches"><a href="#Buffer-Batches" class="headerlink" title="Buffer Batches"></a>Buffer Batches</h4><blockquote>
+<p>If the DBMS has B buffers available to compute the join, then it can use B − 2 buffers to scan the outer table.<br>  It will use one buffer to hold a block from the inner table and one buffer to store the output of the join.</p>
+</blockquote>
+<p>如果我们有足够的空间，可以在内存中<strong>缓存B个page</strong>。我们可以做到: 对B-2个左边的pages都需要连接右侧全部的N个page。</p>
+<p><img data-src="/images/CMU1544564/Lec11/22.jpg" alt="22.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/23.jpg" alt="23.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/24.jpg" alt="24.jpg"></p>
+<h3 id="Index-Nested-Loop-Join"><a href="#Index-Nested-Loop-Join" class="headerlink" title="Index Nested Loop Join"></a>Index Nested Loop Join</h3><blockquote>
+<p>The previous nested loop join algorithms perform poorly because the DBMS has to do a sequential scan to check for a match in the inner table.<br>  But if the database already has <strong>an index for one of the tables on the join key</strong>, then it can use that to speed up the comparison.<br>  <strong>The outer table will be the one without an index. The inner table will be the one with the index.</strong></p>
+</blockquote>
+<ul>
+<li>NLJ之所以非常差的原因是，我们不知道两个表格直接的关系，各自的数据分布。因此只能暴力枚举brute force去完成join。</li>
+<li>如果我们能知道一些数据内部的信息，<strong>比如有一个index，就能加速NLJ</strong>。</li>
+<li>甚至我们不必提前知道信息。数据库估计出普通NLJ非常慢，花时间的话，<strong>可以单独为了这个join,去制作一个Index索引，制作完以后使用它去完成join</strong>。这样流程下来，所需的时间可能比直接普通NLJ更快。这样单独为一个query制作Index的过程可以被称为<strong>on the fly</strong>, 即一个现在进行时的概念。</li>
+<li>课上提到SQL Server在对应情况下会制作一个B+ Tree on the fly。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec11/25.jpg" alt="25.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/26.jpg" alt="26.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/27.jpg" alt="27.jpg"></p>
+<p>如果对S有一个Index, 那么对每一个R的tuple就不比查看整个S表格了，简单的一次Index look up就好。一次look up的时间复杂度取决于index数据结构:</p>
+<ul>
+<li>Hash Table: C = O(1)</li>
+<li>B+ Tree: C = O(log n)</li>
+</ul>
+<h3 id="NLJ总结"><a href="#NLJ总结" class="headerlink" title="NLJ总结"></a>NLJ总结</h3><p><img data-src="/images/CMU1544564/Lec11/28.jpg" alt="28.jpg"></p>
+<p><br><br><br></p>
+<h2 id="Sort-Merge-Join"><a href="#Sort-Merge-Join" class="headerlink" title="Sort-Merge Join"></a>Sort-Merge Join</h2><blockquote>
+<p>The high-level is to sort the two tables on their join key. Then perform a sequential scan on the sorted tables to compute the join. <strong>This algorithm is useful if one or both tables are already sorted on join attribute(s)</strong>.</p>
+<p>The <strong>worst case</strong> scenario for this algorithm is if <strong>the join attribute for all the tuples in both tables contain the same value</strong>. This is very unlikely to happen in real databases.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec11/29.jpg" alt="29.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/30.jpg" alt="30.jpg"></p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p><img data-src="/images/CMU1544564/Lec11/31.jpg" alt="31.jpg"></p>
+<p><br></p>
+<h4 id="Phase-1-Sort"><a href="#Phase-1-Sort" class="headerlink" title="Phase #1 - Sort"></a>Phase #1 - Sort</h4><p><img data-src="/images/CMU1544564/Lec11/32.jpg" alt="32.jpg"></p>
+<p><br></p>
+<h4 id="Phase-2-Merge"><a href="#Phase-2-Merge" class="headerlink" title="Phase #2 - Merge"></a>Phase #2 - Merge</h4><p><img data-src="/images/CMU1544564/Lec11/33.jpg" alt="33.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/34.jpg" alt="34.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/35.jpg" alt="35.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/36.jpg" alt="36.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/37.jpg" alt="37.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/38.jpg" alt="38.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/39.jpg" alt="39.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/40.jpg" alt="40.jpg"></p>
+<h5 id="Backtracking-inner-relation"><a href="#Backtracking-inner-relation" class="headerlink" title="Backtracking - inner relation"></a>Backtracking - inner relation</h5><p>如果左侧relation出现数值相同的情况，右侧relation的cursor必须要回去backtracking到相同的数值。</p>
+<p><img data-src="/images/CMU1544564/Lec11/41.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/42.jpg" alt="42.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/43.jpg" alt="43.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/44.jpg" alt="44.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/45.jpg" alt="45.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/46.jpg" alt="46.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/47.jpg" alt="47.jpg"></p>
+<ul>
+<li>实际上图就已经可以停止了，因为R中当前值比S中最大的值还大，不会被连接了。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec11/48.jpg" alt="48.jpg"></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p><img data-src="/images/CMU1544564/Lec11/49.jpg" alt="49.jpg"></p>
+<ul>
+<li>上图中Merge Cost没有考虑backtracking, 因为它和具体左侧表格中相等的数值相关。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec11/50.jpg" alt="50.jpg"></p>
+<p><br><br><br></p>
+<p><img data-src="/images/CMU1544564/Lec11/51.jpg" alt="51.jpg"></p>
+<ul>
+<li>上图中Merge Cost的worst case实际上在现实中不太常见。</li>
+</ul>
+<p><img data-src="/images/CMU1544564/Lec11/52.jpg" alt="52.jpg"></p>
+<ul>
+<li>实际上sort的时间复杂度的大头。</li>
+<li>如果数据已经被排序(在Clustered Index中)了，那么Merge Sort Join会是很好的选择。</li>
+<li>或是输出要求被排序，我们也可以选择Merge Sort Join，因为其他的Join的实现不保证排序。</li>
+</ul>
+<p><br></p>
+<p>下面是另外一个Merge Sort Join的例子(我会在另外一篇未来的文章提到它):</p>
+<ul>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxOTIwL2dydW5kbGFnZW4vTG9lc3VuZzExLnBkZj9sYW5nPWRl" title="https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung11.pdf?lang=de">https://db.in.tum.de/teaching/ws1920/grundlagen/Loesung11.pdf?lang=de<i class="fa fa-external-link"></i></span></li>
+<li><span class="exturl" data-url="aHR0cHM6Ly9kYi5pbi50dW0uZGUvdGVhY2hpbmcvd3MxNDE1L2dydW5kbGFnZW4vTG9lc3VuZzExX3NvcnRfbWVyZ2Vfam9pbi5wZGY=" title="https://db.in.tum.de/teaching/ws1415/grundlagen/Loesung11_sort_merge_join.pdf">https://db.in.tum.de/teaching/ws1415/grundlagen/Loesung11_sort_merge_join.pdf<i class="fa fa-external-link"></i></span></li>
+</ul>
+<p><br><br><br></p>
+<h2 id="Hash-Join"><a href="#Hash-Join" class="headerlink" title="Hash Join"></a>Hash Join</h2><blockquote>
+<p>The high-level idea of the hash join algorithm is to <strong>use a hash table to split up the tuples into smaller chunks based on their join attribute(s)</strong>. This <strong>reduces the number of comparisons</strong> that the DBMS needs to perform per tuple to compute the join. Hash join can <strong>only be used for equi-joins</strong> on the complete join key.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec11/53.jpg" alt="53.jpg"></p>
+<blockquote>
+<p>The <strong>key</strong> in the hash table is the join attributes. The <strong>value</strong> depends on the implementation.</p>
+<p>Since there may be <strong>hash collisions in the hash table</strong>, the DBMS will need to examine the original values of the join attribute(s) to determine whether tuples are truly matching.</p>
+</blockquote>
+<p>注意我们Build和Probe使用的都是同一个hash function h1。</p>
+<p><img data-src="/images/CMU1544564/Lec11/54.jpg" alt="54.jpg"></p>
+<h3 id="Basic-Hash-Join"><a href="#Basic-Hash-Join" class="headerlink" title="Basic Hash Join"></a>Basic Hash Join</h3><h4 id="Phase-1-–-Build"><a href="#Phase-1-–-Build" class="headerlink" title="Phase #1 – Build"></a>Phase #1 – Build</h4><p><img data-src="/images/CMU1544564/Lec11/55.jpg" alt="55.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/56.jpg" alt="56.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/57.jpg" alt="57.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/58.jpg" alt="58.jpg"></p>
+<h4 id="Phase-2-–-Probe"><a href="#Phase-2-–-Probe" class="headerlink" title="Phase #2 – Probe"></a>Phase #2 – Probe</h4><p><img data-src="/images/CMU1544564/Lec11/59.jpg" alt="59.jpg"></p>
+<p><br></p>
+<h3 id="Hash-Table-Contents-amp-Values"><a href="#Hash-Table-Contents-amp-Values" class="headerlink" title="Hash Table Contents &amp; Values"></a>Hash Table Contents &amp; Values</h3><p>Hash Table Values就像前面提到的，需要在具体实现中选择。</p>
+<p><img data-src="/images/CMU1544564/Lec11/60.jpg" alt="60.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/61.jpg" alt="61.jpg"></p>
+<p><br></p>
+<h3 id="Bloom-Filter"><a href="#Bloom-Filter" class="headerlink" title="Bloom Filter"></a>Bloom Filter</h3><p>Bloom Filter是一种概率性数据结构，支持insert, lookup。它只需要非常小的存储空间(CPU Cache-line)。</p>
+<p>look up结果:</p>
+<ul>
+<li><strong>true:　数值可能在bloom filter中，可能不在bloom filter中</strong></li>
+<li><strong>false: 数值肯定不在bloom filter中</strong></li>
+</ul>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf01.png" alt="bf01"></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf02.png" alt="bf02"></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf03.png" alt="bf03"></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf04.png" alt="bf04"></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf05.png" alt="bf05"></p>
+<p><img data-src="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec11/bf06.png" alt="bf06"></p>
+<h3 id="Probe-Phase-Optimization"><a href="#Probe-Phase-Optimization" class="headerlink" title="Probe Phase Optimization"></a>Probe Phase Optimization</h3><p>一个优化是: 在正式Probe之前,先在Bloom Filter里面查一下, 这样可以筛选掉绝对不存在的:</p>
+<p><img data-src="/images/CMU1544564/Lec11/62.jpg" alt="62.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/63.jpg" alt="63.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/64.jpg" alt="64.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/65.jpg" alt="65.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/66.jpg" alt="66.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/67.jpg" alt="67.jpg"></p>
+<h3 id="Grace-Hash-Join-Hybrid-Hash-Join-External-Hash-Join"><a href="#Grace-Hash-Join-Hybrid-Hash-Join-External-Hash-Join" class="headerlink" title="Grace Hash Join / Hybrid Hash Join / External Hash Join"></a>Grace Hash Join / Hybrid Hash Join / External Hash Join</h3><blockquote>
+<p>If the DBMS knows the size of the outer table, the join can use a static hash table.<br>  If it does not know the size, then the join has to use a dynamic hash table or allow for overflow pages.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec11/68.jpg" alt="68.jpg"></p>
+<blockquote>
+<p><strong>When the tables do not fit on main memory, you do not want the buffer pool manager constantly swapping tables in and out.</strong><br>  The Grace Hash Join is an extension of the basic hash join that is also hashes the inner table into partitions that are written out to disk. The name “Grace” comes from GRACE database machine developed during the 1980s in Japan.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec11/69.jpg" alt="69.jpg"></p>
+<blockquote>
+<p>Phase #1 - Build: </p>
+<ul>
+<li>Scan both the outer and inner tables and populate a hash table using the hash function h1 on the join attributes. The hash table’s buckets are written out to disk as needed. </li>
+<li>If a single bucket does not fit in memory, then use <strong>recursive partitioning</strong> with a second hash function h2 (where h1 != h2) to further divide the bucket.</li>
+</ul>
+<p>Phase #2 - Probe: </p>
+<ul>
+<li>For each bucket level, retrieve the corresponding pages for both outer and inner tables. </li>
+<li>Then perform a nested loop join on the tuples in those two pages. The pages will fit in memory, so this join operation will be fast.</li>
+</ul>
+</blockquote>
+<p>Partitioning将可能join的tuple复制到同一个Partition中，这样提高了Locality。我们以后讲高性能HashJoin的时候会重点提这个方法</p>
+<p><img data-src="/images/CMU1544564/Lec11/70.jpg" alt="70.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/71.jpg" alt="71.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/72.jpg" alt="72.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/73.jpg" alt="73.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/74.jpg" alt="74.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/75.jpg" alt="75.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/76.jpg" alt="76.jpg"></p>
+<h4 id="Recursive-Partitioning"><a href="#Recursive-Partitioning" class="headerlink" title="Recursive Partitioning"></a>Recursive Partitioning</h4><p><img data-src="/images/CMU1544564/Lec11/77.jpg" alt="77.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/78.jpg" alt="78.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/79.jpg" alt="79.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/80.jpg" alt="80.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/81.jpg" alt="81.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/82.jpg" alt="82.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/83.jpg" alt="83.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/84.jpg" alt="84.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/85.jpg" alt="85.jpg"></p>
+<p><br><br><br><br><br></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img data-src="/images/CMU1544564/Lec11/86.jpg" alt="86.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/87.jpg" alt="87.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec11/88.jpg" alt="88.jpg"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/10/17/CMU-15445-Lec11/" title="[CMU-15445]Lec11 Join Algorithms - 连接算法">https://cakebytheoceanluo.github.io/2020/10/17/CMU-15445-Lec11/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Join/" rel="tag"><i class="fa fa-tag"></i> Join</a>
+              <a href="/tags/Hash-Join/" rel="tag"><i class="fa fa-tag"></i> Hash Join</a>
+              <a href="/tags/Sort-Merge-Join/" rel="tag"><i class="fa fa-tag"></i> Sort-Merge Join</a>
+              <a href="/tags/Nested-Loop-Join/" rel="tag"><i class="fa fa-tag"></i> Nested Loop Join</a>
+              <a href="/tags/Bloom-Filter/" rel="tag"><i class="fa fa-tag"></i> Bloom Filter</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/16/Leetcode-Algorithm-15-3-sum/" rel="prev" title="[Leetcode-Algorithm] 15.3-sum">
+      <i class="fa fa-chevron-left"></i> [Leetcode-Algorithm] 15.3-sum
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Join-Operator"><span class="nav-number">1.</span> <span class="nav-text">Join Operator</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Operator-Output"><span class="nav-number">1.1.</span> <span class="nav-text">Operator Output</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data"><span class="nav-number">1.1.1.</span> <span class="nav-text">Data</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Record-IDs"><span class="nav-number">1.1.2.</span> <span class="nav-text">Record IDs</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cost-Analysis"><span class="nav-number">1.2.</span> <span class="nav-text">Cost Analysis</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Join-Algorithms"><span class="nav-number">2.</span> <span class="nav-text">Join Algorithms</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Nested-Loop-Join-NLJ"><span class="nav-number">2.1.</span> <span class="nav-text">Nested Loop Join - NLJ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Stupid-Nested-Loop-Join"><span class="nav-number">2.1.1.</span> <span class="nav-text">Stupid Nested Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Block-Nested-Loop-Join"><span class="nav-number">2.1.2.</span> <span class="nav-text">Block Nested Loop Join</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Buffer-Batches"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">Buffer Batches</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index-Nested-Loop-Join"><span class="nav-number">2.1.3.</span> <span class="nav-text">Index Nested Loop Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NLJ总结"><span class="nav-number">2.1.4.</span> <span class="nav-text">NLJ总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sort-Merge-Join"><span class="nav-number">2.2.</span> <span class="nav-text">Sort-Merge Join</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子"><span class="nav-number">2.2.1.</span> <span class="nav-text">例子</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase-1-Sort"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">Phase #1 - Sort</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase-2-Merge"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">Phase #2 - Merge</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Backtracking-inner-relation"><span class="nav-number">2.2.1.2.1.</span> <span class="nav-text">Backtracking - inner relation</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">2.2.2.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hash-Join"><span class="nav-number">2.3.</span> <span class="nav-text">Hash Join</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Basic-Hash-Join"><span class="nav-number">2.3.1.</span> <span class="nav-text">Basic Hash Join</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase-1-–-Build"><span class="nav-number">2.3.1.1.</span> <span class="nav-text">Phase #1 – Build</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Phase-2-–-Probe"><span class="nav-number">2.3.1.2.</span> <span class="nav-text">Phase #2 – Probe</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash-Table-Contents-amp-Values"><span class="nav-number">2.3.2.</span> <span class="nav-text">Hash Table Contents &amp; Values</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bloom-Filter"><span class="nav-number">2.3.3.</span> <span class="nav-text">Bloom Filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Probe-Phase-Optimization"><span class="nav-number">2.3.4.</span> <span class="nav-text">Probe Phase Optimization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Grace-Hash-Join-Hybrid-Hash-Join-External-Hash-Join"><span class="nav-number">2.3.5.</span> <span class="nav-text">Grace Hash Join &#x2F; Hybrid Hash Join &#x2F; External Hash Join</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Recursive-Partitioning"><span class="nav-number">2.3.5.1.</span> <span class="nav-text">Recursive Partitioning</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">3.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">96</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">464k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">7:02</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/10/17/CMU-15445-Lec11/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
