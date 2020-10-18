@@ -5,7 +5,7 @@
     <url>/2020/10/17/CMU-15445-Lec11/</url>
     <content><![CDATA[<p>Join Algorithms - 连接算法</p>
 <p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzExLWpvaW5zLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/slides/11-joins.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/11-joins.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMTEtam9pbnMucGRm" title="https://15445.courses.cs.cmu.edu/fall2019/notes/11-joins.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/11-joins.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 12.4-12.6</p>
-<p>我们开始学习Operator Execution执行引擎部分。这次我们Join是如何被实现的。</p>
+<p>我们开始学习Operator Execution执行引擎部分。这次学习我们Join是如何被实现的。</p>
 <a id="more"></a>
 <p><img data-src="/images/CMU1544564/Lec11/1.jpg" alt="1.jpg"></p>
 <blockquote>
@@ -52,7 +52,8 @@
 <p>At a high-level, this type of join algorithm is comprised of <strong>two nested for loops</strong> that iterate over the tuples in both tables and compares each unique of them. If the tuples match the join predicate, then output them.　<strong>The table in the outer for loop is called the outer table</strong>, while <strong>the table in the inner for loop is called the　inner table</strong>.</p>
 <p>The DBMS will always want to <strong>use the “smaller” table as the outer table</strong>. Smaller can be in terms of the number of tuples or number of pages. The DBMS will also want to buffer as much of the outer table in memory as possible. If possible, leverage an index to find matches in inner table.</p>
 </blockquote>
-<p><img data-src="https://upload-images.jianshu.io/upload_images/20796875-386f6199c33e609d.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="15.jpg"><br><br><br><br></p>
+<p><img data-src="/images/CMU1544564/Lec11/15.jpg" alt="15.jpg"></p>
+<p><br><br><br></p>
 <h3 id="Stupid-Nested-Loop-Join"><a href="#Stupid-Nested-Loop-Join" class="headerlink" title="Stupid Nested Loop Join"></a>Stupid Nested Loop Join</h3><blockquote>
 <p><strong>For each tuple in the outer table</strong>, compare it with each tuple in the inner table.<br>  This is the worst case scenario where you assume that there is one disk I/O to read each tuple (i.e., there is no caching or access locality).</p>
 </blockquote>
@@ -268,7 +269,7 @@
     <title>[Leetcode-Algorithm] 15.3-sum</title>
     <url>/2020/10/16/Leetcode-Algorithm-15-3-sum/</url>
     <content><![CDATA[<p>15.3Sum</p>
-<p>Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0? Find all unique triplets in the array which gives the sum of zero.</p>
+<p>Given an array nums of n integers, are there elements a, b, c in nums such that a + b + c = 0? <strong>Find all unique triplets</strong> in the array which gives the sum of zero.</p>
 <p>Note:</p>
 <p>The solution set must not contain duplicate triplets.</p>
 <p>Example:</p>
@@ -327,6 +328,7 @@
 <p><span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2FsZ29yaXRobS9sb3dlcl9ib3VuZA==" title="https://en.cppreference.com/w/cpp/algorithm/lower_bound">https://en.cppreference.com/w/cpp/algorithm/lower_bound<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2FsZ29yaXRobS91cHBlcl9ib3VuZA==" title="https://en.cppreference.com/w/cpp/algorithm/upper_bound">https://en.cppreference.com/w/cpp/algorithm/upper_bound<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvM3N1bQ==" title="https://leetcode.com/problems/3sum">https://leetcode.com/problems/3sum<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvM3N1bS9zb2x1dGlvbi9zYW4tc2h1LXpoaS1oZS1ieS1sZWV0Y29kZS1zb2x1dGlvbi8=" title="https://leetcode-cn.com/problems/3sum/solution/san-shu-zhi-he-by-leetcode-solution/">https://leetcode-cn.com/problems/3sum/solution/san-shu-zhi-he-by-leetcode-solution/<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24vYmxvYi9tYXN0ZXIvMDAxNS0zU3VtL0FydGljbGUvMDAxNS0zU3VtLm1k" title="https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum.md">https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum.md<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24vYmxvYi9tYXN0ZXIvMDAxNS0zU3VtL0FydGljbGUvMDAxNS0zU3VtMi5tZA==" title="https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum2.md">https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0015-3Sum/Article/0015-3Sum2.md<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0xlb1Npcml1cy9sZWV0Y29kZV9zb2x1dGlvbnMvYmxvYi9tYXN0ZXIvMDAxNV8zU3VtL1NvbHV0aW9uMS5jcHA=" title="https://github.com/LeoSirius/leetcode_solutions/blob/master/0015_3Sum/Solution1.cpp">https://github.com/LeoSirius/leetcode_solutions/blob/master/0015_3Sum/Solution1.cpp<i class="fa fa-external-link"></i></span></p>
@@ -945,7 +947,7 @@
 </ul>
 <p>复杂度:</p>
 <ul>
-<li>时间复杂度：$O(N)$</li>
+<li>时间复杂度：$O(N \log{N})$</li>
 <li>空间复杂度：$O(1)$</li>
 </ul>
 <p><br></p>
@@ -954,7 +956,6 @@
 <p><span class="exturl" data-url="aHR0cHM6Ly9lbi5jcHByZWZlcmVuY2UuY29tL3cvY3BwL2FsZ29yaXRobS91cHBlcl9ib3VuZA==" title="https://en.cppreference.com/w/cpp/algorithm/upper_bound">https://en.cppreference.com/w/cpp/algorithm/upper_bound<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvdHdvLXN1bS1paS1pbnB1dC1hcnJheS1pcy1zb3J0ZWQ=" title="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted">https://leetcode.com/problems/two-sum-ii-input-array-is-sorted<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvdHdvLXN1bS1paS1pbnB1dC1hcnJheS1pcy1zb3J0ZWQvZGlzY3Vzcy81MTI1My9BLXNpbXBsZS1PKG4pLXNvbHV0aW9u" title="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/discuss/51253/A-simple-O(n)-solution">https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/discuss/51253/A-simple-O(n)-solution<i class="fa fa-external-link"></i></span></p>
-<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2FwYWNoZWNuL0ludGVydmlldy9ibG9iL21hc3Rlci9kb2NzL0FsZ29yaXRobS9MZWV0Y29kZS9DJTJCJTJCLzAwMDEuX1R3b19TdW0ubWQ=" title="https://github.com/apachecn/Interview/blob/master/docs/Algorithm/Leetcode/C%2B%2B/0001._Two_Sum.md">https://github.com/apachecn/Interview/blob/master/docs/Algorithm/Leetcode/C%2B%2B/0001._Two_Sum.md<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2hhb2VsL2xlZXRjb2RlL2Jsb2IvbWFzdGVyL2FsZ29yaXRobXMvY3BwL3R3b1N1bS90d29TdW0uSUkuY3Bw" title="https://github.com/haoel/leetcode/blob/master/algorithms/cpp/twoSum/twoSum.II.cpp">https://github.com/haoel/leetcode/blob/master/algorithms/cpp/twoSum/twoSum.II.cpp<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24vYmxvYi9tYXN0ZXIvMDE2Ny1Ud28tU3VtLUlJLUlucHV0LWFycmF5LWlzLXNvcnRlZC9BcnRpY2xlLzAxNjctVHdvLVN1bS1JSS1JbnB1dC1hcnJheS1pcy1zb3J0ZWQubWQ=" title="https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0167-Two-Sum-II-Input-array-is-sorted/Article/0167-Two-Sum-II-Input-array-is-sorted.md">https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0167-Two-Sum-II-Input-array-is-sorted/Article/0167-Two-Sum-II-Input-array-is-sorted.md<i class="fa fa-external-link"></i></span></p>
 <ul>
@@ -1033,6 +1034,7 @@
 <p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvdHdvLXN1bQ==" title="https://leetcode.com/problems/two-sum">https://leetcode.com/problems/two-sum<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvdHdvLXN1bQ==" title="https://leetcode-cn.com/problems/two-sum">https://leetcode-cn.com/problems/two-sum<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24=" title="https://github.com/MisterBooo/LeetCodeAnimation">https://github.com/MisterBooo/LeetCodeAnimation<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvdHdvLXN1bS9zb2x1dGlvbi9saWFuZy1zaHUtemhpLWhlLWJ5LWxlZXRjb2RlLXNvbHV0aW9uLw==" title="https://leetcode-cn.com/problems/two-sum/solution/liang-shu-zhi-he-by-leetcode-solution/">https://leetcode-cn.com/problems/two-sum/solution/liang-shu-zhi-he-by-leetcode-solution/<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0N5QzIwMTgvQ1MtTm90ZXMvYmxvYi9tYXN0ZXIvbm90ZXMvTGVldGNvZGUlMjAlRTklQTIlOTglRTglQTclQTMlMjAtJTIwJUU1JThGJThDJUU2JThDJTg3JUU5JTkyJTg4Lm1kIzEtJUU2JTlDJTg5JUU1JUJBJThGJUU2JTk1JUIwJUU3JUJCJTg0JUU3JTlBJTg0LXR3by1zdW0=" title="https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8F%8C%E6%8C%87%E9%92%88.md#1-%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84-two-sum">https://github.com/CyC2018/CS-Notes/blob/master/notes/Leetcode%20%E9%A2%98%E8%A7%A3%20-%20%E5%8F%8C%E6%8C%87%E9%92%88.md#1-%E6%9C%89%E5%BA%8F%E6%95%B0%E7%BB%84%E7%9A%84-two-sum<i class="fa fa-external-link"></i></span></p>
 <script>
         document.querySelectorAll('.github-emoji')
@@ -2375,6 +2377,7 @@
 <p>引用和推荐的阅读：</p>
 <p><a href="https://cakebytheoceanluo.github.io/2020/04/26/LRU%E7%BB%83%E4%B9%A0/">LRU 练习</a></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvbHJ1LWNhY2hlLw==" title="https://leetcode.com/problems/lru-cache/">https://leetcode.com/problems/lru-cache/<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvbHJ1LWNhY2hlL3NvbHV0aW9uL2xydWh1YW4tY3VuLWppLXpoaS1ieS1sZWV0Y29kZS1zb2x1dGlvbi8=" title="https://leetcode-cn.com/problems/lru-cache/solution/lruhuan-cun-ji-zhi-by-leetcode-solution/">https://leetcode-cn.com/problems/lru-cache/solution/lruhuan-cun-ji-zhi-by-leetcode-solution/<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vVGVub3NEb0l0L3AvMzQxNzE1Ny5odG1s" title="https://www.cnblogs.com/TenosDoIt/p/3417157.html">https://www.cnblogs.com/TenosDoIt/p/3417157.html<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vRGhvdXNlL3AvODYxNTQ4MS5odG1s" title="https://www.cnblogs.com/Dhouse/p/8615481.html">https://www.cnblogs.com/Dhouse/p/8615481.html<i class="fa fa-external-link"></i></span></p>
 <p><span class="exturl" data-url="aHR0cHM6Ly96aHVhbmxhbi56aGlodS5jb20vcC8zNDEzMzA2Nw==" title="https://zhuanlan.zhihu.com/p/34133067">https://zhuanlan.zhihu.com/p/34133067<i class="fa fa-external-link"></i></span></p>
