@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="google-site-verification" content="ttc5vA8Af6vd2hXb70GjZI6v_4fuOJtjeIekoyhEbhw" />
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.svg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.svg">
+  <link rel="mask-icon" href="/images/favicon.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cakebytheoceanluo.github.io","root":"/","scheme":"Pisces","version":"7.7.2","exturl":true,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":true,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Query Execution I - Query执行 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;12-queryexecution1.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;12-queryexecution1.pdfReadings:  Chapter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[CMU-15445]Lec12">
+<meta property="og:url" content="https://cakebytheoceanluo.github.io/2020/10/19/CMU-15445-Lec12/index.html">
+<meta property="og:site_name" content="关于数据库的一切">
+<meta property="og:description" content="Query Execution I - Query执行 Slide: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;slides&#x2F;12-queryexecution1.pdfNote: https:&#x2F;&#x2F;15445.courses.cs.cmu.edu&#x2F;fall2019&#x2F;notes&#x2F;12-queryexecution1.pdfReadings:  Chapter">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/1.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/3.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/4.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/5.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/6.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/7.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/8.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/9.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/10.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/11.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/12.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/13.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/14.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/15.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/16.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/17.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/18.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/19.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/20.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/21.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/22.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/23.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/24.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/25.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/26.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/27.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/28.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/29.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/30.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/31.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/32.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/33.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/34.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/35.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/36.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/37.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/38.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/39.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/40.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/41.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/42.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/43.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/44.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/45.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/46.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/47.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/48.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/49.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/50.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/51.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/52.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/53.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/54.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/55.jpg">
+<meta property="og:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/56.jpg">
+<meta property="article:published_time" content="2020-10-19T07:54:52.000Z">
+<meta property="article:modified_time" content="2020-10-19T08:02:11.507Z">
+<meta property="article:author" content="罗济高">
+<meta property="article:tag" content="B Tree">
+<meta property="article:tag" content="Indexing">
+<meta property="article:tag" content="Clustered Index">
+<meta property="article:tag" content="Processing Models">
+<meta property="article:tag" content="Iterator Model">
+<meta property="article:tag" content="Materialization Model">
+<meta property="article:tag" content="Vectorization Model">
+<meta property="article:tag" content="Late Materialization">
+<meta property="article:tag" content="Zone Map &#x2F; SMA">
+<meta property="article:tag" content="Expression Evaluation">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cakebytheoceanluo.github.io/images/CMU1544564/Lec12/1.jpg">
+
+<link rel="canonical" href="https://cakebytheoceanluo.github.io/2020/10/19/CMU-15445-Lec12/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>[CMU-15445]Lec12 | 关于数据库的一切</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?bff369b4d0627249d230e2ae930016fc";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="关于数据库的一切" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">关于数据库的一切</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">罗济高的博客</h1>
+      
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">84</span></a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类<span class="badge">37</span></a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">97</span></a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <span class="exturl github-corner" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="Follow me on GitHub" aria-label="Follow me on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></span>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/10/19/CMU-15445-Lec12/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          [CMU-15445]Lec12
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-19 09:54:52 / 修改时间：10:02:11" itemprop="dateCreated datePublished" datetime="2020-10-19T09:54:52+02:00">2020-10-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Access-Methods/" itemprop="url" rel="index"><span itemprop="name">Access Methods</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/B-Tree/" itemprop="url" rel="index"><span itemprop="name">B Tree</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Data-Structure/" itemprop="url" rel="index"><span itemprop="name">Data Structure</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Indexing/" itemprop="url" rel="index"><span itemprop="name">Indexing</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Operator-Execution-Query-Processing/" itemprop="url" rel="index"><span itemprop="name">Operator Execution / Query Processing</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Processing-Models/" itemprop="url" rel="index"><span itemprop="name">Processing Models</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Iterator-Model/" itemprop="url" rel="index"><span itemprop="name">Iterator Model</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Materialization-Model/" itemprop="url" rel="index"><span itemprop="name">Materialization Model</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Vectorization-Model/" itemprop="url" rel="index"><span itemprop="name">Vectorization Model</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/10/19/CMU-15445-Lec12/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec12" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Query Execution I - Query执行</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzEyLXF1ZXJ5ZXhlY3V0aW9uMS5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/slides/12-queryexecution1.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/12-queryexecution1.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMTItcXVlcnlleGVjdXRpb24xLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/notes/12-queryexecution1.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/12-queryexecution1.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 12.1-12.3, 12.7</p>
+<p>我们开始学习Operator Execution执行引擎部分。这次学习的主要主题是Processing Model</p>
+<a id="more"></a>
+<blockquote>
+<p>The DBMS converts a SQL statement into a query plan. Operators in the query plan are arranged in a tree. Data flows from the leaves of this tree towards the root.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/1.jpg" alt="1.jpg"></p>
+<!-- ![2.jpg](/images/CMU1544564/Lec12/2.jpg) -->
+<p><img data-src="/images/CMU1544564/Lec12/3.jpg" alt="3.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/4.jpg" alt="4.jpg"></p>
+<h1 id="Processing-Models"><a href="#Processing-Models" class="headerlink" title="Processing Models"></a>Processing Models</h1><blockquote>
+<p>A DBMS processing model defines how the system executes a query plan. <strong>It specifies things like the direction in which the query plan is read in as well as what kind of data is passed between operators along the way. There are different models of processing models that have various trade-offs for different workloads.</strong></p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/5.jpg" alt="5.jpg"></p>
+<h2 id="Iterator-Volcano-Pipeline-Model"><a href="#Iterator-Volcano-Pipeline-Model" class="headerlink" title="Iterator (Volcano / Pipeline) Model"></a>Iterator (Volcano / Pipeline) Model</h2><blockquote>
+<p><strong>The iterator model</strong>, also known as the <strong>Volcano or Pipeline model</strong>, is the most common processing model and is used by almost every (row-based) DBMS. The iterator model <strong>allows for pipelining where the DBMS can process a tuple through as many operators as possible before having to retrieve the next tuple. The series of tasks performed for a given tuple in the query plan is called a pipeline</strong>.</p>
+<p>The iterator model works by implementing a <em>next</em> function for every operator in the database. Each node in the query plan calls <em>next</em> on its children until the leaf nodes are reached, which start emitting tuples up for processing. <strong>Each tuple is then processed up the plan as far as possible before the next tuple is retrieved. This is useful in disk-based systems because it allows us to fully use each tuple in memory before the next tuple or page is accessed.</strong> A sample diagram of the iterator model is shown in example.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/6.jpg" alt="6.jpg"></p>
+<blockquote>
+<p>In this way, calling next on a parent calls next on its children. In response, the child node will return the next tuple that the parent must process</p>
+</blockquote>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3><blockquote>
+<p>Pseudo code of the different <em>next</em> functions for each of the operators. The <em>next</em> functions are essentially for loops iterating over the output of their child operator. For example, the root node calls <em>next</em> on its child, the join operator, which is an access method that loops over the relation R and emits a tuple up that is then operated on. After all tuples have been processed, a null pointer is sent that lets the parent nodes know to move on.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/7.jpg" alt="7.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/8.jpg" alt="8.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/9.jpg" alt="9.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/10.jpg" alt="10.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/11.jpg" alt="11.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/12.jpg" alt="12.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/13.jpg" alt="13.jpg"></p>
+<blockquote>
+<p>Some operators will block until children emit all of their tuples (joins, subqueries, order by). These are known as pipeline breakers.<br>  Output control works easily with this approach (LIMIT) because an operator can stop invoking next on its children operators once it has all the tuples that it requires.</p>
+</blockquote>
+<p><br><br><br></p>
+<h2 id="Materialization-Model"><a href="#Materialization-Model" class="headerlink" title="Materialization Model"></a>Materialization Model</h2><blockquote>
+<p>The materialization model is a specialization of the iterator model where <strong>each operator processes its input all at once and then emits its output all at once</strong>. Instead of having a next function that returns a single tuple, <strong>each operator returns all of its tuples every time it is reached. To avoid scanning too many tuples, the DBMS can propagate down information about how many tuples are needed to subsequent operators.</strong> The operator “materializes” its output as a single result. The output can be either a whole tuple (NSM) or a subset of columns (DSM). A diagram of the materialization model is shown in example.</p>
+<p>Every query plan operator implements an <em>output</em> function:</p>
+<ul>
+<li><strong>The operator processes all the tuples from its children at once.</strong></li>
+<li><strong>The return result of this function is all the tuples that operator will ever emit. When the operator finishes executing, the DBMS never needs to return to it to retrieve more data.</strong></li>
+</ul>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/14.jpg" alt="14.jpg"></p>
+<h3 id="example"><a href="#example" class="headerlink" title="example"></a>example</h3><blockquote>
+<p>Materialization Model Example - Starting at the root, the <em>child.Output()</em> function is called, which invokes the operators below, which returns <strong>all tuples back up</strong>.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/15.jpg" alt="15.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/16.jpg" alt="16.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/17.jpg" alt="17.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/18.jpg" alt="18.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/19.jpg" alt="19.jpg"></p>
+<blockquote>
+<p>This approach is <strong>better for OLTP workloads</strong> because queries typically only access a small number of tuples at a time. Thus, there are fewer function calls to retrieve tuples.<br>  The materialization model is <strong>not suited for OLAP queries</strong> with large intermediate results because the DBMS may have to spill those results to disk between operators.</p>
+</blockquote>
+<p><br><br><br></p>
+<h2 id="Vectorization-Model"><a href="#Vectorization-Model" class="headerlink" title="Vectorization Model"></a>Vectorization Model</h2><p>Like the iterator model, the vectorization model has each operator implements a <em>next</em> function. <strong>However, each operator emits a batch (i.e., vector) of data instead of a single tuple. The operator’s internal loop implementation is optimized for processing batches of data instead of a single item at a time.</strong> The size of the batch can vary based on hardware or query properties. See an example of the vectorization model.</p>
+<p><img data-src="/images/CMU1544564/Lec12/20.jpg" alt="20.jpg"></p>
+<h3 id="example-1"><a href="#example-1" class="headerlink" title="example"></a>example</h3><p> The vectorization model is very similar to<br>the iterator model except at every operator, an output buffer is compared to the desired<br>emission size. If the buffer is larger, then a tuple batch is sent up.</p>
+<p><img data-src="/images/CMU1544564/Lec12/21.jpg" alt="21.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/22.jpg" alt="22.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/23.jpg" alt="23.jpg"></p>
+<blockquote>
+<p>The vectorization model approach is <strong>ideal for OLAP queries</strong> that have to scan a large number of tuples because there are fewer invocations of the next function.</p>
+</blockquote>
+<p><br><br><br></p>
+<h2 id="Plan-Processing-Direction"><a href="#Plan-Processing-Direction" class="headerlink" title="Plan Processing Direction"></a>Plan Processing Direction</h2><p><img data-src="/images/CMU1544564/Lec12/24.jpg" alt="24.jpg"></p>
+<blockquote>
+<p>These models can also be implemented to invoke the operators either from top-to-bottom or from bottom-to-top. Although the top-to-bottom approach is much more common, <strong>the bottom-to-top approach can allow for tighter control of caches/registers in pipelines</strong>.</p>
+</blockquote>
+<p>(到目前为止 只是简单的概念介绍 有兴趣的同学可以自己实现一下)</p>
+<p><br><br><br><br><br><br><br></p>
+<h1 id="Access-Methods"><a href="#Access-Methods" class="headerlink" title="Access Methods"></a>Access Methods</h1><p><img data-src="/images/CMU1544564/Lec12/25.jpg" alt="25.jpg"></p>
+<blockquote>
+<p><strong>An access method is how the DBMS accesses the data stored in a table.</strong> In general, there are two approaches to access models; <strong>*either data is read from an index or from a table with a sequential scan</strong>.<br>  The* multi-index is an extension of the index scan that allows for multiple indexes to be accessed at once.</p>
+<p>The DBMS maintains an internal cursor that tracks the last page/slot that it examined.</p>
+</blockquote>
+<h2 id="Sequential-Scan"><a href="#Sequential-Scan" class="headerlink" title="Sequential Scan"></a>Sequential Scan</h2><p><img data-src="/images/CMU1544564/Lec12/26.jpg" alt="26.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/27.jpg" alt="27.jpg"></p>
+<p>部分优化之前在缓冲区管理章节提到过: <a href="https://cakebytheoceanluo.github.io/2020/03/17/CMU-15445-Lec05/#Buffer-Pool-Optimizations">[CMU-15445] Lec05 Buffer Pools - 数据库缓存区: Buffer Pool Optimizations</a></p>
+<blockquote>
+<ul>
+<li>Prefetching: Fetch the next few pages in advance so that the DBMS does not have to block when accessing each page.</li>
+<li>Parallelization: Execute the scan using multiple threads/processes in parallel.</li>
+<li><strong>Buffer Pool Bypass: The scan operator stores pages that it fetches from disk in its local memory instead of the buffer pool in order to avoid sequential flooding.</strong></li>
+</ul>
+</blockquote>
+<p><br></p>
+<h3 id="Zone-Map"><a href="#Zone-Map" class="headerlink" title="Zone Map"></a>Zone Map</h3><blockquote>
+<p>Zone Map: <strong>Pre-compute aggregations</strong> for each tuple attribute in a page. The DBMS can then decide whether it needs to access a page by checking its Zone Map first. The Zone Maps for each page are stored in separate pages and there are typically multiple entries in each Zone Map page. Thus, it is possible to reduce the total number of pages examined in a sequential scan. </p>
+</blockquote>
+<p>Zone Map在学术环境又称为 Small Materialized Aggregates: <span class="exturl" data-url="aHR0cHM6Ly9waTMuaW5mb3JtYXRpay51bmktbWFubmhlaW0uZGUvfm1vZXIvUHVibGljYXRpb25zL01BLTk4LTAxLnBkZg==" title="https://pi3.informatik.uni-mannheim.de/~moer/Publications/MA-98-01.pdf">Small Materialized Aggregates: A Light Weight Index Structure for Data Warehousing<i class="fa fa-external-link"></i></span></p>
+<p>Zone Map也就是一些预先计算好的信息，对OLAP很有帮助，但是对update较多的OLTP不大好. 它类似于一块(block)数据的一个Header，提供一些必要信息，来加速OLAP</p>
+<p>比如Query是<code>SELECT sum(val) FROM table;</code>，我们就只需要看这个Header中的sum就好 ,不需要重新一个一个加而去获得sum. 下图中也有另外一个例子</p>
+<p><img data-src="/images/CMU1544564/Lec12/28.jpg" alt="28.jpg"></p>
+<blockquote>
+<p>Zone Map Example: The zone map stores pre-computed aggregates for values in a page. In the example above, the select query realizes from the zone map that the max value in the original data is only 400. Then, instead of having to iterate through every tuple in the page, the query can avoid accessing the page at all since none of the values will be greater than 600.</p>
+</blockquote>
+<h3 id="Late-Materialization"><a href="#Late-Materialization" class="headerlink" title="Late Materialization"></a>Late Materialization</h3><blockquote>
+<p>Late Materialization: <strong>Each operator passes the minimal amount of information needed to the next operator (e.g., record id, offset to record in column).</strong> This is only useful in <strong>column-store</strong> systems (i.e., DSM).</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/29.jpg" alt="29.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/30.jpg" alt="30.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/31.jpg" alt="31.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/32.jpg" alt="32.jpg"></p>
+<h3 id="Heap-Clustering"><a href="#Heap-Clustering" class="headerlink" title="Heap Clustering"></a>Heap Clustering</h3><blockquote>
+<p><strong>Tuples are stored in the heap pages using an order specified by a clustering index</strong>.</p>
+</blockquote>
+<p><a href="https://cakebytheoceanluo.github.io/2020/03/19/CMU-15445-Lec07/#Clustered-Indexes">[CMU-15445] Lec07 Tree Indexes Part I - 树索引 I: Clustered Indexes</a></p>
+<p><img data-src="/images/CMU1544564/Lec12/33.jpg" alt="33.jpg"></p>
+<p><br><br><br></p>
+<h2 id="Index-Scan"><a href="#Index-Scan" class="headerlink" title="Index Scan"></a>Index Scan</h2><blockquote>
+<p>The goal of an index scan is to identify an index in the table that will quickly allow the user to find the data he or she needs by avoiding useless operations. </p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/34.jpg" alt="34.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/35.jpg" alt="35.jpg"></p>
+<blockquote>
+<p>Index Scan Example – Consider <strong>a single table with 100 tuples and two indexes: age and department.</strong><br>  In the first scenario, it is better to use the department index in the scan because it only has two tuples to match. Choosing the age index would not be much better than a simple sequential scan.<br>  In the second scenario, the age index would eliminate more unnecessary scans and is the optimal choice.</p>
+</blockquote>
+<p><strong>Use index with low selectivity!</strong></p>
+<p><br></p>
+<h3 id="Multi-Index-Scans"><a href="#Multi-Index-Scans" class="headerlink" title="Multi-Index Scans"></a>Multi-Index Scans</h3><blockquote>
+<p>More advanced DBMSs can support multi-index scans. When using multiple indexes for a query, <strong>the DBMS will compute sets of record IDs using each matching index, combine those sets based on the query’s predicates, and retrieve the records and apply any predicates that may remain</strong>. The DBMS can use <strong>bitmaps, hash tables, or Bloom filters to compute record IDs through set intersection</strong>.</p>
+</blockquote>
+<p><img data-src="/images/CMU1544564/Lec12/36.jpg" alt="36.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/37.jpg" alt="37.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/38.jpg" alt="38.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/39.jpg" alt="39.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/40.jpg" alt="40.jpg"></p>
+<h3 id="Index-Scan-Page-Sorting"><a href="#Index-Scan-Page-Sorting" class="headerlink" title="Index Scan Page Sorting"></a>Index Scan Page Sorting</h3><p><a href="https://cakebytheoceanluo.github.io/2020/03/19/CMU-15445-Lec07/#Clustered-Indexes">[CMU-15445] Lec07 Tree Indexes Part I - 树索引 I: Clustered Indexes</a></p>
+<p><img data-src="/images/CMU1544564/Lec12/41.jpg" alt="41.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/42.jpg" alt="42.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/43.jpg" alt="43.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/44.jpg" alt="44.jpg"></p>
+<p><br><br><br><br><br></p>
+<h1 id="Expression-Evaluation"><a href="#Expression-Evaluation" class="headerlink" title="Expression Evaluation"></a>Expression Evaluation</h1><blockquote>
+<p>To evaluate an expression tree at runtime, the DBMS maintains a context handle that contains metadata for the execution, such as the current tuple, the parameters, and the table schema. The DBMS then walks the tree to evaluate its operators and produce a result.<br>Evaluating predicates in this manner is slow because the DBMS must traverse the entire tree and figure out what to do for each operator. <strong>A better approach is to just evaluate the expression directly</strong>.</p>
+</blockquote>
+<p>建议还是直接LLVM JIT去做这个Expression Evaluation :D</p>
+<p><img data-src="/images/CMU1544564/Lec12/45.jpg" alt="45.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/46.jpg" alt="46.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/47.jpg" alt="47.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/48.jpg" alt="48.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/49.jpg" alt="49.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/50.jpg" alt="50.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/51.jpg" alt="51.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/52.jpg" alt="52.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/53.jpg" alt="53.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/54.jpg" alt="54.jpg"></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img data-src="/images/CMU1544564/Lec12/55.jpg" alt="55.jpg"></p>
+<p><img data-src="/images/CMU1544564/Lec12/56.jpg" alt="56.jpg"></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗济高
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://cakebytheoceanluo.github.io/2020/10/19/CMU-15445-Lec12/" title="[CMU-15445]Lec12">https://cakebytheoceanluo.github.io/2020/10/19/CMU-15445-Lec12/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><i class="fa fa-fw fa-creative-commons"></i>BY-NC</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+            <div class="social-item">
+              <a target="_blank" class="social-link" href="/atom.xml">
+                <span class="icon">
+                  <i class="fa fa-rss"></i>
+                </span>
+
+                <span class="label">RSS</span>
+              </a>
+            </div>
+    </div>
+  </div>
+
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/B-Tree/" rel="tag"><i class="fa fa-tag"></i> B Tree</a>
+              <a href="/tags/Indexing/" rel="tag"><i class="fa fa-tag"></i> Indexing</a>
+              <a href="/tags/Clustered-Index/" rel="tag"><i class="fa fa-tag"></i> Clustered Index</a>
+              <a href="/tags/Processing-Models/" rel="tag"><i class="fa fa-tag"></i> Processing Models</a>
+              <a href="/tags/Iterator-Model/" rel="tag"><i class="fa fa-tag"></i> Iterator Model</a>
+              <a href="/tags/Materialization-Model/" rel="tag"><i class="fa fa-tag"></i> Materialization Model</a>
+              <a href="/tags/Vectorization-Model/" rel="tag"><i class="fa fa-tag"></i> Vectorization Model</a>
+              <a href="/tags/Late-Materialization/" rel="tag"><i class="fa fa-tag"></i> Late Materialization</a>
+              <a href="/tags/Zone-Map-SMA/" rel="tag"><i class="fa fa-tag"></i> Zone Map / SMA</a>
+              <a href="/tags/Expression-Evaluation/" rel="tag"><i class="fa fa-tag"></i> Expression Evaluation</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/10/17/CMU-15445-Lec11/" rel="prev" title="[CMU-15445]Lec11 Join Algorithms - 连接算法">
+      <i class="fa fa-chevron-left"></i> [CMU-15445]Lec11 Join Algorithms - 连接算法
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="cakebytheoceanLuo/cakebytheoceanLuo.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Processing-Models"><span class="nav-number">1.</span> <span class="nav-text">Processing Models</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator-Volcano-Pipeline-Model"><span class="nav-number">1.1.</span> <span class="nav-text">Iterator (Volcano &#x2F; Pipeline) Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Example"><span class="nav-number">1.1.1.</span> <span class="nav-text">Example</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Materialization-Model"><span class="nav-number">1.2.</span> <span class="nav-text">Materialization Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#example"><span class="nav-number">1.2.1.</span> <span class="nav-text">example</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vectorization-Model"><span class="nav-number">1.3.</span> <span class="nav-text">Vectorization Model</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#example-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">example</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Plan-Processing-Direction"><span class="nav-number">1.4.</span> <span class="nav-text">Plan Processing Direction</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Access-Methods"><span class="nav-number">2.</span> <span class="nav-text">Access Methods</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sequential-Scan"><span class="nav-number">2.1.</span> <span class="nav-text">Sequential Scan</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Zone-Map"><span class="nav-number">2.1.1.</span> <span class="nav-text">Zone Map</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Late-Materialization"><span class="nav-number">2.1.2.</span> <span class="nav-text">Late Materialization</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Heap-Clustering"><span class="nav-number">2.1.3.</span> <span class="nav-text">Heap Clustering</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Index-Scan"><span class="nav-number">2.2.</span> <span class="nav-text">Index Scan</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Index-Scans"><span class="nav-number">2.2.1.</span> <span class="nav-text">Multi-Index Scans</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Index-Scan-Page-Sorting"><span class="nav-number">2.2.2.</span> <span class="nav-text">Index Scan Page Sorting</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Expression-Evaluation"><span class="nav-number">3.</span> <span class="nav-text">Expression Evaluation</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">4.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗济高"
+      src="/uploads/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">罗济高</p>
+  <div class="site-description" itemprop="description">In theory, there is no difference between theory and practice. But, in practice, there is.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">97</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">37</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">84</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2Nha2VieXRoZW9jZWFuTHVv" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cakebytheoceanLuo"><i class="fa fa-fw fa-github"></i>GitHub</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOmx1b2ppZ2FvQG91dGxvb2suY29t" title="E-Mail → mailto:luojigao@outlook.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</span>
+      </span>
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="aHR0cHM6Ly93d3cuemhpaHUuY29tL3Blb3BsZS9sdW8tamktZ2Fv" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;luo-ji-gao"><i class="fa fa-fw fa-zhihu"></i>知乎</span>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLzQuMC8="><img src="/images/cc-by-nc.svg" alt="Creative Commons"></span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      其他信息
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_key_id.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_key_id.pgp">GPG Key Id： F98069D551217BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/pgp_fingerprint.pgp" title="&#x2F;download&#x2F;pgp&#x2F;pgp_fingerprint.pgp">GPG Fingerprint：704A 7537 4771 2348 81B1 0559 F980 69D5 5121 7BFD</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="/download/pgp/luojigao@outlook.com.pgp" title="&#x2F;download&#x2F;pgp&#x2F;luojigao@outlook.com.pgp">Download Public Key</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗济高</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">472k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">7:09</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+  <script>
+  function leancloudSelector(url) {
+    url = encodeURI(url);
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.getAttribute('id'));
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+              leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              })
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.getAttribute('id'));
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (let item of results) {
+            let { url, time } = item;
+            leancloudSelector(url).innerText = time;
+          }
+          for (let url of entries) {
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=1vUzCKF76LM44asSN39XkjB8-gzGzoHsz')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : '1vUzCKF76LM44asSN39XkjB8-gzGzoHsz',
+            'X-LC-Key'    : 'qWNwcOO6BFrAxr7vtI65ycAA',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/lozad@1/dist/lozad.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : a0693510cb3f0ffe9af58a8252b84fe53b3d16221c333b1f262546c4489047e8,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+  <script src="//cdn.jsdelivr.net/npm/quicklink@1/dist/quicklink.umd.js"></script>
+  <script>
+      window.addEventListener('load', () => {
+      quicklink({
+        timeout : 3000,
+        priority: true,
+        ignores : [uri => uri.includes('#'),uri => uri == 'https://cakebytheoceanluo.github.io/2020/10/19/CMU-15445-Lec12/',]
+      });
+      });
+  </script>
+
+</body>
+</html>
