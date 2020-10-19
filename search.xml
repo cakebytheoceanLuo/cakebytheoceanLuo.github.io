@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>[CMU-15445]Lec12</title>
+    <title>[CMU-15445]Lec12 Query Processing I</title>
     <url>/2020/10/19/CMU-15445-Lec12/</url>
     <content><![CDATA[<p>Query Execution I - Query执行</p>
 <p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzEyLXF1ZXJ5ZXhlY3V0aW9uMS5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/slides/12-queryexecution1.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/12-queryexecution1.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMTItcXVlcnlleGVjdXRpb24xLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/notes/12-queryexecution1.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/12-queryexecution1.pdf<i class="fa fa-external-link"></i></span><br>Readings:  Chapter 12.1-12.3, 12.7</p>
