@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/10/27/Leetcode-Algorithm-16-3-sum-closest/</loc>
+    
+    <lastmod>2020-10-27T18:34:29.057Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/</loc>
+    
+    <lastmod>2020-10-27T18:30:46.720Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://cakebytheoceanluo.github.io/2020/10/19/CMU-15445-Lec12/</loc>
     
     <lastmod>2020-10-19T09:13:19.784Z</lastmod>
@@ -26,13 +40,6 @@
     <loc>https://cakebytheoceanluo.github.io/2020/10/06/Leetcode-Algorithm-167-two-sum-sorted/</loc>
     
     <lastmod>2020-10-18T20:31:14.898Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://cakebytheoceanluo.github.io/2020/10/16/Leetcode-Algorithm-15-3-sum/</loc>
-    
-    <lastmod>2020-10-18T20:20:14.006Z</lastmod>
     
   </url>
   
