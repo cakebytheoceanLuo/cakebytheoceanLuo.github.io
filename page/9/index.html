@@ -142,7 +142,7 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">84</span></a>
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签<span class="badge">85</span></a>
 
   </li>
         <li class="menu-item menu-item-categories">
@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">99</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">100</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,119 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/03/05/CMU-15445-Lec01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/05/CMU-15445-Lec01/" class="post-title-link" itemprop="url">[CMU-15445]Lec01 The Relational Model - 关系代数</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-05 20:00:26" itemprop="dateCreated datePublished" datetime="2020-03-05T20:00:26+01:00">2020-03-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-18 19:42:47" itemprop="dateModified" datetime="2020-03-18T19:42:47+01:00">2020-03-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CMU-15445/" itemprop="url" rel="index"><span itemprop="name">CMU-15445</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Relation-Algebra/" itemprop="url" rel="index"><span itemprop="name">Relation Algebra</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/03/05/CMU-15445-Lec01/" class="post-meta-item leancloud_visitors" data-flag-title="[CMU-15445]Lec01 The Relational Model - 关系代数" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>The Relational Model - 关系代数</p>
+<p>Slide: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvc2xpZGVzLzAxLWludHJvZHVjdGlvbi5wZGY=" title="https://15445.courses.cs.cmu.edu/fall2019/slides/01-introduction.pdf">https://15445.courses.cs.cmu.edu/fall2019/slides/01-introduction.pdf<i class="fa fa-external-link"></i></span><br>Note: <span class="exturl" data-url="aHR0cHM6Ly8xNTQ0NS5jb3Vyc2VzLmNzLmNtdS5lZHUvZmFsbDIwMTkvbm90ZXMvMDEtaW50cm9kdWN0aW9uLnBkZg==" title="https://15445.courses.cs.cmu.edu/fall2019/notes/01-introduction.pdf">https://15445.courses.cs.cmu.edu/fall2019/notes/01-introduction.pdf<i class="fa fa-external-link"></i></span><br>Reading: Chapters 1-2, 6</p>
+<p>这节课，我们会了解数据库的概况，然后同时了解一下关系代数和基础的SQL。</p>
+<p>更多的基础SQL练习可以在我之前的博客找到：　见 <a href="https://cakebytheoceanluo.github.io/2020/02/22/SQL-%E5%9F%BA%E7%A1%80SQL/">[SQL]基础SQL</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/05/CMU-15445-Lec01/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1143,108 +1256,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-3/" class="post-title-link" itemprop="url">[SQL]中级SQL(3)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-02-25 15:14:28" itemprop="dateCreated datePublished" datetime="2020-02-25T15:14:28+01:00">2020-02-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-10 23:52:47" itemprop="dateModified" datetime="2020-03-10T23:52:47+01:00">2020-03-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-3/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]中级SQL(3)" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>3.5k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在这篇文章<strong>中级SQL</strong>中我们会遇到subquery，它可以出现在<code>select子句</code>中或者<code>where子句</code>或者<code>from子句</code>中。这篇文章我们会练习稍微复杂的subquery。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/25/SQL-%E4%B8%AD%E7%BA%A7SQL-3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1317,7 +1328,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">99</span>
+          <span class="site-state-item-count">100</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1330,7 +1341,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">84</span>
+        <span class="site-state-item-count">85</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1396,13 +1407,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">479k</span>
+    <span title="站点总字数">482k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">7:16</span>
+    <span title="站点阅读时长">7:18</span>
 </div>
 
         

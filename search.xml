@@ -1,6 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>[Leetcode-Algorithm]206. Reverse Linked List</title>
+    <url>/2020/11/06/Leetcode-Algorithm-206-Reverse-Linked-List/</url>
+    <content><![CDATA[<p>206.Reverse Linked List</p>
+<p>Reverse a singly linked list.</p>
+<p>Example:</p>
+<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL</span><br><span class="line">Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL</span><br></pre></td></tr></tbody></table></figure>
+<p>Follow up:</p>
+<p>A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
+<a id="more"></a>
+<h1 id="解法一-迭代"><a href="#解法一-迭代" class="headerlink" title="解法一: 迭代"></a>解法一: 迭代</h1><p>假设存在链表 $1 \rightarrow 2 \rightarrow 3 \rightarrow 4 \rightarrow 5 \rightarrow \mathrm{NULL}$，我们想要把它改成 $\mathrm{NULL} \leftarrow 1 \leftarrow 2 \leftarrow 3 \leftarrow 4 \leftarrow 5$。</p>
+<p>在遍历列表时: </p>
+<ul>
+<li>每次查看<code>current</code>节点是否为<code>NULL</code>，如果是，则结束循环，获得结果</li>
+<li>由于节点没有引用其上一个节点，因此必须事先存储<code>current-&gt;next</code>(with <code>temp</code> aka <code>next</code>)</li>
+<li>将当前节点的<code>current-&gt;next</code>指针改为指向前一个元素<code>pre</code></li>
+<li>而后<code>pre</code>移动到<code>current</code>，<code>current</code>移动到<code>temp</code></li>
+</ul>
+<p>不要忘记在最后返回新的头引用<code>pre</code></p>
+<p><img data-src="https://github.com/MisterBooo/LeetCodeAnimation/raw/master/0206-Reverse-Linked-List/Animation/Animation.gif" alt="Source: https://github.com/MisterBooo/LeetCodeAnimation/tree/master/0206-Reverse-Linked-List/Article"></p>
+<figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> {</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">reverseList</span><span class="params">(ListNode* head)</span> </span>{</span><br><span class="line">        ListNode* pre = <span class="literal">nullptr</span>;</span><br><span class="line">        ListNode* current = head;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (current != <span class="literal">nullptr</span>) {</span><br><span class="line">            ListNode* temp = current-&gt;next;</span><br><span class="line">            current-&gt;next = pre;  <span class="comment">/// Does the reverse.</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">/// Move to next iteration.</span></span><br><span class="line">            pre = current;</span><br><span class="line">            current = temp;</span><br><span class="line">        }</span><br><span class="line">        <span class="keyword">return</span> pre;</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="复杂度分析"><a href="#复杂度分析" class="headerlink" title="复杂度分析"></a>复杂度分析</h2><ul>
+<li>时间复杂度：$O(n)$</li>
+<li>空间复杂度：$O(1)$</li>
+</ul>
+<hr>
+<h1 id="解法二-递归"><a href="#解法二-递归" class="headerlink" title="解法二: 递归"></a>解法二: 递归</h1><p>递归版本稍微复杂一些，其关键在于<strong>反向工作</strong>。假设列表的其余部分已经被反转，现在我们应该如何反转它前面的部分？</p>
+<p>假设列表为：</p>
+<script type="math/tex; mode=display">n_{1}\rightarrow \ldots \rightarrow n_{k-1} \rightarrow n_{k} \rightarrow n_{k+1} \rightarrow \ldots \rightarrow n_{m} \rightarrow \mathrm{NULL}</script><p>若从节点 $n_{k+1}$到$n_{m}$ 已经被反转，而我们正处于 $n_{k}$:</p>
+<script type="math/tex; mode=display">n_{1}\rightarrow \ldots \rightarrow n_{k-1} \rightarrow n_{k} \rightarrow n_{k+1} \leftarrow \ldots \leftarrow n_{m}</script><p>我们希望 $n_{k+1}$的下一个节点指向$n_{k}$。</p>
+<p>所以:</p>
+<script type="math/tex; mode=display">n_k.\textit{next}.\textit{next} = n_{k}</script><p>要小心的是 $n_{1}$的下一个必须指向$\mathrm{NULL}$ 。如果你忽略了这一点，你的链表中可能会产生循环。如果使用大小为 2 的链表测试代码，则可能会捕获此错误。</p>
+<h2 id="递归反转整个链表-新的例子-no-recursion-call-stack"><a href="#递归反转整个链表-新的例子-no-recursion-call-stack" class="headerlink" title="递归反转整个链表: 新的例子 (no recursion call stack)"></a>递归反转整个链表: 新的例子 (no recursion call stack)</h2><p><img data-src="https://github.com/labuladong/fucking-algorithm/raw/master/pictures/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/1.jpg" alt="Source: https://github.com/labuladong/fucking-algorithm/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86.md"></p>
+<p><img data-src="https://github.com/labuladong/fucking-algorithm/raw/master/pictures/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/2.jpg" alt="Source: https://github.com/labuladong/fucking-algorithm/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86.md"></p>
+<p><code>reverseList(head.next)</code> 执行完成后:<br><img data-src="https://github.com/labuladong/fucking-algorithm/raw/master/pictures/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/3.jpg" alt="Source: https://github.com/labuladong/fucking-algorithm/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86.md"></p>
+<p><code>reverseList</code> 函数会返回反转之后的头结点，我们用变量 <code>res</code> 接收了 + <code>head-&gt;next-&gt;next = head;</code>:<br><img data-src="https://github.com/labuladong/fucking-algorithm/raw/master/pictures/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/4.jpg" alt="Source: https://github.com/labuladong/fucking-algorithm/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86.md"></p>
+<p><code>head-&gt;next = nullptr; return res;</code> :<br><img data-src="https://github.com/labuladong/fucking-algorithm/raw/master/pictures/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/5.jpg" alt="Source: https://github.com/labuladong/fucking-algorithm/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86.md"></p>
+<p>这样整个链表就反转过来了</p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><figure class="highlight c++"><table><tbody><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> {</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function">ListNode* <span class="title">reverseList</span><span class="params">(ListNode* head)</span> </span>{</span><br><span class="line">        <span class="keyword">if</span> (head == <span class="literal">nullptr</span> || head-&gt;next == <span class="literal">nullptr</span>) <span class="keyword">return</span> head;  <span class="comment">/// Base Case: the reverse it just myself.</span></span><br><span class="line">        ListNode* res = reverseList(head-&gt;next);  <span class="comment">/// Recursive Case: Solve the problem reducing the length by 1, until reach the base case.</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">/// The real reverse work:</span></span><br><span class="line">        head-&gt;next-&gt;next = head;</span><br><span class="line">        head-&gt;next = <span class="literal">nullptr</span>;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    }</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="复杂度分析-1"><a href="#复杂度分析-1" class="headerlink" title="复杂度分析"></a>复杂度分析</h2><ul>
+<li>时间复杂度：$O(n)$</li>
+<li>空间复杂度：$O(n)$<ul>
+<li><strong>由于使用递归，将会使用隐式栈空间。递归深度可能会达到 n 层</strong></li>
+</ul>
+</li>
+</ul>
+<p><br><br><br></p>
+<p>引用和推荐的阅读：</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS5jb20vcHJvYmxlbXMvcmV2ZXJzZS1saW5rZWQtbGlzdC8=" title="https://leetcode.com/problems/reverse-linked-list/">https://leetcode.com/problems/reverse-linked-list/<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9sZWV0Y29kZS1jbi5jb20vcHJvYmxlbXMvcmV2ZXJzZS1saW5rZWQtbGlzdC9zb2x1dGlvbi9mYW4temh1YW4tbGlhbi1iaWFvLWJ5LWxlZXRjb2RlLw==" title="https://leetcode-cn.com/problems/reverse-linked-list/solution/fan-zhuan-lian-biao-by-leetcode/">https://leetcode-cn.com/problems/reverse-linked-list/solution/fan-zhuan-lian-biao-by-leetcode/<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL01pc3RlckJvb28vTGVldENvZGVBbmltYXRpb24vYmxvYi9tYXN0ZXIvMDIwNi1SZXZlcnNlLUxpbmtlZC1MaXN0L0FydGljbGUvMDIwNi1SZXZlcnNlLUxpbmtlZC1MaXN0Lm1k" title="https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0206-Reverse-Linked-List/Article/0206-Reverse-Linked-List.md">https://github.com/MisterBooo/LeetCodeAnimation/blob/master/0206-Reverse-Linked-List/Article/0206-Reverse-Linked-List.md<i class="fa fa-external-link"></i></span></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2xhYnVsYWRvbmcvZnVja2luZy1hbGdvcml0aG0vYmxvYi9tYXN0ZXIvJUU2JTk1JUIwJUU2JThEJUFFJUU3JUJCJTkzJUU2JTlFJTg0JUU3JUIzJUJCJUU1JTg4JTk3LyVFOSU4MCU5MiVFNSVCRCU5MiVFNSU4RiU4RCVFOCVCRCVBQyVFOSU5MyVCRSVFOCVBMSVBOCVFNyU5QSU4NCVFNCVCOCU4MCVFOSU4MyVBOCVFNSU4OCU4Ni5tZA==" title="https://github.com/labuladong/fucking-algorithm/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86.md">https://github.com/labuladong/fucking-algorithm/blob/master/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%B3%BB%E5%88%97/%E9%80%92%E5%BD%92%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8%E7%9A%84%E4%B8%80%E9%83%A8%E5%88%86.md<i class="fa fa-external-link"></i></span></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>]]></content>
+      <categories>
+        <category>Algorithm</category>
+        <category>Leetcode</category>
+      </categories>
+      <tags>
+        <tag>Leetcode</tag>
+        <tag>C++</tag>
+        <tag>Linked List</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>[Leetcode-Algorithm] 11.container-with-most-water</title>
     <url>/2020/10/28/Leetcode-Algorithm-11-container-with-most-water/</url>
     <content><![CDATA[<p>11.Container With Most Water</p>
