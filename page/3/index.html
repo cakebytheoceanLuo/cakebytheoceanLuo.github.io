@@ -152,7 +152,7 @@
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">100</span></a>
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档<span class="badge">101</span></a>
 
   </li>
         <li class="menu-item menu-item-sitemap">
@@ -209,6 +209,117 @@
             
 
   <div class="posts-expand">
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/20/Leetcode-Algo-146-lru-cache/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpeg">
+      <meta itemprop="name" content="罗济高">
+      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="关于数据库的一切">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/20/Leetcode-Algo-146-lru-cache/" class="post-title-link" itemprop="url">[Leetcode-Algorithm] 146.lru-cache</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-20 21:08:50" itemprop="dateCreated datePublished" datetime="2020-04-20T21:08:50+02:00">2020-04-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-18 22:41:40" itemprop="dateModified" datetime="2020-10-18T22:41:40+02:00">2020-10-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Algorithm/" itemprop="url" rel="index"><span itemprop="name">Algorithm</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Leetcode/" itemprop="url" rel="index"><span itemprop="name">Leetcode</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2020/04/20/Leetcode-Algo-146-lru-cache/" class="post-meta-item leancloud_visitors" data-flag-title="[Leetcode-Algorithm] 146.lru-cache" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>146.LRU Cache</p>
+<p>Design and implement a data structure for Least Recently Used (LRU) cache. It should support the following operations: <code>get</code> and <code>put</code>.</p>
+<p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.<br><code>put(key, value)</code> - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.</p>
+<p>Follow up:<br>Could you do both operations in O(1) time complexity?</p>
+<p>Example:</p>
+<figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LRUCache cache = <span class="keyword">new</span> LRUCache( <span class="number">2</span> <span class="comment">/* capacity */</span> );</span><br><span class="line"></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">2</span>, <span class="number">2</span>);</span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">1</span>);       <span class="comment">// returns 1</span></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">3</span>, <span class="number">3</span>);    <span class="comment">// evicts key 2</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">2</span>);       <span class="comment">// returns -1 (not found)</span></span><br><span class="line">cache.<span class="built_in">put</span>(<span class="number">4</span>, <span class="number">4</span>);    <span class="comment">// evicts key 1</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">1</span>);       <span class="comment">// returns -1 (not found)</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">3</span>);       <span class="comment">// returns 3</span></span><br><span class="line">cache.<span class="built_in">get</span>(<span class="number">4</span>);       <span class="comment">// returns 4</span></span><br></pre></td></tr></tbody></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/20/Leetcode-Algo-146-lru-cache/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
         
   
   
@@ -1292,107 +1403,11 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://cakebytheoceanluo.github.io/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/uploads/avatar.jpeg">
-      <meta itemprop="name" content="罗济高">
-      <meta itemprop="description" content="In theory, there is no difference between theory and practice. But, in practice, there is.">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="关于数据库的一切">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/" class="post-title-link" itemprop="url">[SQL]高级SQL-窗口函数(7)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-04-09 15:37:29 / 修改时间：15:38:14" itemprop="dateCreated datePublished" datetime="2020-04-09T15:37:29+02:00">2020-04-09</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/SQL/" itemprop="url" rel="index"><span itemprop="name">SQL</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/" class="post-meta-item leancloud_visitors" data-flag-title="[SQL]高级SQL-窗口函数(7)" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span><br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>在了解了窗口函数后， 我们这次对它进行最后(?)一次练习。我们考虑一个秋有问题，即一些连续的数字是否被使用完。这次的数据集直接存在于SQL语句里面。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/04/09/SQL-%E9%AB%98%E7%BA%A7SQL-%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0-7/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1460,7 +1475,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">100</span>
+          <span class="site-state-item-count">101</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1539,13 +1554,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">站点总字数：</span>
-    <span title="站点总字数">482k</span>
+    <span title="站点总字数">484k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
-    <span title="站点阅读时长">7:18</span>
+    <span title="站点阅读时长">7:20</span>
 </div>
 
         
