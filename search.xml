@@ -7440,7 +7440,7 @@ TODO:[[CMU-15445]Lec08](balaab) -->
 <p>… mmap() can block, because setting up a user visible virtual memory mapping requires a relatively complex data structure setup on the kernel side, which involves kernel allocating memory from its internal allocators …</p>
 </blockquote>
 <p>上面这句话来自于<span class="exturl" data-url="aHR0cHM6Ly9zdGFja292ZXJmbG93LmNvbS9hLzIwMDg1NDU2LzgwNDk0MDg=" title="https://stackoverflow.com/a/20085456/8049408">Can sbrk(2) or mmap(2) block? - oakad’s answer<i class="fa fa-external-link"></i></span></p>
-<p>page Fault时具体发生的事情，完全类似<code>syscall</code>发生的事情一样:<br>当前程序会从ser mode TRAP进入 kernel mode，这时进程一直被blocked (CPU stalled), 直到对应新的page被加载进入kernel space而且程序回到user mode为止。</p>
+<p>page Fault时具体发生的事情，完全类似<code>syscall</code>发生的事情一样:<br>当前程序会从user mode TRAP进入 kernel mode，这时进程一直被blocked (CPU stalled), 直到对应新的page被加载进入kernel space而且程序回到user mode为止。</p>
 <h3 id="答案"><a href="#答案" class="headerlink" title="答案"></a>答案</h3><p>我们已知<code>mmap</code>会被blocked, 这个阻断时间中，数据库上面也做不了，只能等待新的page加载结束。这会带来性能下降问题。另外如果有多个并发写，需要同步机制，系统也提供一些同步指令<code>madvise</code>, <code>mlock</code>, <code>msync</code>。但是操作系统只是一个通用方案，达不到性能最优。</p>
 <p>另外操作系统不能将一个page立即写回硬盘，这一点会在事务Logging中使正确性不能被保证。</p>
 <p>由于<strong>性能问题</strong>和<strong>正确性问题</strong>，<code>mmap</code>比较少在数据库中被采用。</p>
